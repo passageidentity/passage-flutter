@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:passage_flutter/auth_result.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 
 void main() {
@@ -31,9 +32,14 @@ class _MyAppState extends State<MyApp> {
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _passageFlutterPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
+      platformVersion = await _passageFlutterPlugin.getPlatformVersion() ??
+          'Unknown platform version';
+      AuthResult? authResult =
+          await _passageFlutterPlugin.register("ricky.padilla+0616@passage.id");
+      platformVersion = authResult?.authToken ?? "";
+    } on Exception catch (e) {
+      // Anything else that is an exception
+      print('Unknown exception: $e');
       platformVersion = 'Failed to get platform version.';
     }
 
@@ -52,7 +58,8 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Passage Example App'),
+          backgroundColor: const Color(0xff3D53F6),
         ),
         body: Center(
           child: Text('Running on: $_platformVersion\n'),
