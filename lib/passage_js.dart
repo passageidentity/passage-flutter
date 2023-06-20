@@ -8,5 +8,5 @@ import 'auth_result.dart';
 class Passage {
   external Passage(String appId);
 
-  external Future<AuthResult> register(String identifier);
+  external dynamic register(String identifier);
 }

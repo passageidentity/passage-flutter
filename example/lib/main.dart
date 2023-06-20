@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
       platformVersion = await _passageFlutterPlugin.getPlatformVersion() ??
           'Unknown platform version';
       AuthResult? authResult =
-          await _passageFlutterPlugin.register("ricky.padilla+0616@passage.id");
+          await _passageFlutterPlugin.register("ricky.padilla+065@passage.id");
       platformVersion = authResult?.authToken ?? "";
     } on Exception catch (e) {
       // Anything else that is an exception

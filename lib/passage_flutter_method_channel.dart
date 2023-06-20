@@ -19,8 +19,21 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
 
   @override
   Future<AuthResult?> register(String identifier) async {
-    final AuthResult? authResult = await methodChannel
-        .invokeMethod<AuthResult?>('register', {'identifier': identifier});
-    return authResult;
+    final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
+        'register', {'identifier': identifier});
+    if (objMap == null) {
+      throw Exception("test exception");
+    } else {
+      return AuthResult.fromMap(convertToMap(objMap));
+    }
+  }
+
+  /// Convert from a Swift/Kotlin dictionary to a Dart Map.
+  static Map<String, dynamic> convertToMap(Map<Object?, Object?> resultMap) {
+    var map = <String, dynamic>{};
+    resultMap.forEach((key, value) {
+      map[key.toString()] = value;
+    });
+    return map;
   }
 }
