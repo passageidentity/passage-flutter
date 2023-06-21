@@ -31,15 +31,8 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     PassageFlutterPlatform.instance = PassageFlutterWeb();
   }
 
-  /// Returns a [String] containing the version of the platform.
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = html.window.navigator.userAgent;
-    return version;
-  }
-
-  @override
-  Future<AuthResult?> register(String identifier) async {
+  Future<AuthResult> register(String identifier) async {
     final resultPromise = passage.register(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
     final resultMap = convertToMap(jsObject);

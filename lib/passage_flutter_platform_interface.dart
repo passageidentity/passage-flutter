@@ -24,10 +24,6 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
-  }
-
   Future<AuthResult?> register(String identifier) {
     throw UnimplementedError('register() has not been implemented.');
   }

@@ -2,7 +2,6 @@ package id.passage.passage_flutter
 
 import android.app.Activity
 import android.content.Context
-import android.util.Log
 import androidx.annotation.NonNull
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
@@ -11,12 +10,8 @@ import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
 
-import id.passage.android.Passage
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 /** PassageFlutterPlugin */
 class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
@@ -28,7 +23,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private lateinit var context: Context
   private lateinit var activity: Activity
-  private lateinit var passage: Passage
+  private lateinit var passageFlutter: PassageFlutter
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "passage_flutter")
@@ -37,26 +32,8 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "getPlatformVersion") {
-      result.success("Android ${android.os.Build.VERSION.RELEASE}")
-    } else if (call.method == "register") {
-      val identifier = call.argument<String>("identifier")
-        ?: return result.error("INVALID_ARGS", "Invalid identifier", null)
-      CoroutineScope(Dispatchers.IO).launch {
-        try {
-          val authResult = passage.registerWithPasskey(identifier)
-          val authResultHashMap = hashMapOf(
-            "auth_token" to authResult.authToken,
-            "refresh_token" to authResult.refreshToken,
-            "refresh_token_expiration" to authResult.refreshTokenExpiration,
-            "redirect_url" to authResult.redirectUrl
-          )
-          result.success(authResultHashMap)
-        } catch (e: Exception) {
-          // TODO: Error code strategy
-          result.error("UNKNOWN", e.message, e.toString())
-        }
-      }
+    if (call.method == "register") {
+      passageFlutter.register(call, result)
     } else {
       result.notImplemented()
     }
@@ -68,7 +45,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
-    passage = Passage(activity)
+    passageFlutter = PassageFlutter((activity))
   }
 
   override fun onDetachedFromActivityForConfigChanges() {

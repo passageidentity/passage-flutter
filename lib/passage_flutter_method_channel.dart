@@ -11,13 +11,6 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   final methodChannel = const MethodChannel('passage_flutter');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version =
-        await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
-  }
-
-  @override
   Future<AuthResult?> register(String identifier) async {
     final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
         'register', {'identifier': identifier});

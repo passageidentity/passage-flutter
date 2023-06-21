@@ -2,7 +2,6 @@
 library passage;
 
 import 'package:js/js.dart';
-import 'auth_result.dart';
 
 @JS('Passage')
 class Passage {

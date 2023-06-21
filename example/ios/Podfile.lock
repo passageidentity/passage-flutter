@@ -2,7 +2,7 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - Passage (1.0.0):
+  - Passage (1.1.2):
     - SwiftKeychainWrapper
   - passage_flutter (0.0.1):
     - Flutter
@@ -30,7 +30,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   integration_test: 13825b8a9334a850581300559b8839134b124670
-  Passage: 7dfd133ff7067a3da3f7c9a26d0c94d9c62337dd
+  Passage: 6e3b423295b6bb9e3fd84889bdde19450fb16af7
   passage_flutter: 5729c2ad54fdc18f6e2bb9adf472d8da146822e7
   SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
 
