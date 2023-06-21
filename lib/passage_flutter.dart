@@ -5,4 +5,8 @@ class PassageFlutter {
   Future<AuthResult?> register(String identifier) {
     return PassageFlutterPlatform.instance.register(identifier);
   }
+
+  Future<AuthResult?> login(String identifier) {
+    return PassageFlutterPlatform.instance.login(identifier);
+  }
 }

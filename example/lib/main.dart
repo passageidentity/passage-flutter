@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       final authResult = await _passageFlutterPlugin
-          .register("ricky.padilla+example@passage.id");
+          .login("ricky.padilla+webexample@passage.id");
       token = authResult?.authToken ?? 'Problem getting token';
     } on Exception catch (e) {
       // Anything else that is an exception

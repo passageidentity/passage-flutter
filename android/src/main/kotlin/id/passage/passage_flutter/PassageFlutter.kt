@@ -29,4 +29,21 @@ internal class PassageFlutter(activity: Activity) {
         }
     }
 
+    internal fun login(call: MethodCall, result: MethodChannel.Result) {
+        val identifier = call.argument<String>("identifier")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid identifier.",
+                null
+            )
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val authResult = passage.loginWithPasskey(identifier)
+                result.success(authResult.convertToMap())
+            } catch (e: Exception) {
+                result.error(PassageFlutterError.LOGIN_ERROR.name, e.message, e.toString())
+            }
+        }
+    }
+
 }

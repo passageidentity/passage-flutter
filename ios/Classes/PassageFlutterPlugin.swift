@@ -18,6 +18,8 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
         switch call.method {
         case "register":
             passageFlutter.register(arguments: call.arguments, result: result)
+        case "login":
+            passageFlutter.login(result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

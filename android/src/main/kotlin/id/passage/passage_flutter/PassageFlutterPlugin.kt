@@ -32,10 +32,16 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    if (call.method == "register") {
-      passageFlutter.register(call, result)
-    } else {
-      result.notImplemented()
+    when (call.method) {
+        "register" -> {
+          passageFlutter.register(call, result)
+        }
+        "login" -> {
+          passageFlutter.login(call, result)
+        }
+        else -> {
+          result.notImplemented()
+        }
     }
   }
 

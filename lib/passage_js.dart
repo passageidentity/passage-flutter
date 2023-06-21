@@ -8,4 +8,5 @@ class Passage {
   external Passage(String appId);
 
   external dynamic register(String identifier);
+  external dynamic login(String identifier);
 }

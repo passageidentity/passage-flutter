@@ -15,7 +15,18 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
         'register', {'identifier': identifier});
     if (objMap == null) {
-      throw Exception("test exception");
+      return null;
+    } else {
+      return AuthResult.fromMap(convertToMap(objMap));
+    }
+  }
+
+  @override
+  Future<AuthResult?> login(String identifier) async {
+    final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
+        'login', {'identifier': identifier});
+    if (objMap == null) {
+      return null;
     } else {
       return AuthResult.fromMap(convertToMap(objMap));
     }

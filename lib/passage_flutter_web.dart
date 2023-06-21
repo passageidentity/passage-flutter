@@ -3,7 +3,6 @@
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 
-import 'dart:html' as html show window;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'passage_flutter_platform_interface.dart';
 import 'dart:js' as js;
@@ -34,6 +33,15 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<AuthResult> register(String identifier) async {
     final resultPromise = passage.register(identifier);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    final resultMap = convertToMap(jsObject);
+    final authResult = AuthResult.fromMap(resultMap);
+    return authResult;
+  }
+
+  @override
+  Future<AuthResult> login(String identifier) async {
+    final resultPromise = passage.login(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
     final resultMap = convertToMap(jsObject);
     final authResult = AuthResult.fromMap(resultMap);

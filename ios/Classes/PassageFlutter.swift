@@ -29,4 +29,20 @@ internal class PassageFlutter {
         }
     }
     
+    func login(result: @escaping FlutterResult) {
+        Task {
+            do {
+                let authResult = try await passage.loginWithPasskey()
+                result(authResult.convertToDictionary())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
 }
