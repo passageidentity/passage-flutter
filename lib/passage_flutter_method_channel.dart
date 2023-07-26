@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'passage_flutter_platform_interface.dart';
+import 'auth_result.dart';
 
 /// An implementation of [PassageFlutterPlatform] that uses method channels.
 class MethodChannelPassageFlutter extends PassageFlutterPlatform {
@@ -10,8 +11,33 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   final methodChannel = const MethodChannel('passage_flutter');
 
   @override
-  Future<String?> getPlatformVersion() async {
-    final version = await methodChannel.invokeMethod<String>('getPlatformVersion');
-    return version;
+  Future<AuthResult?> register(String identifier) async {
+    final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
+        'register', {'identifier': identifier});
+    if (objMap == null) {
+      return null;
+    } else {
+      return AuthResult.fromMap(convertToMap(objMap));
+    }
+  }
+
+  @override
+  Future<AuthResult?> login(String identifier) async {
+    final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
+        'login', {'identifier': identifier});
+    if (objMap == null) {
+      return null;
+    } else {
+      return AuthResult.fromMap(convertToMap(objMap));
+    }
+  }
+
+  /// Convert from a Swift/Kotlin dictionary to a Dart Map.
+  static Map<String, dynamic> convertToMap(Map<Object?, Object?> resultMap) {
+    var map = <String, dynamic>{};
+    resultMap.forEach((key, value) {
+      map[key.toString()] = value;
+    });
+    return map;
   }
 }

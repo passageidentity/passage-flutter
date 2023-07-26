@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 
 void main() {
@@ -16,7 +15,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  String _token = 'Waiting for auth event...';
   final _passageFlutterPlugin = PassageFlutter();
 
   @override
@@ -27,14 +26,17 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String platformVersion;
+    String token;
     // Platform messages may fail, so we use a try/catch PlatformException.
     // We also handle the message potentially returning null.
     try {
-      platformVersion =
-          await _passageFlutterPlugin.getPlatformVersion() ?? 'Unknown platform version';
-    } on PlatformException {
-      platformVersion = 'Failed to get platform version.';
+      final authResult = await _passageFlutterPlugin
+          .login("ricky.padilla+webexample@passage.id");
+      token = authResult?.authToken ?? 'Problem getting token';
+    } on Exception catch (e) {
+      // Anything else that is an exception
+      print('$e');
+      token = 'Problem getting token';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -43,7 +45,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _platformVersion = platformVersion;
+      _token = token;
     });
   }
 
@@ -52,10 +54,11 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: const Text('Plugin example app'),
+          title: const Text('Passage Example App'),
+          backgroundColor: const Color(0xff3D53F6),
         ),
         body: Center(
-          child: Text('Running on: $_platformVersion\n'),
+          child: Text('Auth token: $_token\n'),
         ),
       ),
     );

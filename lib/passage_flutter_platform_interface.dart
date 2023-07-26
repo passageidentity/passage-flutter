@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'passage_flutter_method_channel.dart';
+import 'auth_result.dart';
 
 abstract class PassageFlutterPlatform extends PlatformInterface {
   /// Constructs a PassageFlutterPlatform.
@@ -23,7 +24,11 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<String?> getPlatformVersion() {
-    throw UnimplementedError('platformVersion() has not been implemented.');
+  Future<AuthResult?> register(String identifier) {
+    throw UnimplementedError('register() has not been implemented.');
+  }
+
+  Future<AuthResult?> login(String identifier) {
+    throw UnimplementedError('login() has not been implemented.');
   }
 }
