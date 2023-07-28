@@ -6,13 +6,19 @@ internal class PassageFlutter {
     private let passage = PassageAuth()
     
     func register(arguments: Any?, result: @escaping FlutterResult) {
-        guard let identifier = (arguments as? [String: String])?["identifier"] else {
+        guard #available(iOS 16.0, *) else {
             let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid identifier.",
+                code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                message: "Only supported in iOS 16 and above",
                 details: nil
             )
-            return result(error)
+            result(error)
+            return
+        }
+        let (identifier, error) = getIdentifier(from: arguments)
+        guard let identifier else {
+            result(error)
+            return
         }
         Task {
             do {
@@ -30,6 +36,15 @@ internal class PassageFlutter {
     }
     
     func login(result: @escaping FlutterResult) {
+        guard #available(iOS 16.0, *) else {
+            let error = FlutterError(
+                code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                message: "Only supported in iOS 16 and above",
+                details: nil
+            )
+            result(error)
+            return
+        }
         Task {
             do {
                 let authResult = try await passage.loginWithPasskey()
@@ -43,6 +58,156 @@ internal class PassageFlutter {
                 result(error)
             }
         }
+    }
+    
+    func newRegisterOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
+        let (identifier, error) = getIdentifier(from: arguments)
+        guard let identifier else {
+            result(error)
+            return
+        }
+        Task {
+            do {
+                let otp = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifier)
+                result(otp.id)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func newLoginOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
+        let (identifier, error) = getIdentifier(from: arguments)
+        guard let identifier else {
+            result(error)
+            return
+        }
+        Task {
+            do {
+                let otp = try await PassageAuth.newLoginOneTimePasscode(identifier: identifier)
+                result(otp.id)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func activateOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
+        guard let otp = (arguments as? [String: String])?["otp"],
+              let otpId = (arguments as? [String: String])?["otpId"]
+        else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "invalid arguments",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                let authResult = try await PassageAuth.oneTimePasscodeActivate(otp: otp, otpId: otpId)
+                result(authResult.convertToDictionary())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func newRegisterMagicLink(arguments: Any?, result: @escaping FlutterResult) {
+        let (identifier, error) = getIdentifier(from: arguments)
+        guard let identifier else {
+            result(error)
+            return
+        }
+        Task {
+            do {
+                let ml = try await PassageAuth.newRegisterMagicLink(identifier: identifier)
+                result(ml.id)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func newLoginMagicLink(arguments: Any?, result: @escaping FlutterResult) {
+        let (identifier, error) = getIdentifier(from: arguments)
+        guard let identifier else {
+            result(error)
+            return
+        }
+        Task {
+            do {
+                let ml = try await PassageAuth.newLoginMagicLink(identifier: identifier)
+                result(ml.id)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func activateMagicLink(arguments: Any?, result: @escaping FlutterResult) {
+        guard let userMagicLink = (arguments as? [String: String])?["userMagicLink"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "invalid argument",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                let authResult = try await PassageAuth.magicLinkActivate(userMagicLink: userMagicLink)
+                result(authResult.convertToDictionary())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+}
+
+extension PassageFlutter {
+    
+    private func getIdentifier(from arguments: Any?) -> (String?, FlutterError?) {
+        guard let identifier = (arguments as? [String: String])?["identifier"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid identifier.",
+                details: nil
+            )
+            return (nil, error)
+        }
+        return (identifier, nil)
     }
     
 }

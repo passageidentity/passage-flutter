@@ -31,4 +31,32 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
   Future<AuthResult?> login(String identifier) {
     throw UnimplementedError('login() has not been implemented.');
   }
+
+  Future<String?> newRegisterOneTimePasscode(String identifier) {
+    throw UnimplementedError(
+        'newRegisterOneTimePasscode() has not been implemented.');
+  }
+
+  Future<String?> newLoginOneTimePasscode(String identifier) {
+    throw UnimplementedError(
+        'newLoginOneTimePasscode() has not been implemented.');
+  }
+
+  Future<String?> activateOneTimePasscode(String otp, String otpId) {
+    throw UnimplementedError(
+        'activateOneTimePasscode() has not been implemented.');
+  }
+
+  Future<String?> newRegisterMagicLink(String identifier) {
+    throw UnimplementedError(
+        'newRegisterMagicLink() has not been implemented.');
+  }
+
+  Future<String?> newLoginMagicLink(String identifier) {
+    throw UnimplementedError('newLoginMagicLink() has not been implemented.');
+  }
+
+  Future<String?> activateMagicLink(String magicLink) {
+    throw UnimplementedError('activateMagicLink() has not been implemented.');
+  }
 }

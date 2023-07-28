@@ -32,6 +32,48 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     }
   }
 
+  @override
+  Future<String?> newRegisterOneTimePasscode(String identifier) async {
+    final result = await methodChannel.invokeMethod<String>(
+        'newRegisterOneTimePasscode', {'identifier': identifier});
+    return result;
+  }
+
+  @override
+  Future<String?> newLoginOneTimePasscode(String identifier) async {
+    final result = await methodChannel.invokeMethod<String>(
+        'newLoginOneTimePasscode', {'identifier': identifier});
+    return result;
+  }
+
+  @override
+  Future<String?> activateOneTimePasscode(String otp, String otpId) async {
+    final result = await methodChannel.invokeMethod<String>(
+        'activateOneTimePasscode', {'otp': otp, 'otpId': otpId});
+    return result;
+  }
+
+  @override
+  Future<String?> newRegisterMagicLink(String identifier) async {
+    final result = await methodChannel.invokeMethod<String>(
+        'newRegisterMagicLink', {'identifier': identifier});
+    return result;
+  }
+
+  @override
+  Future<String?> newLoginMagicLink(String identifier) async {
+    final result = await methodChannel
+        .invokeMethod<String>('newLoginMagicLink', {'identifier': identifier});
+    return result;
+  }
+
+  @override
+  Future<String?> activateMagicLink(String magicLink) async {
+    final result = await methodChannel
+        .invokeMethod<String>('activateMagicLink', {'magicLink': magicLink});
+    return result;
+  }
+
   /// Convert from a Swift/Kotlin dictionary to a Dart Map.
   static Map<String, dynamic> convertToMap(Map<Object?, Object?> resultMap) {
     var map = <String, dynamic>{};
