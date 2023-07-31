@@ -32,6 +32,8 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.newLoginMagicLink(arguments: call.arguments, result: result)
         case "magicLinkActivate":
             passageFlutter.magicLinkActivate(arguments: call.arguments, result: result)
+        case "getMagicLinkStatus":
+            passageFlutter.getMagicLinkStatus(arguments: call.arguments, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

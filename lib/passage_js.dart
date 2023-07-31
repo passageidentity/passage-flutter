@@ -9,7 +9,6 @@ class Passage {
 
   external dynamic register(String identifier);
   external dynamic login(String identifier);
-  external dynamic loginConditional();
   external dynamic newRegisterOneTimePasscode(String identifier);
   external dynamic newLoginOneTimePasscode(String identifier);
   external dynamic oneTimePasscodeActivate(String otp, String otpId);
