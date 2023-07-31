@@ -64,7 +64,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('magicLinkActivate() has not been implemented.');
   }
 
-  Future<String> getMagicLinkStatus(String magicLinkId) {
+  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
     throw UnimplementedError('getMagicLinkStatus() has not been implemented.');
   }
 }

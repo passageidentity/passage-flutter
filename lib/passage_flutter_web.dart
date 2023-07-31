@@ -92,6 +92,13 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     return AuthResult.fromJSObject(jsObject);
   }
 
+  @override
+  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) async {
+    final resultPromise = passage.getMagicLinkStatus(magicLinkId);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return AuthResult.fromJSObject(jsObject);
+  }
+
   /// Convert from a JS Object to a Dart Map.
   static Map<String, dynamic> convertToMap(jsObject) {
     return Map.fromIterable(

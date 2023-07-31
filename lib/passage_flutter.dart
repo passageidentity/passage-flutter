@@ -38,4 +38,8 @@ class PassageFlutter {
   Future<AuthResult> magicLinkActivate(String magicLink) {
     return PassageFlutterPlatform.instance.magicLinkActivate(magicLink);
   }
+
+  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
+    return PassageFlutterPlatform.instance.getMagicLinkStatus(magicLinkId);
+  }
 }
