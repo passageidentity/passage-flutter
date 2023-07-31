@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 class AuthResult {
   final String authToken;
   final String? refreshToken;
@@ -5,8 +7,13 @@ class AuthResult {
   final String? redirectUrl;
 
   AuthResult.fromMap(Map<String, dynamic> map)
-      : authToken = map['auth_token'],
-        refreshToken = map['refresh_token'],
-        refreshTokenExpiration = map['refresh_token_expiration'],
-        redirectUrl = map['redirect_url'];
+      : authToken = map['authToken'],
+        refreshToken = map['refreshToken'],
+        refreshTokenExpiration = map['refreshTokenExpiration'],
+        redirectUrl = map['redirectUrl'];
+
+  factory AuthResult.fromJson(String jsonString) {
+    Map<String, dynamic> map = jsonDecode(jsonString);
+    return AuthResult.fromMap(map);
+  }
 }

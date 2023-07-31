@@ -49,6 +49,7 @@ android {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
         implementation 'id.passage.android:passage:1.0.0'
+        implementation 'com.google.code.gson:gson:2.9.0'
     }
 
     testOptions {

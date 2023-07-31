@@ -8,7 +8,7 @@ internal class PassageFlutter {
     func register(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
             let error = FlutterError(
-                code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                code: PassageFlutterError.PASSKEYS_NOT_SUPPORTED.rawValue,
                 message: "Only supported in iOS 16 and above",
                 details: nil
             )
@@ -23,10 +23,17 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
-                result(authResult.convertToDictionary())
+                result(authResult.toJsonString())
+            } catch PassageASAuthorizationError.canceled {
+                let error = FlutterError(
+                    code: PassageFlutterError.USER_CANCELLED.rawValue,
+                    message: "User cancelled",
+                    details: nil
+                )
+                result(error)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.REGISTRATION_ERROR.rawValue,
+                    code: PassageFlutterError.PASSKEY_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -38,7 +45,7 @@ internal class PassageFlutter {
     func login(result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
             let error = FlutterError(
-                code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                code: PassageFlutterError.PASSKEYS_NOT_SUPPORTED.rawValue,
                 message: "Only supported in iOS 16 and above",
                 details: nil
             )
@@ -48,10 +55,17 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.loginWithPasskey()
-                result(authResult.convertToDictionary())
+                result(authResult.toJsonString())
+            } catch PassageASAuthorizationError.canceled {
+                let error = FlutterError(
+                    code: PassageFlutterError.USER_CANCELLED.rawValue,
+                    message: "User cancelled",
+                    details: nil
+                )
+                result(error)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.PASSKEY_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -72,7 +86,7 @@ internal class PassageFlutter {
                 result(otp.id)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.OTP_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -93,7 +107,7 @@ internal class PassageFlutter {
                 result(otp.id)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.OTP_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -116,10 +130,10 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await PassageAuth.oneTimePasscodeActivate(otp: otp, otpId: otpId)
-                result(authResult.convertToDictionary())
+                result(authResult.toJsonString())
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.OTP_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -140,7 +154,7 @@ internal class PassageFlutter {
                 result(ml.id)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.MAGIC_LINK_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -161,7 +175,7 @@ internal class PassageFlutter {
                 result(ml.id)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.MAGIC_LINK_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -182,10 +196,34 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await PassageAuth.magicLinkActivate(userMagicLink: userMagicLink)
-                result(authResult.convertToDictionary())
+                result(authResult.toJsonString())
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.LOGIN_ERROR.rawValue,
+                    code: PassageFlutterError.MAGIC_LINK_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func getMagicLinkStatus(arguments: Any?, result: @escaping FlutterResult) {
+        guard let magicLinkId = (arguments as? [String: String])?["magicLinkId"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "invalid argument",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                let authResult = try await passage.getMagicLinkStatus(id: magicLinkId)
+                result(authResult.toJsonString())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.MAGIC_LINK_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )

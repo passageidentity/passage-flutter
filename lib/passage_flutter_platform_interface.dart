@@ -28,7 +28,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('register() has not been implemented.');
   }
 
-  Future<AuthResult?> login(String identifier) {
+  Future<AuthResult?> login() {
     throw UnimplementedError('login() has not been implemented.');
   }
 

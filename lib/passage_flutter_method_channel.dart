@@ -22,13 +22,13 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult?> login(String identifier) async {
-    final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
-        'login', {'identifier': identifier});
-    if (objMap == null) {
+  Future<AuthResult?> login() async {
+    final String? jsonString =
+        await methodChannel.invokeMethod<String>('login');
+    if (jsonString == null) {
       return null;
     } else {
-      return AuthResult.fromMap(convertToMap(objMap));
+      return AuthResult.fromJson(jsonString);
     }
   }
 

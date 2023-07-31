@@ -1,17 +1,25 @@
 import Passage
 
-internal extension AuthResult {
-    func convertToDictionary() -> [String: Any] {
-        var authResultDict: [String : Any] = [
-            "auth_token": authToken,
-            "redirect_url": redirectURL
-        ]
-        if let refreshToken = refreshToken {
-            authResultDict["refresh_token"] = refreshToken
-        }
-        if let refreshTokenExpiration = refreshTokenExpiration {
-            authResultDict["refresh_token_expiration"] = refreshTokenExpiration
-        }
-        return authResultDict
-    }
+internal func dictToJsonString(_ dict: [String: Any]) -> String {
+    let jsonData = try! JSONSerialization.data(withJSONObject: dict, options: [])
+    let jsonString = String(data: jsonData, encoding: .utf8)!
+    return jsonString
 }
+
+internal extension AuthResult {
+    
+     func toDictionary() -> [String: Any] {
+         var authResultDict: [String : Any] = [
+             "authToken": authToken,
+             "redirectUrl": redirectURL,
+             "refreshToken": refreshToken,
+             "refreshTokenExpiration": refreshTokenExpiration
+         ]
+         return authResultDict
+     }
+    
+    func toJsonString() -> String {
+        return dictToJsonString(toDictionary())
+    }
+    
+ }

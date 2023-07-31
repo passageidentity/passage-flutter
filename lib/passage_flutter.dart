@@ -6,8 +6,8 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.register(identifier);
   }
 
-  Future<AuthResult?> login(String identifier) {
-    return PassageFlutterPlatform.instance.login(identifier);
+  Future<AuthResult?> login() {
+    return PassageFlutterPlatform.instance.login();
   }
 
   Future<String?> newRegisterOneTimePasscode(String identifier) {

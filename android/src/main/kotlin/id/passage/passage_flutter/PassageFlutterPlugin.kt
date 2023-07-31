@@ -33,12 +33,15 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-        "register" -> {
-          passageFlutter.register(call, result)
-        }
-        "login" -> {
-          passageFlutter.login(call, result)
-        }
+        "register" -> passageFlutter.register(call, result)
+        "login" -> passageFlutter.login(result)
+        "newRegisterOneTimePasscode" -> passageFlutter.newRegisterOneTimePasscode(call, result)
+        "newLoginOneTimePasscode" -> passageFlutter.newLoginOneTimePasscode(call, result)
+        "oneTimePasscodeActivate" -> passageFlutter.oneTimePasscodeActivate(call, result)
+        "newRegisterMagicLink" -> passageFlutter.newRegisterMagicLink(call, result)
+        "newLoginMagicLink" -> passageFlutter.newLoginMagicLink(call, result)
+        "magicLinkActivate" -> passageFlutter.magicLinkActivate(call, result)
+        "getMagicLinkStatus" -> passageFlutter.getMagicLinkStatus(call, result)
         else -> {
           result.notImplemented()
         }
