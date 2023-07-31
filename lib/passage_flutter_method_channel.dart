@@ -11,75 +11,57 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   final methodChannel = const MethodChannel('passage_flutter');
 
   @override
-  Future<AuthResult?> register(String identifier) async {
-    final objMap = await methodChannel.invokeMethod<Map<Object?, Object?>>(
-        'register', {'identifier': identifier});
-    if (objMap == null) {
-      return null;
-    } else {
-      return AuthResult.fromMap(convertToMap(objMap));
-    }
+  Future<AuthResult> register(String identifier) async {
+    final jsonString = await methodChannel
+        .invokeMethod<String>('register', {'identifier': identifier});
+    return AuthResult.fromJson(jsonString!);
   }
 
   @override
-  Future<AuthResult?> login() async {
-    final String? jsonString =
-        await methodChannel.invokeMethod<String>('login');
-    if (jsonString == null) {
-      return null;
-    } else {
-      return AuthResult.fromJson(jsonString);
-    }
+  Future<AuthResult> login() async {
+    final jsonString = await methodChannel.invokeMethod<String>('login');
+    return AuthResult.fromJson(jsonString!);
   }
 
   @override
-  Future<String?> newRegisterOneTimePasscode(String identifier) async {
+  Future<String> newRegisterOneTimePasscode(String identifier) async {
     final result = await methodChannel.invokeMethod<String>(
         'newRegisterOneTimePasscode', {'identifier': identifier});
-    return result;
+    return result!;
   }
 
   @override
-  Future<String?> newLoginOneTimePasscode(String identifier) async {
+  Future<String> newLoginOneTimePasscode(String identifier) async {
     final result = await methodChannel.invokeMethod<String>(
         'newLoginOneTimePasscode', {'identifier': identifier});
-    return result;
+    return result!;
   }
 
   @override
-  Future<String?> activateOneTimePasscode(String otp, String otpId) async {
+  Future<String> oneTimePasscodeActivate(String otp, String otpId) async {
     final result = await methodChannel.invokeMethod<String>(
         'activateOneTimePasscode', {'otp': otp, 'otpId': otpId});
-    return result;
+    return result!;
   }
 
   @override
-  Future<String?> newRegisterMagicLink(String identifier) async {
+  Future<String> newRegisterMagicLink(String identifier) async {
     final result = await methodChannel.invokeMethod<String>(
         'newRegisterMagicLink', {'identifier': identifier});
-    return result;
+    return result!;
   }
 
   @override
-  Future<String?> newLoginMagicLink(String identifier) async {
+  Future<String> newLoginMagicLink(String identifier) async {
     final result = await methodChannel
         .invokeMethod<String>('newLoginMagicLink', {'identifier': identifier});
-    return result;
+    return result!;
   }
 
   @override
-  Future<String?> activateMagicLink(String magicLink) async {
+  Future<String> magicLinkActivate(String magicLink) async {
     final result = await methodChannel
         .invokeMethod<String>('activateMagicLink', {'magicLink': magicLink});
-    return result;
-  }
-
-  /// Convert from a Swift/Kotlin dictionary to a Dart Map.
-  static Map<String, dynamic> convertToMap(Map<Object?, Object?> resultMap) {
-    var map = <String, dynamic>{};
-    resultMap.forEach((key, value) {
-      map[key.toString()] = value;
-    });
-    return map;
+    return result!;
   }
 }

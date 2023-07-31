@@ -24,14 +24,14 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.newRegisterOneTimePasscode(arguments: call.arguments, result: result)
         case "newLoginOneTimePasscode":
             passageFlutter.newLoginOneTimePasscode(arguments: call.arguments, result: result)
-        case "activateOneTimePasscode":
-            passageFlutter.activateOneTimePasscode(arguments: call.arguments, result: result)
+        case "oneTimePasscodeActivate":
+            passageFlutter.oneTimePasscodeActivate(arguments: call.arguments, result: result)
         case "newRegisterMagicLink":
             passageFlutter.newRegisterMagicLink(arguments: call.arguments, result: result)
         case "newLoginMagicLink":
             passageFlutter.newLoginMagicLink(arguments: call.arguments, result: result)
-        case "activateMagicLink":
-            passageFlutter.activateMagicLink(arguments: call.arguments, result: result)
+        case "magicLinkActivate":
+            passageFlutter.magicLinkActivate(arguments: call.arguments, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

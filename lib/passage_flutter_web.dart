@@ -30,22 +30,66 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     PassageFlutterPlatform.instance = PassageFlutterWeb();
   }
 
+  // TODO: Map JS errors to PassageFlutter errors
+
   @override
   Future<AuthResult> register(String identifier) async {
     final resultPromise = passage.register(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    final resultMap = convertToMap(jsObject);
-    final authResult = AuthResult.fromMap(resultMap);
-    return authResult;
+    return AuthResult.fromJSObject(jsObject);
   }
 
   @override
-  Future<AuthResult> login(String identifier) async {
+  Future<AuthResult> loginWithIdentifier(String identifier) async {
     final resultPromise = passage.login(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
+    return AuthResult.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<String> newRegisterOneTimePasscode(String identifier) async {
+    final resultPromise = passage.newRegisterOneTimePasscode(identifier);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
     final resultMap = convertToMap(jsObject);
-    final authResult = AuthResult.fromMap(resultMap);
-    return authResult;
+    return resultMap['otp_id'];
+  }
+
+  @override
+  Future<String> newLoginOneTimePasscode(String identifier) async {
+    final resultPromise = passage.newLoginOneTimePasscode(identifier);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    final resultMap = convertToMap(jsObject);
+    return resultMap['otp_id'];
+  }
+
+  @override
+  Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) async {
+    final resultPromise = passage.oneTimePasscodeActivate(otp, otpId);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return AuthResult.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<String> newRegisterMagicLink(String identifier) async {
+    final resultPromise = passage.newRegisterMagicLink(identifier);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    final resultMap = convertToMap(jsObject);
+    return resultMap['id'];
+  }
+
+  @override
+  Future<String> newLoginMagicLink(String identifier) async {
+    final resultPromise = passage.newLoginMagicLink(identifier);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    final resultMap = convertToMap(jsObject);
+    return resultMap['id'];
+  }
+
+  @override
+  Future<AuthResult> magicLinkActivate(String magicLink) async {
+    final resultPromise = passage.magicLinkActivate(magicLink);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return AuthResult.fromJSObject(jsObject);
   }
 
   /// Convert from a JS Object to a Dart Map.

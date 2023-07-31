@@ -24,39 +24,47 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<AuthResult?> register(String identifier) {
+  Future<AuthResult> register(String identifier) {
     throw UnimplementedError('register() has not been implemented.');
   }
 
-  Future<AuthResult?> login() {
-    throw UnimplementedError('login() has not been implemented.');
+  Future<AuthResult> login() {
+    throw UnimplementedError('login() only supported on Android and iOS.');
   }
 
-  Future<String?> newRegisterOneTimePasscode(String identifier) {
+  Future<AuthResult> loginWithIdentifier(String identifier) {
+    throw UnimplementedError('loginWithIdentifier() only supported on web.');
+  }
+
+  Future<String> newRegisterOneTimePasscode(String identifier) {
     throw UnimplementedError(
         'newRegisterOneTimePasscode() has not been implemented.');
   }
 
-  Future<String?> newLoginOneTimePasscode(String identifier) {
+  Future<String> newLoginOneTimePasscode(String identifier) {
     throw UnimplementedError(
         'newLoginOneTimePasscode() has not been implemented.');
   }
 
-  Future<String?> activateOneTimePasscode(String otp, String otpId) {
+  Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) {
     throw UnimplementedError(
-        'activateOneTimePasscode() has not been implemented.');
+        'oneTimePasscodeActivate() has not been implemented.');
   }
 
-  Future<String?> newRegisterMagicLink(String identifier) {
+  Future<String> newRegisterMagicLink(String identifier) {
     throw UnimplementedError(
         'newRegisterMagicLink() has not been implemented.');
   }
 
-  Future<String?> newLoginMagicLink(String identifier) {
+  Future<String> newLoginMagicLink(String identifier) {
     throw UnimplementedError('newLoginMagicLink() has not been implemented.');
   }
 
-  Future<String?> activateMagicLink(String magicLink) {
-    throw UnimplementedError('activateMagicLink() has not been implemented.');
+  Future<AuthResult> magicLinkActivate(String magicLink) {
+    throw UnimplementedError('magicLinkActivate() has not been implemented.');
+  }
+
+  Future<String> getMagicLinkStatus(String magicLinkId) {
+    throw UnimplementedError('getMagicLinkStatus() has not been implemented.');
   }
 }

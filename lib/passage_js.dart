@@ -9,4 +9,12 @@ class Passage {
 
   external dynamic register(String identifier);
   external dynamic login(String identifier);
+  external dynamic loginConditional();
+  external dynamic newRegisterOneTimePasscode(String identifier);
+  external dynamic newLoginOneTimePasscode(String identifier);
+  external dynamic newRegisterMagicLink(String identifier);
+  external dynamic newLoginMagicLink(String identifier);
+  external dynamic magicLinkActivate(String magicLink);
+  external dynamic getMagicLinkStatus(String magicLinkId);
+  external dynamic oneTimePasscodeActivate(String otp, String otpId);
 }

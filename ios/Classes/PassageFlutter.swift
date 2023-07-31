@@ -116,7 +116,7 @@ internal class PassageFlutter {
         }
     }
     
-    func activateOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
+    func oneTimePasscodeActivate(arguments: Any?, result: @escaping FlutterResult) {
         guard let otp = (arguments as? [String: String])?["otp"],
               let otpId = (arguments as? [String: String])?["otpId"]
         else {
@@ -184,7 +184,7 @@ internal class PassageFlutter {
         }
     }
     
-    func activateMagicLink(arguments: Any?, result: @escaping FlutterResult) {
+    func magicLinkActivate(arguments: Any?, result: @escaping FlutterResult) {
         guard let userMagicLink = (arguments as? [String: String])?["userMagicLink"] else {
             let error = FlutterError(
                 code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
