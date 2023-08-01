@@ -16,4 +16,7 @@ class Passage {
   external dynamic newLoginMagicLink(String identifier);
   external dynamic magicLinkActivate(String magicLink);
   external dynamic getMagicLinkStatus(String magicLinkId);
+  external dynamic getCurrentSession();
+  external dynamic appInfo();
+  external dynamic getCurrentUser();
 }

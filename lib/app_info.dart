@@ -35,7 +35,8 @@ class PassageAppInfo {
   final String requiredIdentifier;
   final bool requireIdentifierVerification;
   final int sessionTimeoutLength;
-  final List<PassageAppUserMetadataSchema>? userMetadataSchema;
+  // TODO: Fix error from Passage JS mapping for user meta data schema
+  // final List<PassageAppUserMetadataSchema>? userMetadataSchema;
 
   // PassageAppInfo({
   //   required this.allowedIdentifier,
@@ -52,20 +53,27 @@ class PassageAppInfo {
   // });
 
   PassageAppInfo.fromMap(Map<String, dynamic> map)
-      : allowedIdentifier = map['allowedIdentifier'],
-        authFallbackMethod = map['authFallbackMethod'],
-        authOrigin = map['authOrigin'],
+      : allowedIdentifier =
+            map['allowedIdentifier'] ?? map['allowed_identifier'],
+        authFallbackMethod =
+            map['authFallbackMethod'] ?? map['auth_fallback_method'],
+        authOrigin = map['authOrigin'] ?? map['auth_origin'],
         id = map['id'],
         name = map['name'],
-        publicSignup = map['publicSignup'],
-        redirectUrl = map['redirectUrl'],
-        requiredIdentifier = map['requiredIdentifier'],
-        requireIdentifierVerification = map['requireIdentifierVerification'],
-        sessionTimeoutLength = map['sessionTimeoutLength'],
-        userMetadataSchema = (map['userMetadataSchema'] as List<dynamic>?)
+        publicSignup = map['publicSignup'] ?? map['public_signup'],
+        redirectUrl = map['redirectUrl'] ?? map['redirect_url'],
+        requiredIdentifier =
+            map['requiredIdentifier'] ?? map['required_identifier'],
+        requireIdentifierVerification = map['requireIdentifierVerification'] ??
+            map['require_identifier_verification'],
+        sessionTimeoutLength = map['sessionTimeoutLength'] ??
+            map['session_timeout_length'] /*,
+        userMetadataSchema = (map['userMetadataSchema'] ??
+                map['user_metadata_schema'] as List<dynamic>?)
             ?.map((item) => PassageAppUserMetadataSchema.fromMap(
                 item as Map<String, dynamic>))
-            .toList();
+            .toList()*/
+  ;
 
   factory PassageAppInfo.fromJson(String jsonString) {
     Map<String, dynamic> map = jsonDecode(jsonString);

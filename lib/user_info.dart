@@ -28,13 +28,13 @@ class Passkey {
 
   Passkey.fromMap(Map<String, dynamic> map)
       : id = map['id'],
-        friendlyName = map['friendlyName'],
-        createdAt = map['createdAt'],
-        credId = map['credId'],
-        lastLoginAt = map['lastLoginAt'],
-        updatedAt = map['updatedAt'],
-        userId = map['userId'],
-        usageCount = map['usageCount'];
+        friendlyName = map['friendlyName'] ?? map['friendly_name'],
+        createdAt = map['createdAt'] ?? map['created_at'],
+        credId = map['credId'] ?? map['cred_id'],
+        lastLoginAt = map['lastLoginAt'] ?? map['last_login_at'],
+        updatedAt = map['updatedAt'] ?? map['updated_at'],
+        userId = map['userId'] ?? map['user_id'],
+        usageCount = map['usageCount'] ?? map['usage_count'];
 
   factory Passkey.fromJson(String jsonString) {
     Map<String, dynamic> map = jsonDecode(jsonString);
@@ -63,43 +63,28 @@ class PassageUser {
   final int loginCount;
   final dynamic userMetadata;
   final bool webauthn;
-  final List<Passkey> webauthnDevices;
-  final List<String> webauthnTypes;
-
-  // PassageUser({
-  //   required this.id,
-  //   this.status,
-  //   this.email,
-  //   required this.emailVerified,
-  //   this.phone,
-  //   required this.phoneVerified,
-  //   required this.createdAt,
-  //   this.updatedAt,
-  //   this.lastLoginAt,
-  //   required this.loginCount,
-  //   required this.userMetadata,
-  //   required this.webauthn,
-  //   required this.webauthnDevices,
-  //   required this.webauthnTypes,
-  // });
+  // TODO: Fix error from Passage JS mapping of arrays
+  // final List<Passkey> webauthnDevices;
+  // final List<String> webauthnTypes;
 
   PassageUser.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         status = map['status'],
         email = map['email'],
-        emailVerified = map['emailVerified'],
+        emailVerified = map['emailVerified'] ?? map['email_verified'],
         phone = map['phone'],
-        phoneVerified = map['phoneVerified'],
-        createdAt = map['createdAt'],
-        updatedAt = map['updatedAt'],
-        lastLoginAt = map['lastLoginAt'],
-        loginCount = map['loginCount'],
-        userMetadata = map['userMetadata'],
-        webauthn = map['webauthn'],
-        webauthnDevices = (map['webauthnDevices'] as List<dynamic>)
-            .map((item) => Passkey.fromMap(item as Map<String, dynamic>))
-            .toList(),
-        webauthnTypes = List<String>.from(map['webauthnTypes']);
+        phoneVerified = map['phoneVerified'] ?? map['phone_verified'],
+        createdAt = map['createdAt'] ?? map['created_at'],
+        updatedAt = map['updatedAt'] ?? map['updated_at'],
+        lastLoginAt = map['lastLoginAt'] ?? map['last_login_at'],
+        loginCount = map['loginCount'] ?? map['login_count'],
+        userMetadata = map['userMetadata'] ?? map['user_metadata'],
+        webauthn = map['webauthn'];
+  // webauthnDevices =
+  //     (map['webauthnDevices'] ?? map['webauthn_devices'] as List<dynamic>)
+  //         .map((item) => Passkey.fromMap(item as Map<String, dynamic>))
+  //         .toList(),
+  // webauthnTypes = List<String>.from(map['webauthnTypes']);
 
   factory PassageUser.fromJson(String jsonString) {
     Map<String, dynamic> map = jsonDecode(jsonString);
@@ -111,6 +96,7 @@ class PassageUser {
       _getKeysOfObject(jsObject),
       value: (key) => js_util.getProperty(jsObject, key),
     );
+    print(resultMap);
     return PassageUser.fromMap(resultMap);
   }
 }

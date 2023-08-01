@@ -5,6 +5,8 @@
 
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'passage_flutter_platform_interface.dart';
+import 'package:passage_flutter/app_info.dart';
+import 'package:passage_flutter/user_info.dart';
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 import 'package:js/js.dart';
@@ -43,6 +45,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<AuthResult> loginWithIdentifier(String identifier) async {
     final resultPromise = passage.login(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
+    print(jsObject);
     return AuthResult.fromJSObject(jsObject);
   }
 
@@ -97,6 +100,87 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     final resultPromise = passage.getMagicLinkStatus(magicLinkId);
     final jsObject = await js_util.promiseToFuture(resultPromise);
     return AuthResult.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<String?> getAuthToken() async {
+    final resultPromise = passage.getCurrentSession().getAuthToken();
+    final String authToken = await js_util.promiseToFuture(resultPromise);
+    return authToken;
+  }
+
+  @override
+  Future<bool> isAuthTokenValid(String authToken) async {
+    // TODO: custom implementation, not available in PassageJS
+    throw UnimplementedError('isAuthTokenValid() has not been implemented.');
+  }
+
+  @override
+  Future<String> refreshAuthToken() async {
+    // TODO: Getting 'Login required' error
+    final resultPromise = passage.getCurrentSession().refresh();
+    final String authToken = await js_util.promiseToFuture(resultPromise);
+    print(authToken);
+    return authToken;
+  }
+
+  @override
+  Future<PassageAppInfo?> getAppInfo() async {
+    final resultPromise = passage.appInfo();
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return PassageAppInfo.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<PassageUser?> getCurrentUser() async {
+    final resultPromise = passage.getCurrentUser().userInfo();
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return PassageUser.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<void> signOut() async {
+    final resultPromise = passage.getCurrentSession().signOut();
+    await js_util.promiseToFuture(resultPromise);
+    return;
+  }
+
+  @override
+  Future<Passkey> addPasskey() async {
+    final resultPromise = passage.getCurrentUser().userInfo();
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return Passkey.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<void> deletePasskey(String passkeyId) async {
+    final resultPromise = passage.getCurrentUser().deleteDevice(passkeyId);
+    await js_util.promiseToFuture(resultPromise);
+    return;
+  }
+
+  @override
+  Future<Passkey> editPasskeyName(
+      String passkeyId, String newPasskeyName) async {
+    final objFromMap = js_util.jsify({'friendly_name': newPasskeyName});
+    final resultPromise =
+        passage.getCurrentUser().editDevice(passkeyId, objFromMap);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return Passkey.fromJSObject(jsObject);
+  }
+
+  @override
+  Future<String> changeEmail(String newEmail) async {
+    final resultPromise = passage.getCurrentUser().changeEmail(newEmail);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return jsObject.id;
+  }
+
+  @override
+  Future<String> changePhone(String newPhone) async {
+    final resultPromise = passage.getCurrentUser().changePhone(newPhone);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return jsObject.id;
   }
 
   /// Convert from a JS Object to a Dart Map.

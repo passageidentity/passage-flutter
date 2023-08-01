@@ -53,7 +53,7 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.isAuthTokenValid(authToken);
   }
 
-  Future<String?> refreshAuthToken() {
+  Future<String> refreshAuthToken() {
     return PassageFlutterPlatform.instance.refreshAuthToken();
   }
 
