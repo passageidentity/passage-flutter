@@ -232,6 +232,43 @@ internal class PassageFlutter {
         }
     }
     
+    // MARK: - Token Methods
+        
+    func getAuthToken(result: @escaping FlutterResult) {
+        let token = passage.tokenStore.authToken
+        result(token)
+    }
+    
+    func isAuthTokenValid(arguments: Any?, result: @escaping FlutterResult) {
+        guard let authToken = (arguments as? [String: String])?["authToken"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid auth token.",
+                details: nil
+            )
+            result(error)
+            return
+        }
+        let isValid = PassageTokenUtils.isTokenExpired(token: authToken)
+        result(isValid)
+    }
+    
+    func refreshAuthToken(result: @escaping FlutterResult) {
+        Task {
+            do {
+                let authResult = try await passage.refresh()
+                result(authResult.authToken)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.TOKEN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
 }
 
 extension PassageFlutter {

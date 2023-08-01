@@ -71,4 +71,24 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
         'getMagicLinkStatus', {'magicLinkId': magicLinkId});
     return AuthResult.fromJson(jsonString!);
   }
+
+  @override
+  Future<String?> getAuthToken() async {
+    final authToken = await methodChannel.invokeMethod<String?>('getAuthToken');
+    return authToken;
+  }
+
+  @override
+  Future<bool> isAuthTokenValid(String authToken) async {
+    final isValid = await methodChannel
+        .invokeMethod<bool>('isAuthTokenValid', {'authToken': authToken});
+    return isValid == true;
+  }
+
+  @override
+  Future<String> refreshAuthToken() async {
+    final newAuthToken =
+        await methodChannel.invokeMethod<String>('refreshAuthToken');
+    return newAuthToken!;
+  }
 }

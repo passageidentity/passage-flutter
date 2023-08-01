@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import com.google.gson.Gson
 import id.passage.android.Passage
+import id.passage.android.PassageToken
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -193,5 +194,34 @@ internal class PassageFlutter(activity: Activity) {
 
     // endregion
 
+    // region TOKEN METHODS
+    fun getAuthToken(result: MethodChannel.Result) {
+        val token = passage.tokenStore.authToken
+        result.success(token)
+    }
+
+    fun isAuthTokenValid(call: MethodCall, result: MethodChannel.Result) {
+        val authToken = call.argument<String>("authToken")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid auth token",
+                null
+            )
+        val isValid = PassageToken.isAuthTokenValid(authToken)
+        result.success(isValid)
+    }
+
+    fun refreshAuthToken(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val newToken = passage.tokenStore.getValidAuthToken()
+                result.success(newToken)
+            } catch (e: Exception) {
+                result.error(PassageFlutterError.TOKEN_ERROR.name, e.message, e.toString())
+            }
+        }
+    }
+
+    // endregion
 
 }
