@@ -35,6 +35,19 @@ class Passkey {
         updatedAt = map['updatedAt'],
         userId = map['userId'],
         usageCount = map['usageCount'];
+
+  factory Passkey.fromJson(String jsonString) {
+    Map<String, dynamic> map = jsonDecode(jsonString);
+    return Passkey.fromMap(map);
+  }
+
+  factory Passkey.fromJSObject(jsObject) {
+    final Map<String, dynamic> resultMap = Map.fromIterable(
+      _getKeysOfObject(jsObject),
+      value: (key) => js_util.getProperty(jsObject, key),
+    );
+    return Passkey.fromMap(resultMap);
+  }
 }
 
 class PassageUser {

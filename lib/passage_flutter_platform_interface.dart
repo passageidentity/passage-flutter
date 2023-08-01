@@ -94,15 +94,15 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('signOut() has not been implemented.');
   }
 
-  Future<Passkey> addDevicePasskey() {
-    throw UnimplementedError('addDevicePasskey() has not been implemented.');
+  Future<Passkey> addPasskey() {
+    throw UnimplementedError('addPasskey() has not been implemented.');
   }
 
-  Future<void> deleteDevicePasskey() {
-    throw UnimplementedError('deleteDevicePasskey() has not been implemented.');
+  Future<void> deletePasskey(String passkeyId) {
+    throw UnimplementedError('deletePasskey() has not been implemented.');
   }
 
-  Future<Passkey> editPasskeyName(String newPasskeyName) {
+  Future<Passkey> editPasskeyName(String passkeyId, String newPasskeyName) {
     throw UnimplementedError('editPasskeyName() has not been implemented.');
   }
 

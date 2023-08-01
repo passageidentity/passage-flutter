@@ -249,7 +249,7 @@ internal class PassageFlutter {
             result(error)
             return
         }
-        let isValid = PassageTokenUtils.isTokenExpired(token: authToken)
+        let isValid = !PassageTokenUtils.isTokenExpired(token: authToken)
         result(isValid)
     }
     

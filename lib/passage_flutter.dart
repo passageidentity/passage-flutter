@@ -1,5 +1,7 @@
 import 'passage_flutter_platform_interface.dart';
 import 'auth_result.dart';
+import 'package:passage_flutter/app_info.dart';
+import 'package:passage_flutter/user_info.dart';
 
 class PassageFlutter {
   Future<AuthResult> register(String identifier) {
@@ -41,5 +43,50 @@ class PassageFlutter {
 
   Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
     return PassageFlutterPlatform.instance.getMagicLinkStatus(magicLinkId);
+  }
+
+  Future<String?> getAuthToken() {
+    return PassageFlutterPlatform.instance.getAuthToken();
+  }
+
+  Future<bool> isAuthTokenValid(String authToken) {
+    return PassageFlutterPlatform.instance.isAuthTokenValid(authToken);
+  }
+
+  Future<String?> refreshAuthToken() {
+    return PassageFlutterPlatform.instance.refreshAuthToken();
+  }
+
+  Future<PassageAppInfo?> getAppInfo() {
+    return PassageFlutterPlatform.instance.getAppInfo();
+  }
+
+  Future<PassageUser?> getCurrentUser() {
+    return PassageFlutterPlatform.instance.getCurrentUser();
+  }
+
+  Future<void> signOut() {
+    return PassageFlutterPlatform.instance.signOut();
+  }
+
+  Future<Passkey> addPasskey() {
+    return PassageFlutterPlatform.instance.addPasskey();
+  }
+
+  Future<void> deletePasskey(String passkeyId) {
+    return PassageFlutterPlatform.instance.deletePasskey(passkeyId);
+  }
+
+  Future<Passkey> editPasskeyName(String passkeyId, String newPasskeyName) {
+    return PassageFlutterPlatform.instance
+        .editPasskeyName(passkeyId, newPasskeyName);
+  }
+
+  Future<String> changeEmail(String newEmail) {
+    return PassageFlutterPlatform.instance.changeEmail(newEmail);
+  }
+
+  Future<String> changePhone(String newPhone) {
+    return PassageFlutterPlatform.instance.changePhone(newPhone);
   }
 }

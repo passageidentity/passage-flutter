@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:passage_flutter/app_info.dart';
+import 'package:passage_flutter/user_info.dart';
 
 import 'passage_flutter_platform_interface.dart';
 import 'auth_result.dart';
@@ -92,12 +94,54 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     return newAuthToken!;
   }
 
-  // "getAppInfo"
-  // "getCurrentUser"
-  // "signOut"
-  // "addDevicePasskey"
-  // "deleteDevicePasskey"
-  // "editDevicePasskeyName"
-  // "changeEmail"
-  // "changePhone"
+  @override
+  Future<PassageAppInfo?> getAppInfo() async {
+    final jsonString = await methodChannel.invokeMethod<String>('getAppInfo');
+    return PassageAppInfo.fromJson(jsonString!);
+  }
+
+  @override
+  Future<PassageUser?> getCurrentUser() async {
+    final jsonString =
+        await methodChannel.invokeMethod<String>('getCurrentUser');
+    return PassageUser.fromJson(jsonString!);
+  }
+
+  @override
+  Future<void> signOut() async {
+    return await methodChannel.invokeMethod('signOut');
+  }
+
+  @override
+  Future<Passkey> addPasskey() async {
+    final jsonString = await methodChannel.invokeMethod<String>('addPasskey');
+    return Passkey.fromJson(jsonString!);
+  }
+
+  @override
+  Future<void> deletePasskey(String passkeyId) async {
+    return await methodChannel
+        .invokeMethod('deletePasskey', {'passkeyId': passkeyId});
+  }
+
+  @override
+  Future<Passkey> editPasskeyName(
+      String passkeyId, String newPasskeyName) async {
+    final jsonString = await methodChannel.invokeMethod<String>(
+        'editDevicePasskeyName',
+        {'passkeyId': passkeyId, 'newPasskeyName': newPasskeyName});
+    return Passkey.fromJson(jsonString!);
+  }
+
+  @override
+  Future<String> changeEmail(String newEmail) async {
+    final magicLinkId = await methodChannel.invokeMethod<String>('changeEmail');
+    return magicLinkId!;
+  }
+
+  @override
+  Future<String> changePhone(String newPhone) async {
+    final magicLinkId = await methodChannel.invokeMethod<String>('changePhone');
+    return magicLinkId!;
+  }
 }
