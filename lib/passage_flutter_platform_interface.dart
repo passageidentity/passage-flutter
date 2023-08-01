@@ -1,3 +1,5 @@
+import 'package:passage_flutter/app_info.dart';
+import 'package:passage_flutter/user_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'passage_flutter_method_channel.dart';
@@ -66,5 +68,49 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
     throw UnimplementedError('getMagicLinkStatus() has not been implemented.');
+  }
+
+  Future<String?> getAuthToken() {
+    throw UnimplementedError('getAuthToken() has not been implemented.');
+  }
+
+  Future<bool> isAuthTokenValid(String authToken) {
+    throw UnimplementedError('isAuthTokenValid() has not been implemented.');
+  }
+
+  Future<String?> refreshAuthToken() {
+    throw UnimplementedError('refreshAuthToken() has not been implemented.');
+  }
+
+  Future<PassageAppInfo?> getAppInfo() {
+    throw UnimplementedError('getAppInfo() has not been implemented.');
+  }
+
+  Future<PassageUser?> getCurrentUser() {
+    throw UnimplementedError('getCurrentUser() has not been implemented.');
+  }
+
+  Future<void> signOut() {
+    throw UnimplementedError('signOut() has not been implemented.');
+  }
+
+  Future<Passkey> addDevicePasskey() {
+    throw UnimplementedError('addDevicePasskey() has not been implemented.');
+  }
+
+  Future<void> deleteDevicePasskey() {
+    throw UnimplementedError('deleteDevicePasskey() has not been implemented.');
+  }
+
+  Future<Passkey> editPasskeyName(String newPasskeyName) {
+    throw UnimplementedError('editPasskeyName() has not been implemented.');
+  }
+
+  Future<String> changeEmail(String newEmail) {
+    throw UnimplementedError('changeEmail() has not been implemented.');
+  }
+
+  Future<String> changePhone(String newPhone) {
+    throw UnimplementedError('changePhone() has not been implemented.');
   }
 }

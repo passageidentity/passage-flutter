@@ -91,4 +91,13 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
         await methodChannel.invokeMethod<String>('refreshAuthToken');
     return newAuthToken!;
   }
+
+  // "getAppInfo"
+  // "getCurrentUser"
+  // "signOut"
+  // "addDevicePasskey"
+  // "deleteDevicePasskey"
+  // "editDevicePasskeyName"
+  // "changeEmail"
+  // "changePhone"
 }

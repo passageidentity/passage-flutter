@@ -5,6 +5,9 @@ import android.util.Log
 import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageToken
+import id.passage.android.exceptions.AddDevicePasskeyCancellationException
+import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
@@ -12,7 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal class PassageFlutter(activity: Activity) {
+internal class PassageFlutter(private val activity: Activity) {
 
     private val passage = Passage(activity)
 
@@ -224,4 +227,169 @@ internal class PassageFlutter(activity: Activity) {
 
     // endregion
 
+    // region APP METHODS
+    fun getAppInfo(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val appInfo = passage.appInfo() ?: throw AppInfoException("Error getting app info")
+                val jsonString = Gson().toJson(appInfo)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                result.error(PassageFlutterError.APP_INFO_ERROR.name, e.message, e.toString())
+            }
+        }
+    }
+
+    // endregion
+
+    // region USER METHODS
+
+    fun getCurrentUser(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.getCurrentUser()
+                val jsonString = Gson().toJson(user)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                result.success(null)
+            }
+        }
+    }
+
+    fun signOut(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                passage.signOutCurrentUser()
+                result.success(null)
+            } catch (e: Exception) {
+                result.success(null)
+            }
+        }
+    }
+
+    fun addPasskey(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                val credential = user.addDevicePasskey(activity)
+                val jsonString = Gson().toJson(credential)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is RegisterWithPasskeyCancellationException -> {
+                        PassageFlutterError.USER_CANCELLED
+                    }
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+                    else -> PassageFlutterError.PASSKEY_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun deletePasskey(call: MethodCall, result: MethodChannel.Result) {
+        val passkeyId = call.argument<String>("passkeyId")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid device id",
+                null
+            )
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                user.deleteDevicePasskey(passkeyId)
+                result.success(null)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+                    else -> PassageFlutterError.PASSKEY_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun editPasskeyName(call: MethodCall, result: MethodChannel.Result) {
+        val passkeyId = call.argument<String>("passkeyId")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid device id",
+                null
+            )
+        val newPasskeyName = call.argument<String>("newPasskeyName")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid device name",
+                null
+            )
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                val credential = user.editDevicePasskeyName(passkeyId, newPasskeyName)
+                result.success(credential)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+                    else -> PassageFlutterError.PASSKEY_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun changeEmail(call: MethodCall, result: MethodChannel.Result) {
+        val newEmail = call.argument<String>("newEmail")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid email",
+                null
+            )
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                val magicLinkId = user.changeEmail(newEmail)?.id
+                result.success(magicLinkId)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+                    else -> PassageFlutterError.CHANGE_EMAIL_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun changePhone(call: MethodCall, result: MethodChannel.Result) {
+        val newPhone = call.argument<String>("newPhone")
+            ?: return result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid phone number",
+                null
+            )
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                val magicLinkId = user.changePhone(newPhone)?.id
+                result.success(magicLinkId)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+                    else -> PassageFlutterError.CHANGE_PHONE_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    // endregion
 }

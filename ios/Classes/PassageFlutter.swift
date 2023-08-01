@@ -269,6 +269,205 @@ internal class PassageFlutter {
         }
     }
     
+    // MARK: - App Methods
+        
+    func getAppInfo(result: @escaping FlutterResult) {
+        Task {
+            do {
+                guard let appInfo = try await PassageAuth.appInfo() else {
+                    let error = FlutterError(
+                        code: PassageFlutterError.APP_INFO_ERROR.rawValue,
+                        message: "Error getting app info.",
+                        details: nil
+                    )
+                    result(error)
+                    return
+                }
+                result(appInfo.toJsonString())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.APP_INFO_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    // MARK: - User Methods
+    
+    func getCurrentUser(result: @escaping FlutterResult) {
+        Task {
+            do {
+                let user = try await passage.getCurrentUser()
+                result(user?.toJsonString())
+            } catch {
+                result(nil)
+            }
+        }
+    }
+    
+    func signOut(result: @escaping FlutterResult) {
+        Task {
+            try? await passage.signOut()
+            result(nil)
+        }
+    }
+    
+    func addPasskey(arguments: Any?, result: @escaping FlutterResult) {
+        guard #available(iOS 16.0, *) else {
+            let error = FlutterError(
+                code: PassageFlutterError.PASSKEYS_NOT_SUPPORTED.rawValue,
+                message: "Only supported in iOS 16 and above",
+                details: nil
+            )
+            result(error)
+            return
+        }
+        Task {
+            do {
+                let device = try await passage.addDevice()
+                result(device.toJsonString())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.PASSKEY_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func deletePasskey(arguments: Any?, result: @escaping FlutterResult) {
+        guard let deviceId = (arguments as? [String: String])?["passkeyId"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid device id",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                try await passage.revokeDevice(deviceId: deviceId)
+                result(nil)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.PASSKEY_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func editPasskeyName(arguments: Any?, result: @escaping FlutterResult) {
+        guard let passkeyId = (arguments as? [String: String])?["passkeyId"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid device id",
+                details: nil
+            )
+            return
+        }
+        guard let newPasskeyName = (arguments as? [String: String])?["newPasskeyName"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid passkey name",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                guard let deviceInfo = try await passage
+                    .editDevice(deviceId: passkeyId, friendlyName: newPasskeyName)
+                else {
+                    let error = FlutterError(
+                        code: PassageFlutterError.PASSKEY_ERROR.rawValue,
+                        message: "Error editing passkey name.",
+                        details: nil
+                    )
+                    result(error)
+                    return
+                }
+                result(deviceInfo.toJsonString())
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.PASSKEY_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func changeEmail(arguments: Any?, result: @escaping FlutterResult) {
+        guard let newEmail = (arguments as? [String: String])?["newEmail"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid email",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                let magicLink = try await passage.changeEmail(newEmail: newEmail)
+                result(magicLink?.id)
+            } catch PassageAPIError.unauthorized(let unauthorizedError) {
+                let error = FlutterError(
+                    code: PassageFlutterError.USER_UNAUTHORIZED.rawValue,
+                    message: "\(unauthorizedError)",
+                    details: nil
+                )
+                result(error)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.CHANGE_EMAIL_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
+    func changePhone(arguments: Any?, result: @escaping FlutterResult) {
+        guard let newPhone = (arguments as? [String: String])?["newPhone"] else {
+            let error = FlutterError(
+                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
+                message: "Invalid phone number",
+                details: nil
+            )
+            return
+        }
+        Task {
+            do {
+                let magicLink = try await passage.changePhone(newPhone: newPhone)
+                result(magicLink?.id)
+            } catch PassageAPIError.unauthorized(let unauthorizedError) {
+                let error = FlutterError(
+                    code: PassageFlutterError.USER_UNAUTHORIZED.rawValue,
+                    message: "\(unauthorizedError)",
+                    details: nil
+                )
+                result(error)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.CHANGE_PHONE_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
 }
 
 extension PassageFlutter {

@@ -45,6 +45,14 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
         "getAuthToken" -> passageFlutter.getAuthToken(result)
         "isAuthTokenValid" -> passageFlutter.isAuthTokenValid(call, result)
         "refreshAuthToken" -> passageFlutter.refreshAuthToken(result)
+        "getAppInfo" -> passageFlutter.getAppInfo(result)
+        "getCurrentUser" -> passageFlutter.getCurrentUser(result)
+        "signOut" -> passageFlutter.signOut(result)
+        "addPasskey" -> passageFlutter.addPasskey(result)
+        "deletePasskey" -> passageFlutter.deletePasskey(call, result)
+        "editPasskeyName" -> passageFlutter.editPasskeyName(call, result)
+        "changeEmail" -> passageFlutter.changeEmail(call, result)
+        "changePhone" -> passageFlutter.changePhone(call, result)
         else -> {
           result.notImplemented()
         }

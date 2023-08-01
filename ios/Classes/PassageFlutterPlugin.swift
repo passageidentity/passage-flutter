@@ -40,6 +40,22 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.isAuthTokenValid(arguments: call.arguments, result: result)
         case "refreshAuthToken":
             passageFlutter.refreshAuthToken(result: result)
+        case "getAppInfo":
+            passageFlutter.getAppInfo(result: result)
+        case "getCurrentUser":
+            passageFlutter.getCurrentUser(result: result)
+        case "signOut":
+            passageFlutter.signOut(result: result)
+        case "addPasskey":
+            passageFlutter.addPasskey(arguments: call.arguments, result: result)
+        case "deletePasskey":
+            passageFlutter.deletePasskey(arguments: call.arguments, result: result)
+        case "editPasskeyName":
+            passageFlutter.editPasskeyName(arguments: call.arguments, result: result)
+        case "changeEmail":
+            passageFlutter.changeEmail(arguments: call.arguments, result: result)
+        case "changePhone":
+            passageFlutter.changePhone(arguments: call.arguments, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
