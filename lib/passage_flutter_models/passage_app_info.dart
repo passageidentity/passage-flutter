@@ -1,5 +1,8 @@
+import 'package:flutter/foundation.dart';
+
 import 'passage_flutter_model.dart';
-import '../helpers/data_conversion.dart';
+import '/helpers/data_conversion.dart'
+    if (dart.library.js) '/helpers/data_conversion_web.dart';
 
 class PassageAppInfo implements PassageFlutterModel {
   final String allowedIdentifier;
@@ -12,8 +15,7 @@ class PassageAppInfo implements PassageFlutterModel {
   final String requiredIdentifier;
   final bool requireIdentifierVerification;
   final int sessionTimeoutLength;
-  // TODO: Fix error from Passage JS mapping for user meta data schema
-  // final List<PassageAppUserMetadataSchema>? userMetadataSchema;
+  final List<PassageAppUserMetadataSchema>? userMetadataSchema;
 
   PassageAppInfo.fromMap(Map<String, dynamic> map)
       : allowedIdentifier =
@@ -29,25 +31,28 @@ class PassageAppInfo implements PassageFlutterModel {
             map['requiredIdentifier'] ?? map['required_identifier'],
         requireIdentifierVerification = map['requireIdentifierVerification'] ??
             map['require_identifier_verification'],
-        sessionTimeoutLength = map['sessionTimeoutLength'] ??
-            map['session_timeout_length'] /*,
-        userMetadataSchema = (map['userMetadataSchema'] ??
-                map['user_metadata_schema'] as List<dynamic>?)
-            ?.map((item) => PassageAppUserMetadataSchema.fromMap(
-                item as Map<String, dynamic>))
-            .toList()*/
-  ;
+        sessionTimeoutLength =
+            map['sessionTimeoutLength'] ?? map['session_timeout_length'],
+        userMetadataSchema = getMetadataSchema(map['userMetadataSchema'] ??
+            map['user_metadata_schema'] as List<dynamic>);
 
-  factory PassageAppInfo.fromJson(String jsonString) {
+  factory PassageAppInfo.fromJson(jsonString) {
     return fromJson(jsonString, PassageAppInfo.fromMap);
   }
 
-  factory PassageAppInfo.fromJSObject(jsObject) {
-    return fromJSObject(jsObject, PassageAppInfo.fromMap);
+  static getMetadataSchema(List<dynamic> list) {
+    if (list.isEmpty) {
+      return List<PassageAppUserMetadataSchema>.empty();
+    }
+    return list
+        .map((item) => kIsWeb
+            ? PassageAppUserMetadataSchema.fromJson(item)
+            : PassageAppUserMetadataSchema.fromMap(item))
+        .toList();
   }
 }
 
-class PassageAppUserMetadataSchema {
+class PassageAppUserMetadataSchema implements PassageFlutterModel {
   final String fieldName;
   final String friendlyName;
   final String id;
@@ -62,4 +67,8 @@ class PassageAppUserMetadataSchema {
         profile = map['profile'],
         registration = map['registration'],
         type = map['type'];
+
+  factory PassageAppUserMetadataSchema.fromJson(jsonString) {
+    return fromJson(jsonString, PassageAppUserMetadataSchema.fromMap);
+  }
 }

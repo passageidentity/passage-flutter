@@ -1,5 +1,6 @@
 import 'passage_flutter_model.dart';
-import '../helpers/data_conversion.dart';
+import '/helpers/data_conversion.dart'
+    if (dart.library.js) '/helpers/data_conversion_web.dart';
 
 class Passkey implements PassageFlutterModel {
   final String id;
@@ -21,11 +22,7 @@ class Passkey implements PassageFlutterModel {
         userId = map['userId'] ?? map['user_id'],
         usageCount = map['usageCount'] ?? map['usage_count'];
 
-  factory Passkey.fromJson(String jsonString) {
+  factory Passkey.fromJson(jsonString) {
     return fromJson(jsonString, Passkey.fromMap);
-  }
-
-  factory Passkey.fromJSObject(jsObject) {
-    return fromJSObject(jsObject, Passkey.fromMap);
   }
 }

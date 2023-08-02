@@ -1,5 +1,6 @@
-import '../helpers/data_conversion.dart';
 import 'passage_flutter_model.dart';
+import '/helpers/data_conversion.dart'
+    if (dart.library.js) '/helpers/data_conversion_web.dart';
 
 class AuthResult implements PassageFlutterModel {
   final String authToken;
@@ -14,11 +15,7 @@ class AuthResult implements PassageFlutterModel {
             map['refreshTokenExpiration'] ?? map['refresh_token_expiration'],
         redirectUrl = map['redirectUrl'] ?? map['redirect_url'];
 
-  factory AuthResult.fromJson(String jsonString) {
-    return fromJson(jsonString, AuthResult.fromMap);
-  }
-
-  factory AuthResult.fromJSObject(jsObject) {
-    return fromJSObject(jsObject, AuthResult.fromMap);
+  factory AuthResult.fromJson(json) {
+    return fromJson(json, AuthResult.fromMap);
   }
 }

@@ -7,13 +7,13 @@ import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
-import '/helpers/data_conversion.dart';
+import '/helpers/data_conversion_web.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passkey.dart';
-import 'passage_flutter_platform_interface.dart';
-import 'passage_js.dart';
+import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
+import 'passage_flutter_platform/passage_js.dart';
 
 /// A web implementation of the PassageFlutterPlatform of the PassageFlutter plugin.
 class PassageFlutterWeb extends PassageFlutterPlatform {
@@ -38,14 +38,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<AuthResult> register(String identifier) async {
     final resultPromise = passage.register(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJSObject(jsObject);
+    return AuthResult.fromJson(jsObject);
   }
 
   @override
   Future<AuthResult> loginWithIdentifier(String identifier) async {
     final resultPromise = passage.login(identifier);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJSObject(jsObject);
+    return AuthResult.fromJson(jsObject);
   }
 
   // OTP METHODS
@@ -70,7 +70,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) async {
     final resultPromise = passage.oneTimePasscodeActivate(otp, otpId);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJSObject(jsObject);
+    return AuthResult.fromJson(jsObject);
   }
 
   // MAGIC LINK METHODS
@@ -95,14 +95,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<AuthResult> magicLinkActivate(String magicLink) async {
     final resultPromise = passage.magicLinkActivate(magicLink);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJSObject(jsObject);
+    return AuthResult.fromJson(jsObject);
   }
 
   @override
   Future<AuthResult?> getMagicLinkStatus(String magicLinkId) async {
     final resultPromise = passage.getMagicLinkStatus(magicLinkId);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJSObject(jsObject);
+    return AuthResult.fromJson(jsObject);
   }
 
   // TOKEN METHODS
@@ -142,7 +142,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<PassageAppInfo?> getAppInfo() async {
     final resultPromise = passage.appInfo();
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return PassageAppInfo.fromJSObject(jsObject);
+    return PassageAppInfo.fromJson(jsObject);
   }
 
   // USER METHODS
@@ -151,14 +151,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<PassageUser?> getCurrentUser() async {
     final resultPromise = passage.getCurrentUser().userInfo();
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return PassageUser.fromJSObject(jsObject);
+    return PassageUser.fromJson(jsObject);
   }
 
   @override
   Future<Passkey> addPasskey() async {
     final resultPromise = passage.getCurrentUser().userInfo();
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return Passkey.fromJSObject(jsObject);
+    return Passkey.fromJson(jsObject);
   }
 
   @override
@@ -175,7 +175,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     final resultPromise =
         passage.getCurrentUser().editDevice(passkeyId, objFromMap);
     final jsObject = await js_util.promiseToFuture(resultPromise);
-    return Passkey.fromJSObject(jsObject);
+    return Passkey.fromJson(jsObject);
   }
 
   @override

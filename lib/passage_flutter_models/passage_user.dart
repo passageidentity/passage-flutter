@@ -1,5 +1,9 @@
+import 'package:flutter/foundation.dart';
+
+import '/helpers/data_conversion.dart'
+    if (dart.library.js) '/helpers/data_conversion_web.dart';
+import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_model.dart';
-import '../helpers/data_conversion.dart';
 
 class PassageUser implements PassageFlutterModel {
   final String id;
@@ -14,9 +18,8 @@ class PassageUser implements PassageFlutterModel {
   final int loginCount;
   final dynamic userMetadata;
   final bool webauthn;
-  // TODO: Fix error from Passage JS mapping of arrays
-  // final List<Passkey> webauthnDevices;
-  // final List<String> webauthnTypes;
+  final List<dynamic> webauthnDevices;
+  final List<String> webauthnTypes;
 
   PassageUser.fromMap(Map<String, dynamic> map)
       : id = map['id'],
@@ -30,18 +33,16 @@ class PassageUser implements PassageFlutterModel {
         lastLoginAt = map['lastLoginAt'] ?? map['last_login_at'],
         loginCount = map['loginCount'] ?? map['login_count'],
         userMetadata = map['userMetadata'] ?? map['user_metadata'],
-        webauthn = map['webauthn'];
-  // webauthnDevices =
-  //     (map['webauthnDevices'] ?? map['webauthn_devices'] as List<dynamic>)
-  //         .map((item) => Passkey.fromMap(item as Map<String, dynamic>))
-  //         .toList(),
-  // webauthnTypes = List<String>.from(map['webauthnTypes']);
+        webauthn = map['webauthn'],
+        webauthnDevices =
+            (map['webauthnDevices'] ?? map['webauthn_devices'] as List<dynamic>)
+                .map((item) =>
+                    kIsWeb ? Passkey.fromJson(item) : Passkey.fromMap(item))
+                .toList(),
+        webauthnTypes =
+            List<String>.from(map['webauthnTypes'] ?? map['webauthn_types']);
 
-  factory PassageUser.fromJson(String jsonString) {
+  factory PassageUser.fromJson(jsonString) {
     return fromJson(jsonString, PassageUser.fromMap);
-  }
-
-  factory PassageUser.fromJSObject(jsObject) {
-    return fromJSObject(jsObject, PassageUser.fromMap);
   }
 }

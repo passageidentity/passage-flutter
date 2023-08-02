@@ -1,6 +1,7 @@
 @JS()
 library passage;
 
+import 'dart:js_util' as js_util;
 import 'package:js/js.dart';
 
 @JS('Passage')
