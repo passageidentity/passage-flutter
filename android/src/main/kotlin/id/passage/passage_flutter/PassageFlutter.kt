@@ -1,11 +1,9 @@
 package id.passage.passage_flutter
 
 import android.app.Activity
-import android.util.Log
 import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageToken
-import id.passage.android.exceptions.AddDevicePasskeyCancellationException
 import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
@@ -19,13 +17,11 @@ internal class PassageFlutter(private val activity: Activity) {
 
     private val passage = Passage(activity)
 
+    // region PASSKEY METHODS
+
     internal fun register(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid identifier.",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authResult = passage.registerWithPasskey(identifier)
@@ -61,15 +57,13 @@ internal class PassageFlutter(private val activity: Activity) {
         }
     }
 
+    // endregion
+
     // region OTP METHODS
 
     fun newRegisterOneTimePasscode(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid identifier.",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val otpId = passage.newRegisterOneTimePasscode(identifier).otpId
@@ -82,11 +76,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun newLoginOneTimePasscode(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid identifier.",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val otpId = passage.newLoginOneTimePasscode(identifier).otpId
@@ -99,17 +89,9 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun oneTimePasscodeActivate(call: MethodCall, result: MethodChannel.Result) {
         val otp = call.argument<String>("otp")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid OTP",
-                null
-            )
+            ?: return invalidArgumentError(result)
         val otpId = call.argument<String>("otpId")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid OTP id",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authResult = passage.oneTimePasscodeActivate(otp, otpId)
@@ -127,11 +109,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun newRegisterMagicLink(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid identifier.",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val magicLinkId = passage.newRegisterMagicLink(identifier).id
@@ -144,11 +122,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun newLoginMagicLink(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid identifier.",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val magicLinkId = passage.newLoginMagicLink(identifier).id
@@ -161,11 +135,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun magicLinkActivate(call: MethodCall, result: MethodChannel.Result) {
         val magicLink = call.argument<String>("magicLink")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid magic link",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authResult = passage.magicLinkActivate(magicLink)
@@ -179,11 +149,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun getMagicLinkStatus(call: MethodCall, result: MethodChannel.Result) {
         val magicLinkId = call.argument<String>("magicLinkId")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid magic link id",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val authResult = passage.getMagicLinkStatus(magicLinkId)
@@ -205,11 +171,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun isAuthTokenValid(call: MethodCall, result: MethodChannel.Result) {
         val authToken = call.argument<String>("authToken")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid auth token",
-                null
-            )
+            ?: return invalidArgumentError(result)
         val isValid = PassageToken.isAuthTokenValid(authToken)
         result.success(isValid)
     }
@@ -291,11 +253,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun deletePasskey(call: MethodCall, result: MethodChannel.Result) {
         val passkeyId = call.argument<String>("passkeyId")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid device id",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
@@ -315,17 +273,9 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun editPasskeyName(call: MethodCall, result: MethodChannel.Result) {
         val passkeyId = call.argument<String>("passkeyId")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid device id",
-                null
-            )
+            ?: return invalidArgumentError(result)
         val newPasskeyName = call.argument<String>("newPasskeyName")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid device name",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
@@ -345,11 +295,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun changeEmail(call: MethodCall, result: MethodChannel.Result) {
         val newEmail = call.argument<String>("newEmail")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid email",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
@@ -369,11 +315,7 @@ internal class PassageFlutter(private val activity: Activity) {
 
     fun changePhone(call: MethodCall, result: MethodChannel.Result) {
         val newPhone = call.argument<String>("newPhone")
-            ?: return result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid phone number",
-                null
-            )
+            ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
@@ -392,4 +334,12 @@ internal class PassageFlutter(private val activity: Activity) {
     }
 
     // endregion
+
+    private fun invalidArgumentError(result: MethodChannel.Result) {
+        result.error(
+            PassageFlutterError.INVALID_ARGUMENT.name,
+            "Invalid or missing argument",
+            null
+        )
+    }
 }

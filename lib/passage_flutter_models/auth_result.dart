@@ -1,11 +1,7 @@
-import 'dart:convert';
-import 'dart:js_util' as js_util;
-import 'package:js/js.dart';
+import '../helpers/data_conversion.dart';
+import 'passage_flutter_model.dart';
 
-@JS('Object.keys')
-external List<String> _getKeysOfObject(jsObject);
-
-class AuthResult {
+class AuthResult implements PassageFlutterModel {
   final String authToken;
   final String? refreshToken;
   final String? refreshTokenExpiration;
@@ -19,15 +15,10 @@ class AuthResult {
         redirectUrl = map['redirectUrl'] ?? map['redirect_url'];
 
   factory AuthResult.fromJson(String jsonString) {
-    Map<String, dynamic> map = jsonDecode(jsonString);
-    return AuthResult.fromMap(map);
+    return fromJson(jsonString, AuthResult.fromMap);
   }
 
   factory AuthResult.fromJSObject(jsObject) {
-    final Map<String, dynamic> resultMap = Map.fromIterable(
-      _getKeysOfObject(jsObject),
-      value: (key) => js_util.getProperty(jsObject, key),
-    );
-    return AuthResult.fromMap(resultMap);
+    return fromJSObject(jsObject, AuthResult.fromMap);
   }
 }

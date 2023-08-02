@@ -5,13 +5,9 @@ internal class PassageFlutter {
     
     private let passage = PassageAuth()
     
-    func register(arguments: Any?, result: @escaping FlutterResult) {
+    internal func register(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
-            let error = FlutterError(
-                code: PassageFlutterError.PASSKEYS_NOT_SUPPORTED.rawValue,
-                message: "Only supported in iOS 16 and above",
-                details: nil
-            )
+            let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
             return
         }
@@ -25,11 +21,7 @@ internal class PassageFlutter {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
                 result(authResult.toJsonString())
             } catch PassageASAuthorizationError.canceled {
-                let error = FlutterError(
-                    code: PassageFlutterError.USER_CANCELLED.rawValue,
-                    message: "User cancelled",
-                    details: nil
-                )
+                let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
             } catch {
                 let error = FlutterError(
@@ -42,13 +34,9 @@ internal class PassageFlutter {
         }
     }
     
-    func login(result: @escaping FlutterResult) {
+    internal func login(result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
-            let error = FlutterError(
-                code: PassageFlutterError.PASSKEYS_NOT_SUPPORTED.rawValue,
-                message: "Only supported in iOS 16 and above",
-                details: nil
-            )
+            let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
             return
         }
@@ -57,11 +45,7 @@ internal class PassageFlutter {
                 let authResult = try await passage.loginWithPasskey()
                 result(authResult.toJsonString())
             } catch PassageASAuthorizationError.canceled {
-                let error = FlutterError(
-                    code: PassageFlutterError.USER_CANCELLED.rawValue,
-                    message: "User cancelled",
-                    details: nil
-                )
+                let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
             } catch {
                 let error = FlutterError(
@@ -74,7 +58,7 @@ internal class PassageFlutter {
         }
     }
     
-    func newRegisterOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
+    internal func newRegisterOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
         let (identifier, error) = getIdentifier(from: arguments)
         guard let identifier else {
             result(error)
@@ -95,7 +79,7 @@ internal class PassageFlutter {
         }
     }
     
-    func newLoginOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
+    internal func newLoginOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
         let (identifier, error) = getIdentifier(from: arguments)
         guard let identifier else {
             result(error)
@@ -116,15 +100,12 @@ internal class PassageFlutter {
         }
     }
     
-    func oneTimePasscodeActivate(arguments: Any?, result: @escaping FlutterResult) {
+    internal func oneTimePasscodeActivate(arguments: Any?, result: @escaping FlutterResult) {
         guard let otp = (arguments as? [String: String])?["otp"],
               let otpId = (arguments as? [String: String])?["otpId"]
         else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "invalid arguments",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -142,7 +123,7 @@ internal class PassageFlutter {
         }
     }
     
-    func newRegisterMagicLink(arguments: Any?, result: @escaping FlutterResult) {
+    internal func newRegisterMagicLink(arguments: Any?, result: @escaping FlutterResult) {
         let (identifier, error) = getIdentifier(from: arguments)
         guard let identifier else {
             result(error)
@@ -163,7 +144,7 @@ internal class PassageFlutter {
         }
     }
     
-    func newLoginMagicLink(arguments: Any?, result: @escaping FlutterResult) {
+    internal func newLoginMagicLink(arguments: Any?, result: @escaping FlutterResult) {
         let (identifier, error) = getIdentifier(from: arguments)
         guard let identifier else {
             result(error)
@@ -184,13 +165,10 @@ internal class PassageFlutter {
         }
     }
     
-    func magicLinkActivate(arguments: Any?, result: @escaping FlutterResult) {
+    internal func magicLinkActivate(arguments: Any?, result: @escaping FlutterResult) {
         guard let userMagicLink = (arguments as? [String: String])?["userMagicLink"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "invalid argument",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -208,13 +186,10 @@ internal class PassageFlutter {
         }
     }
     
-    func getMagicLinkStatus(arguments: Any?, result: @escaping FlutterResult) {
+    internal func getMagicLinkStatus(arguments: Any?, result: @escaping FlutterResult) {
         guard let magicLinkId = (arguments as? [String: String])?["magicLinkId"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "invalid argument",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -234,18 +209,14 @@ internal class PassageFlutter {
     
     // MARK: - Token Methods
         
-    func getAuthToken(result: @escaping FlutterResult) {
+    internal func getAuthToken(result: @escaping FlutterResult) {
         let token = passage.tokenStore.authToken
         result(token)
     }
     
-    func isAuthTokenValid(arguments: Any?, result: @escaping FlutterResult) {
+    internal func isAuthTokenValid(arguments: Any?, result: @escaping FlutterResult) {
         guard let authToken = (arguments as? [String: String])?["authToken"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid auth token.",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
         }
@@ -253,7 +224,7 @@ internal class PassageFlutter {
         result(isValid)
     }
     
-    func refreshAuthToken(result: @escaping FlutterResult) {
+    internal func refreshAuthToken(result: @escaping FlutterResult) {
         Task {
             do {
                 let authResult = try await passage.refresh()
@@ -271,15 +242,11 @@ internal class PassageFlutter {
     
     // MARK: - App Methods
         
-    func getAppInfo(result: @escaping FlutterResult) {
+    internal func getAppInfo(result: @escaping FlutterResult) {
         Task {
             do {
                 guard let appInfo = try await PassageAuth.appInfo() else {
-                    let error = FlutterError(
-                        code: PassageFlutterError.APP_INFO_ERROR.rawValue,
-                        message: "Error getting app info.",
-                        details: nil
-                    )
+                    let error = PassageFlutterError.APP_INFO_ERROR.defaultFlutterError
                     result(error)
                     return
                 }
@@ -297,7 +264,7 @@ internal class PassageFlutter {
     
     // MARK: - User Methods
     
-    func getCurrentUser(result: @escaping FlutterResult) {
+    internal func getCurrentUser(result: @escaping FlutterResult) {
         Task {
             do {
                 let user = try await passage.getCurrentUser()
@@ -308,20 +275,16 @@ internal class PassageFlutter {
         }
     }
     
-    func signOut(result: @escaping FlutterResult) {
+    internal func signOut(result: @escaping FlutterResult) {
         Task {
             try? await passage.signOut()
             result(nil)
         }
     }
     
-    func addPasskey(arguments: Any?, result: @escaping FlutterResult) {
+    internal func addPasskey(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
-            let error = FlutterError(
-                code: PassageFlutterError.PASSKEYS_NOT_SUPPORTED.rawValue,
-                message: "Only supported in iOS 16 and above",
-                details: nil
-            )
+            let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
             return
         }
@@ -340,13 +303,10 @@ internal class PassageFlutter {
         }
     }
     
-    func deletePasskey(arguments: Any?, result: @escaping FlutterResult) {
+    internal func deletePasskey(arguments: Any?, result: @escaping FlutterResult) {
         guard let deviceId = (arguments as? [String: String])?["passkeyId"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid device id",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -364,21 +324,13 @@ internal class PassageFlutter {
         }
     }
     
-    func editPasskeyName(arguments: Any?, result: @escaping FlutterResult) {
-        guard let passkeyId = (arguments as? [String: String])?["passkeyId"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid device id",
-                details: nil
-            )
-            return
-        }
-        guard let newPasskeyName = (arguments as? [String: String])?["newPasskeyName"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid passkey name",
-                details: nil
-            )
+    internal func editPasskeyName(arguments: Any?, result: @escaping FlutterResult) {
+        guard
+            let passkeyId = (arguments as? [String: String])?["passkeyId"],
+            let newPasskeyName = (arguments as? [String: String])?["newPasskeyName"]
+        else {
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -406,13 +358,10 @@ internal class PassageFlutter {
         }
     }
     
-    func changeEmail(arguments: Any?, result: @escaping FlutterResult) {
+    internal func changeEmail(arguments: Any?, result: @escaping FlutterResult) {
         guard let newEmail = (arguments as? [String: String])?["newEmail"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid email",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -437,13 +386,10 @@ internal class PassageFlutter {
         }
     }
     
-    func changePhone(arguments: Any?, result: @escaping FlutterResult) {
+    internal func changePhone(arguments: Any?, result: @escaping FlutterResult) {
         guard let newPhone = (arguments as? [String: String])?["newPhone"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid phone number",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
             return
         }
         Task {
@@ -474,11 +420,7 @@ extension PassageFlutter {
     
     private func getIdentifier(from arguments: Any?) -> (String?, FlutterError?) {
         guard let identifier = (arguments as? [String: String])?["identifier"] else {
-            let error = FlutterError(
-                code: PassageFlutterError.INVALID_ARGUMENT.rawValue,
-                message: "Invalid identifier.",
-                details: nil
-            )
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             return (nil, error)
         }
         return (identifier, nil)

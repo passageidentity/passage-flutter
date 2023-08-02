@@ -1,30 +1,7 @@
-import 'dart:convert';
-import 'dart:js_util' as js_util;
-import 'package:js/js.dart';
+import 'passage_flutter_model.dart';
+import '../helpers/data_conversion.dart';
 
-@JS('Object.keys')
-external List<String> _getKeysOfObject(jsObject);
-
-// class AllowedFallbackAuth {
-//   static const String LoginCode = 'otp';
-//   static const String MagicLink = 'magic_link';
-//   static const String None = 'none';
-// }
-
-// class Identifier {
-//   static const String Email = 'email';
-//   static const String Phone = 'phone';
-//   static const String Both = 'both';
-// }
-
-// class RequiredIdentifier {
-//   static const String Phone = 'phone';
-//   static const String Email = 'email';
-//   static const String Both = 'both';
-//   static const String Either = 'either';
-// }
-
-class PassageAppInfo {
+class PassageAppInfo implements PassageFlutterModel {
   final String allowedIdentifier;
   final String authFallbackMethod;
   final String authOrigin;
@@ -37,20 +14,6 @@ class PassageAppInfo {
   final int sessionTimeoutLength;
   // TODO: Fix error from Passage JS mapping for user meta data schema
   // final List<PassageAppUserMetadataSchema>? userMetadataSchema;
-
-  // PassageAppInfo({
-  //   required this.allowedIdentifier,
-  //   required this.authFallbackMethod,
-  //   required this.authOrigin,
-  //   required this.id,
-  //   required this.name,
-  //   required this.publicSignup,
-  //   required this.redirectUrl,
-  //   required this.requiredIdentifier,
-  //   required this.requireIdentifierVerification,
-  //   required this.sessionTimeoutLength,
-  //   this.userMetadataSchema,
-  // });
 
   PassageAppInfo.fromMap(Map<String, dynamic> map)
       : allowedIdentifier =
@@ -76,16 +39,11 @@ class PassageAppInfo {
   ;
 
   factory PassageAppInfo.fromJson(String jsonString) {
-    Map<String, dynamic> map = jsonDecode(jsonString);
-    return PassageAppInfo.fromMap(map);
+    return fromJson(jsonString, PassageAppInfo.fromMap);
   }
 
   factory PassageAppInfo.fromJSObject(jsObject) {
-    final Map<String, dynamic> resultMap = Map.fromIterable(
-      _getKeysOfObject(jsObject),
-      value: (key) => js_util.getProperty(jsObject, key),
-    );
-    return PassageAppInfo.fromMap(resultMap);
+    return fromJSObject(jsObject, PassageAppInfo.fromMap);
   }
 }
 
@@ -96,15 +54,6 @@ class PassageAppUserMetadataSchema {
   final bool profile;
   final bool registration;
   final String type;
-
-  PassageAppUserMetadataSchema({
-    required this.fieldName,
-    required this.friendlyName,
-    required this.id,
-    required this.profile,
-    required this.registration,
-    required this.type,
-  });
 
   PassageAppUserMetadataSchema.fromMap(Map<String, dynamic> map)
       : fieldName = map['fieldName'],

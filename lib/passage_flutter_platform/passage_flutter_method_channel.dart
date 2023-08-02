@@ -1,16 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
-import 'package:passage_flutter/app_info.dart';
-import 'package:passage_flutter/user_info.dart';
 
+import '/passage_flutter_models/auth_result.dart';
+import '/passage_flutter_models/passage_app_info.dart';
+import '/passage_flutter_models/passage_user.dart';
+import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform_interface.dart';
-import 'auth_result.dart';
 
 /// An implementation of [PassageFlutterPlatform] that uses method channels.
 class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   /// The method channel used to interact with the native platform.
   @visibleForTesting
   final methodChannel = const MethodChannel('passage_flutter');
+
+  // PASSKEY AUTH METHODS
 
   @override
   Future<AuthResult> register(String identifier) async {
@@ -24,6 +27,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     final jsonString = await methodChannel.invokeMethod<String>('login');
     return AuthResult.fromJson(jsonString!);
   }
+
+  // OTP METHODS
 
   @override
   Future<String> newRegisterOneTimePasscode(String identifier) async {
@@ -45,6 +50,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
         'activateOneTimePasscode', {'otp': otp, 'otpId': otpId});
     return AuthResult.fromJson(jsonString!);
   }
+
+  // MAGIC LINK METHODS
 
   @override
   Future<String> newRegisterMagicLink(String identifier) async {
@@ -74,6 +81,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     return AuthResult.fromJson(jsonString!);
   }
 
+  // TOKEN METHODS
+
   @override
   Future<String?> getAuthToken() async {
     final authToken = await methodChannel.invokeMethod<String?>('getAuthToken');
@@ -95,21 +104,25 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
+  Future<void> signOut() async {
+    return await methodChannel.invokeMethod('signOut');
+  }
+
+  // APP METHODS
+
+  @override
   Future<PassageAppInfo?> getAppInfo() async {
     final jsonString = await methodChannel.invokeMethod<String>('getAppInfo');
     return PassageAppInfo.fromJson(jsonString!);
   }
+
+  // USER METHODS
 
   @override
   Future<PassageUser?> getCurrentUser() async {
     final jsonString =
         await methodChannel.invokeMethod<String>('getCurrentUser');
     return PassageUser.fromJson(jsonString!);
-  }
-
-  @override
-  Future<void> signOut() async {
-    return await methodChannel.invokeMethod('signOut');
   }
 
   @override

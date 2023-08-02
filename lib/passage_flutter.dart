@@ -1,9 +1,12 @@
-import 'passage_flutter_platform_interface.dart';
-import 'auth_result.dart';
-import 'package:passage_flutter/app_info.dart';
-import 'package:passage_flutter/user_info.dart';
+import 'passage_flutter_models/auth_result.dart';
+import 'passage_flutter_models/passage_app_info.dart';
+import 'passage_flutter_models/passage_user.dart';
+import 'passage_flutter_models/passkey.dart';
+import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageFlutter {
+  // PASSKEY AUTH METHODS
+
   Future<AuthResult> register(String identifier) {
     return PassageFlutterPlatform.instance.register(identifier);
   }
@@ -15,6 +18,8 @@ class PassageFlutter {
   Future<AuthResult> loginWithIdentifier(String identifier) {
     return PassageFlutterPlatform.instance.loginWithIdentifier(identifier);
   }
+
+  // OTP METHODS
 
   Future<String> newRegisterOneTimePasscode(String identifier) {
     return PassageFlutterPlatform.instance
@@ -28,6 +33,8 @@ class PassageFlutter {
   Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) {
     return PassageFlutterPlatform.instance.oneTimePasscodeActivate(otp, otpId);
   }
+
+  // MAGIC LINK METHODS
 
   Future<String> newRegisterMagicLink(String identifier) {
     return PassageFlutterPlatform.instance.newRegisterMagicLink(identifier);
@@ -45,6 +52,8 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.getMagicLinkStatus(magicLinkId);
   }
 
+  // TOKEN METHODS
+
   Future<String?> getAuthToken() {
     return PassageFlutterPlatform.instance.getAuthToken();
   }
@@ -57,16 +66,20 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.refreshAuthToken();
   }
 
+  Future<void> signOut() {
+    return PassageFlutterPlatform.instance.signOut();
+  }
+
+  // APP METHODS
+
   Future<PassageAppInfo?> getAppInfo() {
     return PassageFlutterPlatform.instance.getAppInfo();
   }
 
+  // USER METHODS
+
   Future<PassageUser?> getCurrentUser() {
     return PassageFlutterPlatform.instance.getCurrentUser();
-  }
-
-  Future<void> signOut() {
-    return PassageFlutterPlatform.instance.signOut();
   }
 
   Future<Passkey> addPasskey() {

@@ -1,9 +1,10 @@
-import 'package:passage_flutter/app_info.dart';
-import 'package:passage_flutter/user_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import '/passage_flutter_models/auth_result.dart';
+import '/passage_flutter_models/passage_app_info.dart';
+import '/passage_flutter_models/passage_user.dart';
+import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_method_channel.dart';
-import 'auth_result.dart';
 
 abstract class PassageFlutterPlatform extends PlatformInterface {
   /// Constructs a PassageFlutterPlatform.
@@ -26,6 +27,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  // PASSKEY AUTH METHODS
+
   Future<AuthResult> register(String identifier) {
     throw UnimplementedError('register() has not been implemented.');
   }
@@ -37,6 +40,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
   Future<AuthResult> loginWithIdentifier(String identifier) {
     throw UnimplementedError('loginWithIdentifier() only supported on web.');
   }
+
+  // OTP METHODS
 
   Future<String> newRegisterOneTimePasscode(String identifier) {
     throw UnimplementedError(
@@ -52,6 +57,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError(
         'oneTimePasscodeActivate() has not been implemented.');
   }
+
+  // MAGIC LINK METHODS
 
   Future<String> newRegisterMagicLink(String identifier) {
     throw UnimplementedError(
@@ -70,6 +77,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('getMagicLinkStatus() has not been implemented.');
   }
 
+  // TOKEN METHODS
+
   Future<String?> getAuthToken() {
     throw UnimplementedError('getAuthToken() has not been implemented.');
   }
@@ -82,16 +91,20 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('refreshAuthToken() has not been implemented.');
   }
 
+  Future<void> signOut() {
+    throw UnimplementedError('signOut() has not been implemented.');
+  }
+
+  // APP METHODS
+
   Future<PassageAppInfo?> getAppInfo() {
     throw UnimplementedError('getAppInfo() has not been implemented.');
   }
 
+  // USER METHODS
+
   Future<PassageUser?> getCurrentUser() {
     throw UnimplementedError('getCurrentUser() has not been implemented.');
-  }
-
-  Future<void> signOut() {
-    throw UnimplementedError('signOut() has not been implemented.');
   }
 
   Future<Passkey> addPasskey() {
