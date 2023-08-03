@@ -33,12 +33,26 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
     when (call.method) {
-        "register" -> {
-          passageFlutter.register(call, result)
-        }
-        "login" -> {
-          passageFlutter.login(call, result)
-        }
+        "register" -> passageFlutter.register(call, result)
+        "login" -> passageFlutter.login(result)
+        "newRegisterOneTimePasscode" -> passageFlutter.newRegisterOneTimePasscode(call, result)
+        "newLoginOneTimePasscode" -> passageFlutter.newLoginOneTimePasscode(call, result)
+        "oneTimePasscodeActivate" -> passageFlutter.oneTimePasscodeActivate(call, result)
+        "newRegisterMagicLink" -> passageFlutter.newRegisterMagicLink(call, result)
+        "newLoginMagicLink" -> passageFlutter.newLoginMagicLink(call, result)
+        "magicLinkActivate" -> passageFlutter.magicLinkActivate(call, result)
+        "getMagicLinkStatus" -> passageFlutter.getMagicLinkStatus(call, result)
+        "getAuthToken" -> passageFlutter.getAuthToken(result)
+        "isAuthTokenValid" -> passageFlutter.isAuthTokenValid(call, result)
+        "refreshAuthToken" -> passageFlutter.refreshAuthToken(result)
+        "getAppInfo" -> passageFlutter.getAppInfo(result)
+        "getCurrentUser" -> passageFlutter.getCurrentUser(result)
+        "signOut" -> passageFlutter.signOut(result)
+        "addPasskey" -> passageFlutter.addPasskey(result)
+        "deletePasskey" -> passageFlutter.deletePasskey(call, result)
+        "editPasskeyName" -> passageFlutter.editPasskeyName(call, result)
+        "changeEmail" -> passageFlutter.changeEmail(call, result)
+        "changePhone" -> passageFlutter.changePhone(call, result)
         else -> {
           result.notImplemented()
         }
