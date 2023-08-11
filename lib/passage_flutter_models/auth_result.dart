@@ -5,7 +5,7 @@ import '/helpers/data_conversion.dart'
 class AuthResult implements PassageFlutterModel {
   final String authToken;
   final String? refreshToken;
-  final String? refreshTokenExpiration;
+  final int? refreshTokenExpiration;
   final String? redirectUrl;
 
   AuthResult.fromMap(Map<String, dynamic> map)

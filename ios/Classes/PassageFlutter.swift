@@ -110,7 +110,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await PassageAuth.oneTimePasscodeActivate(otp: otp, otpId: otpId)
+                let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
                 result(authResult.toJsonString())
             } catch {
                 let error = FlutterError(
@@ -173,7 +173,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await PassageAuth.magicLinkActivate(userMagicLink: userMagicLink)
+                let authResult = try await passage.magicLinkActivate(userMagicLink: userMagicLink)
                 result(authResult.toJsonString())
             } catch {
                 let error = FlutterError(
