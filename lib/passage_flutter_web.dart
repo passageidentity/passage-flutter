@@ -122,11 +122,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<String> refreshAuthToken() async {
-    // TODO: Getting 'Login required' error
     final resultPromise = passage.getCurrentSession().refresh();
-    final String authToken = await js_util.promiseToFuture(resultPromise);
-    print(authToken);
-    return authToken;
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    final authResult = AuthResult.fromJson(jsObject);
+    return authResult.authToken;
   }
 
   @override
