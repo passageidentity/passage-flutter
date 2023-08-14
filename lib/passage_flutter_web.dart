@@ -3,6 +3,7 @@
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 
+import 'dart:convert';
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 import 'package:flutter/foundation.dart' as flutter;
@@ -117,8 +118,22 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<bool> isAuthTokenValid(String authToken) async {
-    // TODO: custom implementation, not available in PassageJS
-    throw UnimplementedError('isAuthTokenValid() has not been implemented.');
+    try {
+      final parts = authToken.split('.');
+      if (parts.length != 3) {
+        return false;
+      }
+      final payload = utf8.decode(base64Url.decode(parts[1]));
+      final Map<String, dynamic> data = jsonDecode(payload);
+      if (data.containsKey('exp')) {
+        final int expirationTime = data['exp'] * 1000;
+        final int currentTime = DateTime.now().millisecondsSinceEpoch;
+        return expirationTime > currentTime;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
