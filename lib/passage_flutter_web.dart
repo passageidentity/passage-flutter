@@ -5,6 +5,7 @@
 
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
+import 'package:flutter/foundation.dart' as flutter;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '/helpers/data_conversion_web.dart';
@@ -148,9 +149,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<PassageUser?> getCurrentUser() async {
-    final resultPromise = passage.getCurrentUser().userInfo();
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return PassageUser.fromJson(jsObject);
+    try {
+      final resultPromise = passage.getCurrentUser().userInfo();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return PassageUser.fromJson(jsObject);
+    } catch (e) {
+      flutter.debugPrint(e.toString());
+      return null;
+    }
   }
 
   @override
