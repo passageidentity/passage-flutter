@@ -47,7 +47,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @override
   Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) async {
     final jsonString = await methodChannel.invokeMethod<String>(
-        'activateOneTimePasscode', {'otp': otp, 'otpId': otpId});
+        'oneTimePasscodeActivate', {'otp': otp, 'otpId': otpId});
     return AuthResult.fromJson(jsonString!);
   }
 
@@ -70,7 +70,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @override
   Future<AuthResult> magicLinkActivate(String magicLink) async {
     final jsonString = await methodChannel
-        .invokeMethod<String>('activateMagicLink', {'magicLink': magicLink});
+        .invokeMethod<String>('magicLinkActivate', {'magicLink': magicLink});
     return AuthResult.fromJson(jsonString!);
   }
 
@@ -122,7 +122,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   Future<PassageUser?> getCurrentUser() async {
     final jsonString =
         await methodChannel.invokeMethod<String>('getCurrentUser');
-    return PassageUser.fromJson(jsonString!);
+    return jsonString == null ? null : PassageUser.fromJson(jsonString);
   }
 
   @override
