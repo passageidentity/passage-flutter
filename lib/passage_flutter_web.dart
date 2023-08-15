@@ -3,8 +3,10 @@
 // package as the core of your plugin.
 // ignore: avoid_web_libraries_in_flutter
 
+import 'dart:convert';
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
+import 'package:flutter/foundation.dart' as flutter;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '/helpers/data_conversion_web.dart';
@@ -116,17 +118,30 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<bool> isAuthTokenValid(String authToken) async {
-    // TODO: custom implementation, not available in PassageJS
-    throw UnimplementedError('isAuthTokenValid() has not been implemented.');
+    try {
+      final parts = authToken.split('.');
+      if (parts.length != 3) {
+        return false;
+      }
+      final payload = utf8.decode(base64Url.decode(parts[1]));
+      final Map<String, dynamic> data = jsonDecode(payload);
+      if (data.containsKey('exp')) {
+        final int expirationTime = data['exp'] * 1000;
+        final int currentTime = DateTime.now().millisecondsSinceEpoch;
+        return expirationTime > currentTime;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
   Future<String> refreshAuthToken() async {
-    // TODO: Getting 'Login required' error
     final resultPromise = passage.getCurrentSession().refresh();
-    final String authToken = await js_util.promiseToFuture(resultPromise);
-    print(authToken);
-    return authToken;
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    final authResult = AuthResult.fromJson(jsObject);
+    return authResult.authToken;
   }
 
   @override
@@ -149,9 +164,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<PassageUser?> getCurrentUser() async {
-    final resultPromise = passage.getCurrentUser().userInfo();
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return PassageUser.fromJson(jsObject);
+    try {
+      final resultPromise = passage.getCurrentUser().userInfo();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return PassageUser.fromJson(jsObject);
+    } catch (e) {
+      flutter.debugPrint(e.toString());
+      return null;
+    }
   }
 
   @override
