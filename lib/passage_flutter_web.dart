@@ -10,8 +10,10 @@ import 'package:flutter/foundation.dart' as flutter;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '/helpers/data_conversion_web.dart';
+import '/helpers/error_handling_web.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/passage_app_info.dart';
+import '/passage_flutter_models/passage_error.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
@@ -32,88 +34,149 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     PassageFlutterPlatform.instance = PassageFlutterWeb();
   }
 
-  // TODO: Map JS errors to PassageFlutter errors
-
   // PASSKEY AUTH METHODS
 
   @override
   Future<AuthResult> register(String identifier) async {
-    final resultPromise = passage.register(identifier);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJson(jsObject);
+    // TODO: Check if passkey auth available. If no, throw error.
+    try {
+      final resultPromise = passage.register(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return AuthResult.fromJson(jsObject);
+    } catch (e) {
+      final error = PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+      if (error.message.contains('error parsing public key for webAuthn')) {
+        throw PassageError(
+            code: PassageErrorCode.USER_CANCELLED, message: error.message);
+      }
+      throw error;
+    }
   }
 
   @override
   Future<AuthResult> loginWithIdentifier(String identifier) async {
-    final resultPromise = passage.login(identifier);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJson(jsObject);
+    try {
+      final resultPromise = passage.login(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return AuthResult.fromJson(jsObject);
+    } catch (e) {
+      final error = PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+      if (error.message.contains('error parsing public key for webAuthn')) {
+        throw PassageError(
+            code: PassageErrorCode.USER_CANCELLED, message: error.message);
+      }
+      throw error;
+    }
   }
 
   // OTP METHODS
 
   @override
   Future<String> newRegisterOneTimePasscode(String identifier) async {
-    final resultPromise = passage.newRegisterOneTimePasscode(identifier);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    final resultMap = jsObjectToMap(jsObject);
-    return resultMap['otp_id'];
+    try {
+      final resultPromise = passage.newRegisterOneTimePasscode(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      final resultMap = jsObjectToMap(jsObject);
+      return resultMap['otp_id'];
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.OTP_ERROR);
+    }
   }
 
   @override
   Future<String> newLoginOneTimePasscode(String identifier) async {
-    final resultPromise = passage.newLoginOneTimePasscode(identifier);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    final resultMap = jsObjectToMap(jsObject);
-    return resultMap['otp_id'];
+    try {
+      final resultPromise = passage.newLoginOneTimePasscode(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      final resultMap = jsObjectToMap(jsObject);
+      return resultMap['otp_id'];
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.OTP_ERROR);
+    }
   }
 
   @override
   Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) async {
-    final resultPromise = passage.oneTimePasscodeActivate(otp, otpId);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJson(jsObject);
+    try {
+      final resultPromise = passage.oneTimePasscodeActivate(otp, otpId);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return AuthResult.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.OTP_ERROR);
+    }
   }
 
   // MAGIC LINK METHODS
 
   @override
   Future<String> newRegisterMagicLink(String identifier) async {
-    final resultPromise = passage.newRegisterMagicLink(identifier);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    final resultMap = jsObjectToMap(jsObject);
-    return resultMap['id'];
+    try {
+      final resultPromise = passage.newRegisterMagicLink(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      final resultMap = jsObjectToMap(jsObject);
+      return resultMap['id'];
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+    }
   }
 
   @override
   Future<String> newLoginMagicLink(String identifier) async {
-    final resultPromise = passage.newLoginMagicLink(identifier);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    final resultMap = jsObjectToMap(jsObject);
-    return resultMap['id'];
+    try {
+      final resultPromise = passage.newLoginMagicLink(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      final resultMap = jsObjectToMap(jsObject);
+      return resultMap['id'];
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+    }
   }
 
   @override
   Future<AuthResult> magicLinkActivate(String magicLink) async {
-    final resultPromise = passage.magicLinkActivate(magicLink);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJson(jsObject);
+    try {
+      final resultPromise = passage.magicLinkActivate(magicLink);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return AuthResult.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+    }
   }
 
   @override
   Future<AuthResult?> getMagicLinkStatus(String magicLinkId) async {
-    final resultPromise = passage.getMagicLinkStatus(magicLinkId);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return AuthResult.fromJson(jsObject);
+    try {
+      final resultPromise = passage.getMagicLinkStatus(magicLinkId);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return AuthResult.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+    }
   }
 
   // TOKEN METHODS
 
   @override
   Future<String?> getAuthToken() async {
-    final resultPromise = passage.getCurrentSession().getAuthToken();
-    final String authToken = await js_util.promiseToFuture(resultPromise);
-    return authToken;
+    try {
+      final resultPromise = passage.getCurrentSession().getAuthToken();
+      final String? authToken = await js_util.promiseToFuture(resultPromise);
+      return authToken;
+    } catch (e) {
+      var error = PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.TOKEN_ERROR);
+      flutter.debugPrint(error.toString());
+      return null;
+    }
   }
 
   @override
@@ -138,26 +201,40 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<String> refreshAuthToken() async {
-    final resultPromise = passage.getCurrentSession().refresh();
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    final authResult = AuthResult.fromJson(jsObject);
-    return authResult.authToken;
+    try {
+      final resultPromise = passage.getCurrentSession().refresh();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      final authResult = AuthResult.fromJson(jsObject);
+      return authResult.authToken;
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.TOKEN_ERROR);
+    }
   }
 
   @override
   Future<void> signOut() async {
-    final resultPromise = passage.getCurrentSession().signOut();
-    await js_util.promiseToFuture(resultPromise);
-    return;
+    try {
+      final resultPromise = passage.getCurrentSession().signOut();
+      await js_util.promiseToFuture(resultPromise);
+      return;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
   }
 
   // APP METHODS
 
   @override
   Future<PassageAppInfo?> getAppInfo() async {
-    final resultPromise = passage.appInfo();
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return PassageAppInfo.fromJson(jsObject);
+    try {
+      final resultPromise = passage.appInfo();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return PassageAppInfo.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.APP_INFO_ERROR);
+    }
   }
 
   // USER METHODS
@@ -169,46 +246,77 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return PassageUser.fromJson(jsObject);
     } catch (e) {
-      flutter.debugPrint(e.toString());
+      var error = PassageError.fromObject(object: e);
+      flutter.debugPrint(error.toString());
       return null;
     }
   }
 
   @override
   Future<Passkey> addPasskey() async {
-    final resultPromise = passage.getCurrentUser().userInfo();
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return Passkey.fromJson(jsObject);
+    try {
+      final resultPromise = passage.getCurrentUser().userInfo();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return Passkey.fromJson(jsObject);
+    } catch (e) {
+      final error = PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+      if (error.message.contains('failed to parse public key')) {
+        throw PassageError(
+            code: PassageErrorCode.USER_CANCELLED, message: error.message);
+      }
+      throw error;
+    }
   }
 
   @override
   Future<void> deletePasskey(String passkeyId) async {
-    final resultPromise = passage.getCurrentUser().deleteDevice(passkeyId);
-    await js_util.promiseToFuture(resultPromise);
-    return;
+    try {
+      final resultPromise = passage.getCurrentUser().deleteDevice(passkeyId);
+      await js_util.promiseToFuture(resultPromise);
+      return;
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+    }
   }
 
   @override
   Future<Passkey> editPasskeyName(
       String passkeyId, String newPasskeyName) async {
-    final objFromMap = js_util.jsify({'friendly_name': newPasskeyName});
-    final resultPromise =
-        passage.getCurrentUser().editDevice(passkeyId, objFromMap);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return Passkey.fromJson(jsObject);
+    try {
+      final objFromMap = js_util.jsify({'friendly_name': newPasskeyName});
+      final resultPromise =
+          passage.getCurrentUser().editDevice(passkeyId, objFromMap);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return Passkey.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+    }
   }
 
   @override
   Future<String> changeEmail(String newEmail) async {
-    final resultPromise = passage.getCurrentUser().changeEmail(newEmail);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return jsObject.id;
+    try {
+      final resultPromise = passage.getCurrentUser().changeEmail(newEmail);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return jsObject.id;
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.CHANGE_EMAIL_ERROR);
+    }
   }
 
   @override
   Future<String> changePhone(String newPhone) async {
-    final resultPromise = passage.getCurrentUser().changePhone(newPhone);
-    final jsObject = await js_util.promiseToFuture(resultPromise);
-    return jsObject.id;
+    try {
+      final resultPromise = passage.getCurrentUser().changePhone(newPhone);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return jsObject.id;
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.CHANGE_EMAIL_ERROR);
+    }
   }
 }

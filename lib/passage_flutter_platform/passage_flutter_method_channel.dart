@@ -23,7 +23,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           .invokeMethod<String>('register', {'identifier': identifier});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -33,7 +33,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
       final jsonString = await methodChannel.invokeMethod<String>('login');
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -46,7 +46,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           'newRegisterOneTimePasscode', {'identifier': identifier});
       return result!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -57,7 +57,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           'newLoginOneTimePasscode', {'identifier': identifier});
       return result!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -68,7 +68,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           'oneTimePasscodeActivate', {'otp': otp, 'otpId': otpId});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -81,7 +81,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           'newRegisterMagicLink', {'identifier': identifier});
       return result!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -92,7 +92,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           'newLoginMagicLink', {'identifier': identifier});
       return result!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -103,7 +103,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           .invokeMethod<String>('magicLinkActivate', {'magicLink': magicLink});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -114,7 +114,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           'getMagicLinkStatus', {'magicLinkId': magicLinkId});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -127,7 +127,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           await methodChannel.invokeMethod<String?>('getAuthToken');
       return authToken;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -138,7 +138,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           .invokeMethod<bool>('isAuthTokenValid', {'authToken': authToken});
       return isValid == true;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -149,7 +149,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           await methodChannel.invokeMethod<String>('refreshAuthToken');
       return newAuthToken!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -158,7 +158,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     try {
       return await methodChannel.invokeMethod('signOut');
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -170,7 +170,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
       final jsonString = await methodChannel.invokeMethod<String>('getAppInfo');
       return PassageAppInfo.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -183,7 +183,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           await methodChannel.invokeMethod<String>('getCurrentUser');
       return jsonString == null ? null : PassageUser.fromJson(jsonString);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -193,7 +193,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
       final jsonString = await methodChannel.invokeMethod<String>('addPasskey');
       return Passkey.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -203,7 +203,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
       return await methodChannel
           .invokeMethod('deletePasskey', {'passkeyId': passkeyId});
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -216,7 +216,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           {'passkeyId': passkeyId, 'newPasskeyName': newPasskeyName});
       return Passkey.fromJson(jsonString!);
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -227,7 +227,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           await methodChannel.invokeMethod<String>('changeEmail');
       return magicLinkId!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -238,7 +238,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           await methodChannel.invokeMethod<String>('changePhone');
       return magicLinkId!;
     } catch (e) {
-      throw PassageError.fromObject(e);
+      throw PassageError.fromObject(object: e);
     }
   }
 }

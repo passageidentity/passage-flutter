@@ -1,4 +1,5 @@
-import 'package:flutter/services.dart';
+import '../helpers/error_handling.dart'
+    if (dart.library.js) '/helpers/error_handling_web.dart';
 
 class PassageError implements Exception {
   final String message;
@@ -11,15 +12,12 @@ class PassageError implements Exception {
     return "PassageError(code: $code, message: $message)";
   }
 
-  factory PassageError.fromObject(Object e) {
-    String code;
-    String? message;
-    if (e is PlatformException) {
-      code = e.code;
-      message = e.message;
-    } else {
-      code = 'UNKNOWN_ERROR';
-    }
-    return PassageError(code: code, message: message ?? e.toString());
+  factory PassageError.fromObject(
+      {required Object object, String? overrideCode}) {
+    final code = overrideCode ?? getErrorCode(object);
+    print('code: $code');
+    final message = getErrorMessage(object);
+    print('message: $message');
+    return PassageError(code: code, message: message);
   }
 }
