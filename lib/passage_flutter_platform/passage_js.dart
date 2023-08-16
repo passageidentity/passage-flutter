@@ -11,6 +11,7 @@ class Passage {
   // PASSKEY AUTH METHODS
   external dynamic register(String identifier);
   external dynamic login(String identifier);
+  external dynamic getCredentialAvailable();
 
   // OTP METHODS
   external dynamic newRegisterOneTimePasscode(String identifier);

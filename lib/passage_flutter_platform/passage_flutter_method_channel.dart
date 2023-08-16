@@ -37,6 +37,13 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     }
   }
 
+  @override
+  Future<bool> deviceSupportsPasskeys() async {
+    final deviceSupportsPasskeys =
+        await methodChannel.invokeMethod<bool>('deviceSupportsPasskeys');
+    return deviceSupportsPasskeys == true;
+  }
+
   // OTP METHODS
 
   @override

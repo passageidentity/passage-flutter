@@ -19,6 +19,10 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.loginWithIdentifier(identifier);
   }
 
+  Future<bool> deviceSupportsPasskeys() {
+    return PassageFlutterPlatform.instance.deviceSupportsPasskeys();
+  }
+
   // OTP METHODS
 
   Future<String> newRegisterOneTimePasscode(String identifier) {

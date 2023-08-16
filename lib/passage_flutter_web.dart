@@ -38,7 +38,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<AuthResult> register(String identifier) async {
-    // TODO: Check if passkey auth available. If no, throw error.
+    final passkeysSupported = await deviceSupportsPasskeys();
+    if (!passkeysSupported) {
+      throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
+    }
     try {
       final resultPromise = passage.register(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
@@ -56,6 +59,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<AuthResult> loginWithIdentifier(String identifier) async {
+    final passkeysSupported = await deviceSupportsPasskeys();
+    if (!passkeysSupported) {
+      throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
+    }
     try {
       final resultPromise = passage.login(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
@@ -68,6 +75,17 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
             code: PassageErrorCode.USER_CANCELLED, message: error.message);
       }
       throw error;
+    }
+  }
+
+  @override
+  Future<bool> deviceSupportsPasskeys() async {
+    try {
+      final resultPromise = passage.getCredentialAvailable();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return jsObject['platform'] == true;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -254,6 +272,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
 
   @override
   Future<Passkey> addPasskey() async {
+    final passkeysSupported = await deviceSupportsPasskeys();
+    if (!passkeysSupported) {
+      throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
+    }
     try {
       final resultPromise = passage.getCurrentUser().userInfo();
       final jsObject = await js_util.promiseToFuture(resultPromise);

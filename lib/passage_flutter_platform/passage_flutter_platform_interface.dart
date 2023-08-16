@@ -41,6 +41,11 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('loginWithIdentifier() only supported on web.');
   }
 
+  Future<bool> deviceSupportsPasskeys() {
+    throw UnimplementedError(
+        'deviceSupportsPasskeys() has not been implemented.');
+  }
+
   // OTP METHODS
 
   Future<String> newRegisterOneTimePasscode(String identifier) {

@@ -57,6 +57,11 @@ internal class PassageFlutter(private val activity: Activity) {
         }
     }
 
+    fun deviceSupportsPasskeys(result: MethodChannel.Result) {
+        val supportsPasskeys = Build.VERSION.SDK_INT > 27
+        result.success(supportsPasskeys)
+      }
+
     // endregion
 
     // region OTP METHODS

@@ -20,6 +20,8 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.register(arguments: call.arguments, result: result)
         case "login":
             passageFlutter.login(result: result)
+        case "deviceSupportsPasskeys":
+            passageFlutter.deviceSupportsPasskeys(result: result)
         case "newRegisterOneTimePasscode":
             passageFlutter.newRegisterOneTimePasscode(arguments: call.arguments, result: result)
         case "newLoginOneTimePasscode":
