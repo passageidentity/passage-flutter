@@ -15,9 +15,7 @@ class PassageError implements Exception {
   factory PassageError.fromObject(
       {required Object object, String? overrideCode}) {
     final code = overrideCode ?? getErrorCode(object);
-    print('code: $code');
     final message = getErrorMessage(object);
-    print('message: $message');
     return PassageError(code: code, message: message);
   }
 }
