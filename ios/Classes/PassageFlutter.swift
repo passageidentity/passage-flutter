@@ -58,6 +58,14 @@ internal class PassageFlutter {
         }
     }
     
+    internal func deviceSupportsPasskeys(result: @escaping FlutterResult) {
+        if #available(iOS 16.0, *) {
+            result(true)
+        } else {
+            result(false)
+        }
+    }
+    
     internal func newRegisterOneTimePasscode(arguments: Any?, result: @escaping FlutterResult) {
         let (identifier, error) = getIdentifier(from: arguments)
         guard let identifier else {
