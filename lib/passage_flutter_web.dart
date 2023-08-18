@@ -83,7 +83,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     try {
       final resultPromise = passage.getCredentialAvailable();
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject['platform'] == true;
+      return jsObject.platform == true;
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
@@ -277,7 +277,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
     }
     try {
-      final resultPromise = passage.getCurrentUser().userInfo();
+      final resultPromise = passage.getCurrentUser().addDevice();
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return Passkey.fromJson(jsObject);
     } catch (e) {
