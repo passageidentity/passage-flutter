@@ -1,10 +1,12 @@
 package id.passage.passage_flutter
 
 import android.app.Activity
+import android.os.Build
 import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.LoginWithPasskeyCancellationException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 import io.flutter.plugin.common.MethodCall
@@ -47,7 +49,7 @@ internal class PassageFlutter(private val activity: Activity) {
                 result.success(jsonString)
             } catch (e: Exception) {
                 val error = when (e) {
-                    is RegisterWithPasskeyCancellationException -> {
+                    is LoginWithPasskeyCancellationException -> {
                         PassageFlutterError.USER_CANCELLED
                     }
                     else -> PassageFlutterError.PASSKEY_ERROR
@@ -215,8 +217,12 @@ internal class PassageFlutter(private val activity: Activity) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 val user = passage.getCurrentUser()
-                val jsonString = Gson().toJson(user)
-                result.success(jsonString)
+                if (user == null) {
+                    result.success(null)
+                } else {
+                    val jsonString = Gson().toJson(user)
+                    result.success(jsonString)
+                }
             } catch (e: Exception) {
                 result.success(null)
             }
