@@ -1,6 +1,6 @@
 import 'dart:js';
 
-import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
+import '/passage_flutter_models/passage_error_code.dart';
 
 String getErrorCode(dynamic error) {
   String? code;
