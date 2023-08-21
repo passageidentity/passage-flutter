@@ -6,7 +6,7 @@ import '/helpers/data_conversion.dart'
 
 class PassageAppInfo implements PassageFlutterModel {
   final String allowedIdentifier;
-  final String authFallbackMethod;
+  final PassageAuthFallbackMethod authFallbackMethod;
   final String authOrigin;
   final String id;
   final String name;
@@ -20,8 +20,7 @@ class PassageAppInfo implements PassageFlutterModel {
   PassageAppInfo.fromMap(Map<String, dynamic> map)
       : allowedIdentifier =
             map['allowedIdentifier'] ?? map['allowed_identifier'],
-        authFallbackMethod =
-            map['authFallbackMethod'] ?? map['auth_fallback_method'],
+        authFallbackMethod = getAuthFallbackMethod(map),
         authOrigin = map['authOrigin'] ?? map['auth_origin'],
         id = map['id'],
         name = map['name'],
@@ -50,6 +49,21 @@ class PassageAppInfo implements PassageFlutterModel {
             : PassageAppUserMetadataSchema.fromMap(item))
         .toList();
   }
+
+  static PassageAuthFallbackMethod getAuthFallbackMethod(
+      Map<String, dynamic> map) {
+    String? authFallbackMethod =
+        map['authFallbackMethod'] ?? map['auth_fallback_method'];
+    switch (authFallbackMethod) {
+      case 'magicLink':
+      case 'magic_link':
+        return PassageAuthFallbackMethod.magicLink;
+      case 'otp':
+        return PassageAuthFallbackMethod.otp;
+      default:
+        return PassageAuthFallbackMethod.none;
+    }
+  }
 }
 
 class PassageAppUserMetadataSchema implements PassageFlutterModel {
@@ -71,4 +85,10 @@ class PassageAppUserMetadataSchema implements PassageFlutterModel {
   factory PassageAppUserMetadataSchema.fromJson(jsonString) {
     return fromJson(jsonString, PassageAppUserMetadataSchema.fromMap);
   }
+}
+
+enum PassageAuthFallbackMethod {
+  otp,
+  magicLink,
+  none,
 }
