@@ -1,10 +1,12 @@
 import 'package:flutter/services.dart';
 
+import '/passage_flutter_models/passage_error_code.dart';
+
 String getErrorCode(dynamic error) {
   if (error is PlatformException) {
     return error.code;
   }
-  return 'UNKNOWN';
+  return PassageErrorCode.unknkown;
 }
 
 @override

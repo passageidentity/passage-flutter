@@ -5,12 +5,12 @@ import 'package:js/js.dart';
 
 @JS('Passage')
 class Passage {
-  external Passage(String appId);
+  external factory Passage(String appId);
 
   // PASSKEY AUTH METHODS
   external dynamic register(String identifier);
   external dynamic login(String identifier);
-  external dynamic getCredentialAvailable();
+  external IGetCredentialFeatures getCredentialAvailable();
 
   // OTP METHODS
   external dynamic newRegisterOneTimePasscode(String identifier);
@@ -24,11 +24,33 @@ class Passage {
   external dynamic getMagicLinkStatus(String magicLinkId);
 
   // TOKEN METHODS
-  external dynamic getCurrentSession();
+  external Session getCurrentSession();
 
   // APP METHODS
   external dynamic appInfo();
 
   // USER METHODS
-  external dynamic getCurrentUser();
+  external User getCurrentUser();
+}
+
+@JS()
+class User {
+  external dynamic userInfo();
+  external dynamic addDevice();
+  external dynamic deleteDevice(String passkeyId);
+  external dynamic editDevice(String passkeyId, dynamic obj);
+  external dynamic changeEmail(String newEmail);
+  external dynamic changePhone(String newPhone);
+}
+
+@JS()
+class Session {
+  external dynamic getAuthToken();
+  external dynamic refresh();
+  external dynamic signOut();
+}
+
+@JS()
+class IGetCredentialFeatures {
+  external bool platform;
 }

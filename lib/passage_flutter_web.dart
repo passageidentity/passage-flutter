@@ -10,10 +10,10 @@ import 'package:flutter/foundation.dart' as flutter;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '/helpers/data_conversion_web.dart';
-import '/helpers/error_handling_web.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_error.dart';
+import './passage_flutter_models/passage_error_code.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
@@ -40,7 +40,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<AuthResult> register(String identifier) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
-      throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
+      throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
       final resultPromise = passage.register(identifier);
@@ -48,10 +48,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return AuthResult.fromJson(jsObject);
     } catch (e) {
       final error = PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+          object: e, overrideCode: PassageErrorCode.passkeyError);
       if (error.message.contains('error parsing public key for webAuthn')) {
         throw PassageError(
-            code: PassageErrorCode.USER_CANCELLED, message: error.message);
+            code: PassageErrorCode.userCancelled, message: error.message);
       }
       throw error;
     }
@@ -61,7 +61,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<AuthResult> loginWithIdentifier(String identifier) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
-      throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
+      throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
       final resultPromise = passage.login(identifier);
@@ -69,10 +69,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return AuthResult.fromJson(jsObject);
     } catch (e) {
       final error = PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+          object: e, overrideCode: PassageErrorCode.passkeyError);
       if (error.message.contains('error parsing public key for webAuthn')) {
         throw PassageError(
-            code: PassageErrorCode.USER_CANCELLED, message: error.message);
+            code: PassageErrorCode.userCancelled, message: error.message);
       }
       throw error;
     }
@@ -100,7 +100,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return resultMap['otp_id'];
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.OTP_ERROR);
+          object: e, overrideCode: PassageErrorCode.otpError);
     }
   }
 
@@ -113,7 +113,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return resultMap['otp_id'];
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.OTP_ERROR);
+          object: e, overrideCode: PassageErrorCode.otpError);
     }
   }
 
@@ -125,7 +125,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return AuthResult.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.OTP_ERROR);
+          object: e, overrideCode: PassageErrorCode.otpError);
     }
   }
 
@@ -140,7 +140,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return resultMap['id'];
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+          object: e, overrideCode: PassageErrorCode.magicLinkError);
     }
   }
 
@@ -153,7 +153,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return resultMap['id'];
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+          object: e, overrideCode: PassageErrorCode.magicLinkError);
     }
   }
 
@@ -165,7 +165,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return AuthResult.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+          object: e, overrideCode: PassageErrorCode.magicLinkError);
     }
   }
 
@@ -177,7 +177,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return AuthResult.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.MAGIC_LINK_ERROR);
+          object: e, overrideCode: PassageErrorCode.magicLinkError);
     }
   }
 
@@ -191,7 +191,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return authToken;
     } catch (e) {
       var error = PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.TOKEN_ERROR);
+          object: e, overrideCode: PassageErrorCode.tokenError);
       flutter.debugPrint(error.toString());
       return null;
     }
@@ -226,7 +226,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return authResult.authToken;
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.TOKEN_ERROR);
+          object: e, overrideCode: PassageErrorCode.tokenError);
     }
   }
 
@@ -251,7 +251,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return PassageAppInfo.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.APP_INFO_ERROR);
+          object: e, overrideCode: PassageErrorCode.appInfoError);
     }
   }
 
@@ -274,7 +274,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<Passkey> addPasskey() async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
-      throw PassageError(code: PassageErrorCode.PASSKEYS_NOT_SUPPORTED);
+      throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
       final resultPromise = passage.getCurrentUser().addDevice();
@@ -282,10 +282,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return Passkey.fromJson(jsObject);
     } catch (e) {
       final error = PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+          object: e, overrideCode: PassageErrorCode.passkeyError);
       if (error.message.contains('failed to parse public key')) {
         throw PassageError(
-            code: PassageErrorCode.USER_CANCELLED, message: error.message);
+            code: PassageErrorCode.userCancelled, message: error.message);
       }
       throw error;
     }
@@ -299,7 +299,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return;
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+          object: e, overrideCode: PassageErrorCode.passkeyError);
     }
   }
 
@@ -314,7 +314,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return Passkey.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.PASSKEY_ERROR);
+          object: e, overrideCode: PassageErrorCode.passkeyError);
     }
   }
 
@@ -326,7 +326,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return jsObject.id;
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.CHANGE_EMAIL_ERROR);
+          object: e, overrideCode: PassageErrorCode.changeEmailError);
     }
   }
 
@@ -338,7 +338,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       return jsObject.id;
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.CHANGE_EMAIL_ERROR);
+          object: e, overrideCode: PassageErrorCode.changeEmailError);
     }
   }
 }
