@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import './../../config.dart';
+
 class URLError implements Exception {
   final String reason;
   URLError(this.reason);
@@ -151,7 +153,6 @@ class MessageCode {
 class MailosaurAPIClient {
   static const serverId = 'ncor7c1m';
   final String apiURL = 'https://mailosaur.com/api/messages';
-  final String mailosaurAPIKey = 'PLACEHOLDER';
 
   String get authHeader {
     final apiKey = base64Encode(utf8.encode('api:$mailosaurAPIKey'));
@@ -161,7 +162,6 @@ class MailosaurAPIClient {
   Future<String> getMostRecentMagicLink() async {
     try {
       final messages = await listMessages();
-      print('messages: $messages');
       if (messages.isEmpty) return '';
       final message = await getMessage(id: messages[0].id);
       final incomingURL = message.html.links[0].href;
