@@ -14,7 +14,10 @@ import 'mailosaur_client.dart';
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  PassageFlutter passage = PassageFlutter();
+  final passage = PassageFlutter();
+
+  const existingUserIdentifier =
+      'authentigator+1692746578703@${MailosaurAPIClient.serverId}.mailosaur.net';
 
   setUp(() {
     return Future(() async {
@@ -48,20 +51,43 @@ void main() {
     expect(userIsNull, false);
   });
 
+  test('If existing user user, user can login using OTP flow', () async {
+    final otpId = await passage.newLoginOneTimePasscode(existingUserIdentifier);
+    await Future.delayed(const Duration(seconds: 3), () {});
+    final otp = await MailosaurAPIClient().getMostRecentOneTimePasscode();
+    await passage.oneTimePasscodeActivate(otp, otpId);
+    final user = await passage.getCurrentUser();
+    final userIsNull = user == null;
+    expect(userIsNull, false);
+  });
+
   // TODO: Passage app ID is set statically, and single app only allows otp OR Magic link - not both.
   // So we'll need to change that in the native SDKs, Flutter SDK, and THEN we
   // can run both kinds of tests.
+  /*
+  test('If new user, user can register using Magic Link flow', () async {
+    final date = DateTime.now().millisecondsSinceEpoch;
+    final identifier =
+        'authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net';
+    await passage.newRegisterMagicLink(identifier);
+    await Future.delayed(const Duration(seconds: 3), () {});
+    final magicLink = await MailosaurAPIClient().getMostRecentMagicLink();
+    await passage.magicLinkActivate(magicLink);
+    final user = await passage.getCurrentUser();
+    final userIsNull = user == null;
+    expect(userIsNull, false);
+  });
 
-  // test('If new user, user can register using Magic Link flow', () async {
-  //   final date = DateTime.now().millisecondsSinceEpoch;
-  //   final identifier =
-  //       'authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net';
-  //   await passage.newRegisterMagicLink(identifier);
-  //   await Future.delayed(const Duration(seconds: 3), () {});
-  //   final magicLink = await MailosaurAPIClient().getMostRecentMagicLink();
-  //   await passage.magicLinkActivate(magicLink);
-  //   final user = await passage.getCurrentUser();
-  //   final userIsNull = user == null;
-  //   expect(userIsNull, false);
-  // });
+  test('If existing user, user can login using Magic Link flow', () async {;
+    await passage.newLoginMagicLink(existingUserIdentifier);
+    await Future.delayed(const Duration(seconds: 3), () {});
+    final magicLink = await MailosaurAPIClient().getMostRecentMagicLink();
+    await passage.magicLinkActivate(magicLink);
+    final user = await passage.getCurrentUser();
+    final userIsNull = user == null;
+    expect(userIsNull, false);
+  });
+  */
+
+  // SESSION TESTS
 }
