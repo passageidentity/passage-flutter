@@ -15,8 +15,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _token = 'Waiting for auth event...';
-  final _passageFlutterPlugin = PassageFlutter();
+  String _content = '';
+  final _passage = PassageFlutter();
 
   @override
   void initState() {
@@ -24,19 +24,15 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
   }
 
-  // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> initPlatformState() async {
-    String token;
-    // Platform messages may fail, so we use a try/catch PlatformException.
-    // We also handle the message potentially returning null.
+    String content;
     try {
-      final authResult = await _passageFlutterPlugin
-          .login("ricky.padilla+webexample@passage.id");
-      token = authResult?.authToken ?? 'Problem getting token';
-    } on Exception catch (e) {
-      // Anything else that is an exception
-      print('$e');
-      token = 'Problem getting token';
+      // ---------------------------------------------------
+      // Use this space as a dev playground for Passage SDK.
+      // ---------------------------------------------------
+      content = 'Running integration tests...';
+    } catch (e) {
+      content = '';
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -45,7 +41,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _token = token;
+      _content = content;
     });
   }
 
@@ -58,7 +54,7 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: const Color(0xff3D53F6),
         ),
         body: Center(
-          child: Text('Auth token: $_token\n'),
+          child: Text('Content: $_content\n'),
         ),
       ),
     );

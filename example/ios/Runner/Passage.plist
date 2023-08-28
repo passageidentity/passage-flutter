@@ -3,8 +3,10 @@
 <plist version="1.0">
     <dict>
         <key>appId</key>
-        <string>KZ520QJSiFRLvbBvraaAgYuf</string>
+        <string>ppTbOK8XavG2WnhJzpAfn2SD</string>
         <key>authOrigin</key>
-        <string>try.passage.id</string>
+        <string>try-uat.passage.dev</string>
+        <key>apiUrl</key>
+        <string>https://auth-uat.passage.dev</string>
     </dict>
 </plist>

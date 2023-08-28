@@ -174,7 +174,7 @@ internal class PassageFlutter {
     }
     
     internal func magicLinkActivate(arguments: Any?, result: @escaping FlutterResult) {
-        guard let userMagicLink = (arguments as? [String: String])?["userMagicLink"] else {
+        guard let userMagicLink = (arguments as? [String: String])?["magicLink"] else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
