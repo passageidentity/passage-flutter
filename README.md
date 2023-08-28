@@ -1,15 +1,34 @@
-# passage_flutter
+<img src="https://storage.googleapis.com/passage-docs/Lockup%20Vertical%20color.png" alt="Passage logo" style="width:250px;"/>
 
-A new Flutter plugin project.
+### Native passkey authentication for your Flutter app
+## Welcome!
+Integrating passkey technology can be really hard. That's why we built the Passage Flutter SDK - to make passkey authentication easy for you and your users - across native iOS, native Android, and web.
 
-## Getting Started
+<img width="1069" alt="Passage Flutter" src="https://storage.googleapis.com/passage-docs/passage-flutter.png">
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+<br>
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Installation
 
+```sh
+flutter pub add passage_flutter
+```
+<br>
+
+## Example Usage
+
+```dart
+import 'package:passage_flutter/passage_flutter.dart';
+
+final passage = PassageFlutter();
+
+// Register a new user with a passkey
+await passage.registerWithPasskey('name@email.com');
+
+// Get authenticated user info
+final user = await passage.getCurrentUser();
+```
+<br>
+
+## Documentation
+To get started using Passage in your Flutter app, please visit our [Passage Docs](https://docs.passage.id/mobile/cross-platform/flutter).
