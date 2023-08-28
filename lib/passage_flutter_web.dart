@@ -47,13 +47,8 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
-      final error = PassageError.fromObject(
+      throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.passkeyError);
-      if (error.message.contains('error parsing public key for webAuthn')) {
-        throw PassageError(
-            code: PassageErrorCode.userCancelled, message: error.message);
-      }
-      throw error;
     }
   }
 
@@ -68,13 +63,8 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
-      final error = PassageError.fromObject(
+      throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.passkeyError);
-      if (error.message.contains('error parsing public key for webAuthn')) {
-        throw PassageError(
-            code: PassageErrorCode.userCancelled, message: error.message);
-      }
-      throw error;
     }
   }
 
