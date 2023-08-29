@@ -28,6 +28,8 @@ await passage.registerWithPasskey('name@email.com');
 // Get authenticated user info
 final user = await passage.getCurrentUser();
 ```
+
+To see a full example, check out our [Flutter Example App](https://github.com/passageidentity/example-flutter).
 <br>
 
 ## Documentation
