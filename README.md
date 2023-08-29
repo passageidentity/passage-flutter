@@ -1,5 +1,7 @@
 <img src="https://storage.googleapis.com/passage-docs/Lockup%20Vertical%20color.png" alt="Passage logo" style="width:250px;"/>
 
+[![Pub](https://img.shields.io/pub/v/passage_flutter.svg)](https://pub.dartlang.org/packages/passage_flutter)
+
 ### Native passkey authentication for your Flutter app
 ## Welcome!
 Integrating passkey technology can be really hard. That's why we built the Passage Flutter SDK - to make passkey authentication easy for you and your users - across native iOS, native Android, and web.
