@@ -14,6 +14,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('passage_flutter');
 
+  @override
+  Future<void> initWithAppId(String appId) async {
+    await methodChannel.invokeMethod('initWithAppId', {'appId': appId});
+  }
+
   // PASSKEY AUTH METHODS
 
   @override

@@ -3,7 +3,15 @@ import Passage
 
 internal class PassageFlutter {
     
-    private let passage = PassageAuth()
+    private let passage: PassageAuth
+    
+    internal init() {
+        passage = PassageAuth()
+    }
+    
+    internal init(appId: String) {
+        passage = PassageAuth(appId: appId)
+    }
     
     internal func register(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {

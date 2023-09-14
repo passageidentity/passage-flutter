@@ -27,6 +27,10 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  Future<void> initWithAppId(String appId) async {
+    throw UnimplementedError('initWithAppId() has not been implemented.');
+  }
+
   // PASSKEY AUTH METHODS
 
   Future<AuthResult> register(String identifier) {
