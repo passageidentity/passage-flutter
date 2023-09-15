@@ -24,14 +24,22 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   /// Constructs a PassageFlutterWeb
   PassageFlutterWeb();
 
-  final passage = Passage(getPassageAppId());
+  late final passage = _getPassageApp();
 
-  static String getPassageAppId() {
-    return js.context['passageAppId'];
+  String? _passageAppId;
+
+  Passage _getPassageApp() {
+    final appId = _passageAppId ?? js.context['passageAppId'];
+    return Passage(appId);
   }
 
   static void registerWith(Registrar registrar) {
     PassageFlutterPlatform.instance = PassageFlutterWeb();
+  }
+
+  @override
+  Future<void> initWithAppId(String appId) async {
+    _passageAppId = appId;
   }
 
   // PASSKEY AUTH METHODS
