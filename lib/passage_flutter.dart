@@ -5,6 +5,12 @@ import 'passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageFlutter {
+  PassageFlutter([String? appId]) {
+    if (appId != null) {
+      PassageFlutterPlatform.instance.initWithAppId(appId);
+    }
+  }
+
   // PASSKEY AUTH METHODS
 
   /// Attempts to create and register a new user with a passkey.

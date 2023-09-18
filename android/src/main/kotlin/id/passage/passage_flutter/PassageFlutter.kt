@@ -15,9 +15,19 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal class PassageFlutter(private val activity: Activity) {
+internal class PassageFlutter(private val activity: Activity, appId: String? = null) {
 
-    private val passage = Passage(activity)
+    private val passage: Passage = Passage(activity, appId)
+
+    internal companion object {
+        internal fun invalidArgumentError(result: MethodChannel.Result) {
+            result.error(
+                PassageFlutterError.INVALID_ARGUMENT.name,
+                "Invalid or missing argument",
+                null
+            )
+        }
+    }
 
     // region PASSKEY METHODS
 
@@ -346,11 +356,4 @@ internal class PassageFlutter(private val activity: Activity) {
 
     // endregion
 
-    private fun invalidArgumentError(result: MethodChannel.Result) {
-        result.error(
-            PassageFlutterError.INVALID_ARGUMENT.name,
-            "Invalid or missing argument",
-            null
-        )
-    }
 }

@@ -3,7 +3,7 @@ import UIKit
 
 public class PassageFlutterPlugin: NSObject, FlutterPlugin {
     
-    private let passageFlutter = PassageFlutter()
+    private var passageFlutter: PassageFlutter?
     
     public static func register(with registrar: FlutterPluginRegistrar) {
         let channel = FlutterMethodChannel(
@@ -15,7 +15,20 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
     }
 
     public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        if passageFlutter == nil {
+            if
+                call.method == "initWithAppId",
+                let appId = (call.arguments as? [String: String])?["appId"]
+            {
+                passageFlutter = PassageFlutter(appId: appId)
+            } else {
+                passageFlutter = PassageFlutter()
+            }
+        }
+        guard let passageFlutter else { return }
+        
         switch call.method {
+        case "initWithAppId": ()
         case "register":
             passageFlutter.register(arguments: call.arguments, result: result)
         case "login":

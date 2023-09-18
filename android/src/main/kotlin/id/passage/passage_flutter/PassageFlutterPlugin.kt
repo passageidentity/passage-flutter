@@ -3,6 +3,7 @@ package id.passage.passage_flutter
 import android.app.Activity
 import android.content.Context
 import androidx.annotation.NonNull
+import id.passage.passage_flutter.PassageFlutter.Companion.invalidArgumentError
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -23,7 +24,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   private lateinit var context: Context
   private lateinit var activity: Activity
-  private lateinit var passageFlutter: PassageFlutter
+  private var passageFlutter: PassageFlutter? = null
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
     channel = MethodChannel(flutterPluginBinding.binaryMessenger, "passage_flutter")
@@ -32,32 +33,42 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
-    when (call.method) {
-        "register" -> passageFlutter.register(call, result)
-        "login" -> passageFlutter.login(result)
-        "deviceSupportsPasskeys" -> passageFlutter.deviceSupportsPasskeys(result)
-        "newRegisterOneTimePasscode" -> passageFlutter.newRegisterOneTimePasscode(call, result)
-        "newLoginOneTimePasscode" -> passageFlutter.newLoginOneTimePasscode(call, result)
-        "oneTimePasscodeActivate" -> passageFlutter.oneTimePasscodeActivate(call, result)
-        "newRegisterMagicLink" -> passageFlutter.newRegisterMagicLink(call, result)
-        "newLoginMagicLink" -> passageFlutter.newLoginMagicLink(call, result)
-        "magicLinkActivate" -> passageFlutter.magicLinkActivate(call, result)
-        "getMagicLinkStatus" -> passageFlutter.getMagicLinkStatus(call, result)
-        "getAuthToken" -> passageFlutter.getAuthToken(result)
-        "isAuthTokenValid" -> passageFlutter.isAuthTokenValid(call, result)
-        "refreshAuthToken" -> passageFlutter.refreshAuthToken(result)
-        "getAppInfo" -> passageFlutter.getAppInfo(result)
-        "getCurrentUser" -> passageFlutter.getCurrentUser(result)
-        "signOut" -> passageFlutter.signOut(result)
-        "addPasskey" -> passageFlutter.addPasskey(result)
-        "deletePasskey" -> passageFlutter.deletePasskey(call, result)
-        "editPasskeyName" -> passageFlutter.editPasskeyName(call, result)
-        "changeEmail" -> passageFlutter.changeEmail(call, result)
-        "changePhone" -> passageFlutter.changePhone(call, result)
-        else -> {
-          result.notImplemented()
-        }
-    }
+      if (passageFlutter == null) {
+          passageFlutter = if (call.method == "initWithAppId") {
+              val appId = call.argument<String>("appId") ?: return invalidArgumentError(result)
+              PassageFlutter(activity, appId)
+          } else {
+              PassageFlutter(activity)
+          }
+      }
+
+      when (call.method) {
+          "initWithAppId" -> {}
+          "register" -> passageFlutter?.register(call, result)
+          "login" -> passageFlutter?.login(result)
+          "deviceSupportsPasskeys" -> passageFlutter?.deviceSupportsPasskeys(result)
+          "newRegisterOneTimePasscode" -> passageFlutter?.newRegisterOneTimePasscode(call, result)
+          "newLoginOneTimePasscode" -> passageFlutter?.newLoginOneTimePasscode(call, result)
+          "oneTimePasscodeActivate" -> passageFlutter?.oneTimePasscodeActivate(call, result)
+          "newRegisterMagicLink" -> passageFlutter?.newRegisterMagicLink(call, result)
+          "newLoginMagicLink" -> passageFlutter?.newLoginMagicLink(call, result)
+          "magicLinkActivate" -> passageFlutter?.magicLinkActivate(call, result)
+          "getMagicLinkStatus" -> passageFlutter?.getMagicLinkStatus(call, result)
+          "getAuthToken" -> passageFlutter?.getAuthToken(result)
+          "isAuthTokenValid" -> passageFlutter?.isAuthTokenValid(call, result)
+          "refreshAuthToken" -> passageFlutter?.refreshAuthToken(result)
+          "getAppInfo" -> passageFlutter?.getAppInfo(result)
+          "getCurrentUser" -> passageFlutter?.getCurrentUser(result)
+          "signOut" -> passageFlutter?.signOut(result)
+          "addPasskey" -> passageFlutter?.addPasskey(result)
+          "deletePasskey" -> passageFlutter?.deletePasskey(call, result)
+          "editPasskeyName" -> passageFlutter?.editPasskeyName(call, result)
+          "changeEmail" -> passageFlutter?.changeEmail(call, result)
+          "changePhone" -> passageFlutter?.changePhone(call, result)
+          else -> {
+              result.notImplemented()
+          }
+      }
   }
 
   override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
@@ -66,7 +77,6 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onAttachedToActivity(binding: ActivityPluginBinding) {
     activity = binding.activity
-    passageFlutter = PassageFlutter((activity))
   }
 
   override fun onDetachedFromActivityForConfigChanges() {
