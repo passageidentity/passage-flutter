@@ -23,7 +23,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final _passage = PassageFlutter();
+  final _passage = PassageFlutter('YOUR_PASSAGE_APP_ID');
   final _controller = TextEditingController();
   bool _isNewUser = false;
 
