@@ -22,7 +22,7 @@ flutter pub add passage_flutter
 ```dart
 import 'package:passage_flutter/passage_flutter.dart';
 
-final passage = PassageFlutter();
+final passage = PassageFlutter('YOUR_PASSAGE_APP_ID');
 
 // Register a new user with a passkey
 await passage.registerWithPasskey('name@email.com');
