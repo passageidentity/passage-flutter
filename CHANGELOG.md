@@ -1,3 +1,7 @@
+## 0.3.0
+
+This release adds passkey support for devices running Android 14.
+
 ## 0.2.0
 
 This release includes changes to make app configuration easier.
