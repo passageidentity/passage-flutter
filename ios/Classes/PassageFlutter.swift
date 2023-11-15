@@ -27,7 +27,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.registerWithPasskey(identifier: identifier)
-                result(authResult.toJsonString())
+                result(convertToJsonString(codable: authResult))
             } catch PassageASAuthorizationError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
@@ -51,7 +51,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.loginWithPasskey()
-                result(authResult.toJsonString())
+                result(convertToJsonString(codable: authResult))
             } catch PassageASAuthorizationError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
@@ -127,7 +127,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
-                result(authResult.toJsonString())
+                result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.OTP_ERROR.rawValue,
@@ -190,7 +190,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.magicLinkActivate(userMagicLink: userMagicLink)
-                result(authResult.toJsonString())
+                result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.MAGIC_LINK_ERROR.rawValue,
@@ -211,7 +211,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.getMagicLinkStatus(id: magicLinkId)
-                result(authResult.toJsonString())
+                result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.MAGIC_LINK_ERROR.rawValue,
@@ -266,7 +266,7 @@ internal class PassageFlutter {
                     result(error)
                     return
                 }
-                result(appInfo.toJsonString())
+                result(convertToJsonString(codable: appInfo))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.APP_INFO_ERROR.rawValue,
@@ -284,7 +284,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let user = try await passage.getCurrentUser()
-                result(user?.toJsonString())
+                result(convertToJsonString(codable: user))
             } catch {
                 result(nil)
             }
@@ -307,7 +307,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let device = try await passage.addDevice()
-                result(device.toJsonString())
+                result(convertToJsonString(codable: device))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.PASSKEY_ERROR.rawValue,
@@ -362,7 +362,7 @@ internal class PassageFlutter {
                     result(error)
                     return
                 }
-                result(deviceInfo.toJsonString())
+                result(convertToJsonString(codable: deviceInfo))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.PASSKEY_ERROR.rawValue,
@@ -430,6 +430,27 @@ internal class PassageFlutter {
         }
     }
     
+    internal func identifierExists(arguments: Any?, result: @escaping FlutterResult) {
+        let (identifier, error) = getIdentifier(from: arguments)
+        guard let identifier else {
+            result(error)
+            return
+        }
+        Task {
+            do {
+                let user = try await PassageAuth.getUser(identifier: identifier)
+                result(convertToJsonString(codable: user))
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.IDENTIFIER_EXISTS_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
 }
 
 extension PassageFlutter {
@@ -440,6 +461,17 @@ extension PassageFlutter {
             return (nil, error)
         }
         return (identifier, nil)
+    }
+    
+    private func convertToJsonString(codable: Codable?) -> String? {
+        let encoder = JSONEncoder()
+        guard let codable,
+              let jsonData = try? encoder.encode(codable),
+              let jsonString = String(data: jsonData, encoding: .utf8)
+        else {
+            return nil
+        }
+        return jsonString
     }
     
 }

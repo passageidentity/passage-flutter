@@ -12,14 +12,14 @@ class PassageUser implements PassageFlutterModel {
   final bool emailVerified;
   final String? phone;
   final bool phoneVerified;
-  final String createdAt;
+  final String? createdAt;
   final String? updatedAt;
   final String? lastLoginAt;
-  final int loginCount;
+  final int? loginCount;
   final dynamic userMetadata;
   final bool webauthn;
-  final List<dynamic> webauthnDevices;
-  final List<String> webauthnTypes;
+  final List<dynamic>? webauthnDevices;
+  final List<String>? webauthnTypes;
 
   PassageUser.fromMap(Map<String, dynamic> map)
       : id = map['id'],
@@ -34,11 +34,11 @@ class PassageUser implements PassageFlutterModel {
         loginCount = map['loginCount'] ?? map['login_count'],
         userMetadata = map['userMetadata'] ?? map['user_metadata'],
         webauthn = map['webauthn'],
-        webauthnDevices =
-            (map['webauthnDevices'] ?? map['webauthn_devices'] as List<dynamic>)
-                .map((item) =>
-                    kIsWeb ? Passkey.fromJson(item) : Passkey.fromMap(item))
-                .toList(),
+        webauthnDevices = ((map['webauthnDevices'] ?? map['webauthn_devices'])
+                as List<dynamic>?)
+            ?.map((item) =>
+                kIsWeb ? Passkey.fromJson(item) : Passkey.fromMap(item))
+            .toList(),
         webauthnTypes =
             List<String>.from(map['webauthnTypes'] ?? map['webauthn_types']);
 
