@@ -58,6 +58,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "isAuthTokenValid" -> passageFlutter?.isAuthTokenValid(call, result)
           "refreshAuthToken" -> passageFlutter?.refreshAuthToken(result)
           "getAppInfo" -> passageFlutter?.getAppInfo(result)
+          "identifierExists" -> passageFlutter?.identifierExists(call, result)
           "getCurrentUser" -> passageFlutter?.getCurrentUser(result)
           "signOut" -> passageFlutter?.signOut(result)
           "addPasskey" -> passageFlutter?.addPasskey(result)

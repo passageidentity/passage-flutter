@@ -7,6 +7,7 @@ import id.passage.android.Passage
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
+import id.passage.android.exceptions.PassageUserException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 import io.flutter.plugin.common.MethodCall
@@ -212,6 +213,20 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
             try {
                 val appInfo = passage.appInfo() ?: throw AppInfoException("Error getting app info")
                 val jsonString = Gson().toJson(appInfo)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                result.error(PassageFlutterError.APP_INFO_ERROR.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun identifierExists(call: MethodCall, result: MethodChannel.Result) {
+        val identifier = call.argument<String>("identifier")
+            ?: return invalidArgumentError(result)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.identifierExists(identifier) ?: throw PassageUserException("Error getting user info")
+                val jsonString = Gson().toJson(user)
                 result.success(jsonString)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.APP_INFO_ERROR.name, e.message, e.toString())
