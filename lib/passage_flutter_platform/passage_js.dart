@@ -28,6 +28,7 @@ class Passage {
 
   // APP METHODS
   external dynamic appInfo();
+  external dynamic identifierExists(String identifier);
 
   // USER METHODS
   external User getCurrentUser();
