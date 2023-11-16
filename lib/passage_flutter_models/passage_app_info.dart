@@ -6,6 +6,7 @@ import '/helpers/data_conversion.dart'
 
 class PassageAppInfo implements PassageFlutterModel {
   final String allowedIdentifier;
+  @Deprecated('Check the authMethods property for the full list of supported authentication methods and their configurations.')
   final PassageAuthFallbackMethod authFallbackMethod;
   final String authOrigin;
   final String id;
@@ -16,6 +17,7 @@ class PassageAppInfo implements PassageFlutterModel {
   final bool requireIdentifierVerification;
   final int sessionTimeoutLength;
   final List<PassageAppUserMetadataSchema>? userMetadataSchema;
+  final AuthMethods authMethods;
 
   PassageAppInfo.fromMap(Map<String, dynamic> map)
       : allowedIdentifier =
@@ -33,7 +35,9 @@ class PassageAppInfo implements PassageFlutterModel {
         sessionTimeoutLength =
             map['sessionTimeoutLength'] ?? map['session_timeout_length'],
         userMetadataSchema = getMetadataSchema(map['userMetadataSchema'] ??
-            map['user_metadata_schema'] as List<dynamic>);
+            map['user_metadata_schema'] as List<dynamic>),
+        authMethods = getAuthMethods(map['authMethods'] ??
+            map['auth_methods']);
 
   factory PassageAppInfo.fromJson(jsonString) {
     return fromJson(jsonString, PassageAppInfo.fromMap);
@@ -64,6 +68,13 @@ class PassageAppInfo implements PassageFlutterModel {
         return PassageAuthFallbackMethod.none;
     }
   }
+
+  static AuthMethods getAuthMethods(
+      Map<String, dynamic> map) {
+    return kIsWeb
+        ? AuthMethods.fromJson(map)
+        : AuthMethods.fromMap(map);
+  }
 }
 
 class PassageAppUserMetadataSchema implements PassageFlutterModel {
@@ -91,4 +102,79 @@ enum PassageAuthFallbackMethod {
   otp,
   magicLink,
   none,
+}
+
+class AuthMethods implements PassageFlutterModel {
+  final EmailAndSMSAuthMethod? magicLink;
+  final EmailAndSMSAuthMethod? otp;
+  final PasskeyAuthMethod? passkeys;
+
+  AuthMethods.fromMap(Map<String, dynamic> map)
+      : magicLink = getEmailAndSMSAuthMethod(map['magicLink'] ?? map['magic_link']),
+        otp = getEmailAndSMSAuthMethod(map['otp']),
+        passkeys = getPasskeyAuthMethod(map['passkeys']);
+
+  factory AuthMethods.fromJson(jsonString) {
+    return fromJson(jsonString, AuthMethods.fromMap);
+  }
+
+  static EmailAndSMSAuthMethod getEmailAndSMSAuthMethod(
+      Map<String, dynamic> map) {
+      return kIsWeb
+            ? EmailAndSMSAuthMethod.fromJson(map)
+            : EmailAndSMSAuthMethod.fromMap(map);
+  }
+
+  static PasskeyAuthMethod getPasskeyAuthMethod(
+      Map<String, dynamic> map) {
+      return kIsWeb
+            ? PasskeyAuthMethod.fromJson(map)
+            : PasskeyAuthMethod.fromMap(map);
+  }
+
+}
+
+class EmailAndSMSAuthMethod implements PassageFlutterModel {
+  final int ttl;
+  final DisplayUnit ttlDisplayUnit;
+
+  EmailAndSMSAuthMethod.fromMap(Map<String, dynamic> map)
+      : ttl = map['ttl'],
+        ttlDisplayUnit = getTtlDisplayUnit(map);
+
+  factory EmailAndSMSAuthMethod.fromJson(jsonString) {
+    return fromJson(jsonString, EmailAndSMSAuthMethod.fromMap);
+  }
+
+  static DisplayUnit getTtlDisplayUnit(
+      Map<String, dynamic> map) {
+    String? ttlDisplayUnit =
+        map['ttlDisplayUnit'] ?? map['ttl_display_unit'];
+    switch (ttlDisplayUnit) {
+      case 's':
+        return DisplayUnit.s;
+      case 'm':
+        return DisplayUnit.m;
+      case 'h':
+        return DisplayUnit.h;
+      case 'd':
+        return DisplayUnit.d;
+      default:
+        return DisplayUnit.s;
+    }
+  }
+}
+
+class PasskeyAuthMethod implements PassageFlutterModel {
+  factory PasskeyAuthMethod.fromJson(jsonString){
+    return fromJson(jsonString, PasskeyAuthMethod.fromMap);
+  }
+  PasskeyAuthMethod.fromMap(Map<String, dynamic> map);
+}
+
+enum DisplayUnit {
+  s,
+  m,
+  h,
+  d,
 }
