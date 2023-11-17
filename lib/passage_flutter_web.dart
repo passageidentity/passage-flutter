@@ -253,6 +253,18 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     }
   }
 
+  @override
+  Future<PassageUser?> identifierExists(String identifier) async {
+    try {
+      final resultPromise = passage.identifierExists(identifier);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return jsObject != null ? PassageUser.fromJson(jsObject) : null;
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.identifierExistsError);
+    }
+  }
+
   // USER METHODS
 
   @override

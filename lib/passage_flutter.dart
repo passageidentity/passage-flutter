@@ -239,6 +239,10 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.getAppInfo();
   }
 
+  Future<PassageUser?> identifierExists(String identifier) {
+    return PassageFlutterPlatform.instance.identifierExists(identifier);
+  }
+
   // USER METHODS
 
   /// Returns the user information for the currently authenticated user.

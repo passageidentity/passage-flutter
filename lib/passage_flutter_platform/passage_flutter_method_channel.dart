@@ -186,6 +186,17 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     }
   }
 
+  @override
+  Future<PassageUser?> identifierExists(String identifier) async {
+    try {
+      final jsonString = await methodChannel
+          .invokeMethod<String>('identifierExists', {'identifier': identifier});
+      return jsonString == null ? null : PassageUser.fromJson(jsonString);
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
   // USER METHODS
 
   @override

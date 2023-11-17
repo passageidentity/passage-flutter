@@ -10,5 +10,6 @@ class PassageErrorCode {
   static const appInfoError = 'APP_INFO_ERROR';
   static const changeEmailError = 'CHANGE_EMAIL_ERROR';
   static const changePhoneError = 'CHANGE_PHONE_ERROR';
+  static const identifierExistsError = 'IDENTIFIER_EXISTS_ERROR';
   static const unknkown = 'UNKNOWN';
 }

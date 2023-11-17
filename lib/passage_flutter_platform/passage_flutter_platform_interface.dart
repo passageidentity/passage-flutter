@@ -110,6 +110,10 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('getAppInfo() has not been implemented.');
   }
 
+  Future<PassageUser?> identifierExists(String identifier) {
+    throw UnimplementedError('identifierExists() has not been implemented.');
+  }
+
   // USER METHODS
 
   Future<PassageUser?> getCurrentUser() {

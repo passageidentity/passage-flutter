@@ -71,6 +71,8 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.changeEmail(arguments: call.arguments, result: result)
         case "changePhone":
             passageFlutter.changePhone(arguments: call.arguments, result: result)
+        case "identifierExists":
+            passageFlutter.identifierExists(arguments: call.arguments, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
