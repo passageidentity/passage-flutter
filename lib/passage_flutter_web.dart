@@ -258,7 +258,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     try {
       final resultPromise = passage.identifierExists(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return PassageUser.fromJson(jsObject);
+      return jsObject != null ? PassageUser.fromJson(jsObject) : null;
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.identifierExistsError);

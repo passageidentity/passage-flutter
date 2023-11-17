@@ -437,17 +437,8 @@ internal class PassageFlutter {
             return
         }
         Task {
-            do {
-                let user = try await PassageAuth.getUser(identifier: identifier)
-                result(convertToJsonString(codable: user))
-            } catch {
-                let error = FlutterError(
-                    code: PassageFlutterError.IDENTIFIER_EXISTS_ERROR.rawValue,
-                    message: error.localizedDescription,
-                    details: nil
-                )
-                result(error)
-            }
+            let user = try? await PassageAuth.getUser(identifier: identifier)
+            result(convertToJsonString(codable: user))
         }
     }
     

@@ -225,8 +225,8 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
             ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.identifierExists(identifier) ?: throw PassageUserException("Error getting user info")
-                val jsonString = Gson().toJson(user)
+                val user = passage.identifierExists(identifier)
+                val jsonString = if (user== null) null else Gson().toJson(user)
                 result.success(jsonString)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.APP_INFO_ERROR.name, e.message, e.toString())
