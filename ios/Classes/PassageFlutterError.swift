@@ -13,6 +13,7 @@ internal enum PassageFlutterError: String {
     case CHANGE_EMAIL_ERROR
     case CHANGE_PHONE_ERROR
     case IDENTIFIER_EXISTS_ERROR
+    case OTP_ACTIVATION_EXCEEDED_ATTEMPTS
     
     var defaultMessage: String {
         switch self {

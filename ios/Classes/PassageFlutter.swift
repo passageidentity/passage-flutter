@@ -129,8 +129,12 @@ internal class PassageFlutter {
                 let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
                 result(convertToJsonString(codable: authResult))
             } catch {
+                var errorCode = PassageFlutterError.OTP_ERROR.rawValue
+                if case PassageOTPError.exceededAttempts = error {
+                    errorCode = PassageFlutterError.OTP_ACTIVATION_EXCEEDED_ATTEMPTS.rawValue
+                }
                 let error = FlutterError(
-                    code: PassageFlutterError.OTP_ERROR.rawValue,
+                    code: errorCode,
                     message: error.localizedDescription,
                     details: nil
                 )
