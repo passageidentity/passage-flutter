@@ -11,5 +11,7 @@ class PassageErrorCode {
   static const changeEmailError = 'CHANGE_EMAIL_ERROR';
   static const changePhoneError = 'CHANGE_PHONE_ERROR';
   static const identifierExistsError = 'IDENTIFIER_EXISTS_ERROR';
+  static const otpActivationExceededAttempts =
+      'OTP_ACTIVATION_EXCEEDED_ATTEMPTS';
   static const unknkown = 'UNKNOWN';
 }

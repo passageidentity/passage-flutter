@@ -122,8 +122,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
-      throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.otpError);
+      final overrideCode = e.toString().contains('exceeded number of attempts')
+          ? PassageErrorCode.otpActivationExceededAttempts
+          : PassageErrorCode.otpError;
+      throw PassageError.fromObject(object: e, overrideCode: overrideCode);
     }
   }
 

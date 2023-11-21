@@ -7,6 +7,7 @@ import id.passage.android.Passage
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
+import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
 import id.passage.android.exceptions.PassageUserException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
@@ -115,6 +116,12 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                 val authResult = passage.oneTimePasscodeActivate(otp, otpId)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
+            } catch (e: OneTimePasscodeActivateExceededAttemptsException) {
+                result.error(
+                    PassageFlutterError.OTP_ACTIVATION_EXCEEDED_ATTEMPTS.name,
+                    e.message,
+                    e.toString()
+                )
             } catch (e: Exception) {
                 result.error(PassageFlutterError.OTP_ERROR.name, e.message, e.toString())
             }
@@ -229,7 +236,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                 val jsonString = if (user== null) null else Gson().toJson(user)
                 result.success(jsonString)
             } catch (e: Exception) {
-                result.error(PassageFlutterError.APP_INFO_ERROR.name, e.message, e.toString())
+                result.error(PassageFlutterError.IDENTIFIER_EXISTS_ERROR.name, e.message, e.toString())
             }
         }
     }
