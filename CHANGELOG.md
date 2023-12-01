@@ -1,3 +1,7 @@
+## 0.5.0
+
+This release release deprecates `PassageAppInfo.authFallbackMethod` in favor of `PassageAppInfo.authMethods` and fixes an issue with token validation for web apps.
+
 ## 0.4.0
 
 This release adds `identifierExists` method.
