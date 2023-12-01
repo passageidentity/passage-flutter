@@ -113,7 +113,6 @@ class AuthMethods implements PassageFlutterModel {
         passkeys = map['passkeys'] == null ? null : {};
 
   factory AuthMethods.fromJson(jsonString) {
-    print('jsonString: $jsonString');
     return fromJson(jsonString, AuthMethods.fromMap);
   }
 
