@@ -174,7 +174,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     try {
       final resultPromise = passage.getMagicLinkStatus(magicLinkId);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return AuthResult.fromJson(jsObject);
+      return jsObject == null ? null : AuthResult.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.magicLinkError);
@@ -204,7 +204,12 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       if (parts.length != 3) {
         return false;
       }
-      final payload = utf8.decode(base64Url.decode(parts[1]));
+      String encodedPayload = parts[1];
+      int requiredPadding = 4 - encodedPayload.length % 4;
+      if (requiredPadding < 4) {
+        encodedPayload += '=' * requiredPadding;
+      }
+      final payload = utf8.decode(base64Url.decode(encodedPayload));
       final Map<String, dynamic> data = jsonDecode(payload);
       if (data.containsKey('exp')) {
         final int expirationTime = data['exp'] * 1000;
@@ -248,7 +253,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     try {
       final resultPromise = passage.appInfo();
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return PassageAppInfo.fromJson(jsObject);
+      return jsObject == null ? null : PassageAppInfo.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.appInfoError);

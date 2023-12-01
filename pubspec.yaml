@@ -1,6 +1,6 @@
 name: passage_flutter
 description: Native passkey authentication for your Flutter app
-version: 0.4.0
+version: 0.5.0
 homepage: https://github.com/passageidentity/passage-flutter
 
 environment:
