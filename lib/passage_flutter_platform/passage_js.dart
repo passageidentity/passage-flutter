@@ -23,6 +23,10 @@ class Passage {
   external dynamic magicLinkActivate(String magicLink);
   external dynamic getMagicLinkStatus(String magicLinkId);
 
+  // SOCIAL AUTH METHODS
+  external dynamic authorizeWith(String connection);
+  external dynamic finishSocialAuthentication(String code);
+
   // TOKEN METHODS
   external Session getCurrentSession();
 
