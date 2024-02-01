@@ -200,6 +200,10 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.finishSocialAuthentication(code);
   }
 
+  Future<AuthResult> authorizeIOSWith(PassageSocialConnection connection) {
+    return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
+  }
+
   // TOKEN METHODS
 
   /// Returns the auth token for the currently authenticated user.

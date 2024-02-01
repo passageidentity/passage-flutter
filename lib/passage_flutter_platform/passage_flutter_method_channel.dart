@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
+import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_error.dart';
@@ -128,6 +129,24 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
+  }
+
+  // SOCIAL AUTH METHODS
+
+  @override
+  Future<void> authorizeWith(PassageSocialConnection connection) async {
+    try {} catch (e) {}
+  }
+
+  @override
+  Future<AuthResult> finishSocialAuthentication(String code) async {
+    try {} catch (e) {}
+  }
+
+  @override
+  Future<AuthResult> authorizeIOSWith(
+      PassageSocialConnection connection) async {
+    try {} catch (e) {}
   }
 
   // TOKEN METHODS
