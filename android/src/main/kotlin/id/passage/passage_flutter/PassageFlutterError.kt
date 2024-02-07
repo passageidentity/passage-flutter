@@ -13,4 +13,5 @@ internal enum class PassageFlutterError {
     CHANGE_PHONE_ERROR,
     IDENTIFIER_EXISTS_ERROR,
     OTP_ACTIVATION_EXCEEDED_ATTEMPTS,
+    SOCIAL_AUTH_ERROR,
 }
