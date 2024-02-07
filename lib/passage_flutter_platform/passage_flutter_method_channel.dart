@@ -1,5 +1,7 @@
+import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
 
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
@@ -135,18 +137,50 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
 
   @override
   Future<void> authorizeWith(PassageSocialConnection connection) async {
-    try {} catch (e) {}
+    if (Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.socialAuthError,
+          message: 'Not supported on iOS. Use authorizeIOSWith instead.');
+    }
+    try {
+      return await methodChannel.invokeMethod<void>(
+          'authorizeWith', {'connection': connection.value});
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
   }
 
   @override
   Future<AuthResult> finishSocialAuthentication(String code) async {
-    try {} catch (e) {}
+    if (Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.socialAuthError,
+          message: 'Not supported on iOS. Use authorizeIOSWith instead.');
+    }
+    try {
+      final jsonString = await methodChannel
+          .invokeMethod<String>('finishSocialAuthentication', {'code': code});
+      return AuthResult.fromJson(jsonString!);
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
   }
 
   @override
   Future<AuthResult> authorizeIOSWith(
       PassageSocialConnection connection) async {
-    try {} catch (e) {}
+    if (!Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.socialAuthError,
+          message: 'Only supported on iOS. Use authorizeWith instead.');
+    }
+    try {
+      final jsonString = await methodChannel.invokeMethod<String>(
+          'authorizeWith', {'connection': connection.value});
+      return AuthResult.fromJson(jsonString!);
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
   }
 
   // TOKEN METHODS
