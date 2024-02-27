@@ -3,6 +3,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_user.dart';
+import '/passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_method_channel.dart';
 
@@ -84,6 +85,21 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
     throw UnimplementedError('getMagicLinkStatus() has not been implemented.');
+  }
+
+  // SOCIAL AUTH METHODS
+
+  Future<void> authorizeWith(PassageSocialConnection connection) {
+    throw UnimplementedError('authorizeWith() has not been implemented.');
+  }
+
+  Future<AuthResult> finishSocialAuthentication(String code) {
+    throw UnimplementedError(
+        'finishSocialAuthentication() has not been implemented.');
+  }
+
+  Future<AuthResult> authorizeIOSWith(PassageSocialConnection connection) {
+    throw UnimplementedError('authorizeIOSWith() has not been implemented.');
   }
 
   // TOKEN METHODS

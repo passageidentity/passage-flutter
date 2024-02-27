@@ -16,6 +16,7 @@ import '/passage_flutter_models/passage_error.dart';
 import './passage_flutter_models/passage_error_code.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passkey.dart';
+import 'passage_flutter_models/passage_social_connection.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 import 'passage_flutter_platform/passage_js.dart';
 
@@ -178,6 +179,32 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.magicLinkError);
+    }
+  }
+
+  // SOCIAL AUTH METHODS
+
+  @override
+  Future<void> authorizeWith(PassageSocialConnection connection) async {
+    try {
+      final resultPromise = passage.authorizeWith(connection.value);
+      await js_util.promiseToFuture(resultPromise);
+      return;
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.socialAuthError);
+    }
+  }
+
+  @override
+  Future<AuthResult> finishSocialAuthentication(String code) async {
+    try {
+      final resultPromise = passage.finishSocialAuthentication(code);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return AuthResult.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+          object: e, overrideCode: PassageErrorCode.socialAuthError);
     }
   }
 

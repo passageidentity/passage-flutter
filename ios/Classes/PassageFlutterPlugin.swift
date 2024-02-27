@@ -49,6 +49,8 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.magicLinkActivate(arguments: call.arguments, result: result)
         case "getMagicLinkStatus":
             passageFlutter.getMagicLinkStatus(arguments: call.arguments, result: result)
+        case "authorizeWith":
+            passageFlutter.authorizeWith(arguments: call.arguments, result: result)
         case "getAuthToken":
             passageFlutter.getAuthToken(result: result)
         case "isAuthTokenValid":

@@ -8,6 +8,7 @@ internal enum PassageFlutterError: String {
     case USER_UNAUTHORIZED
     case OTP_ERROR
     case MAGIC_LINK_ERROR
+    case SOCIAL_AUTH_ERROR
     case TOKEN_ERROR
     case APP_INFO_ERROR
     case CHANGE_EMAIL_ERROR

@@ -227,6 +227,46 @@ internal class PassageFlutter {
         }
     }
     
+    // MARK: - Social Methods
+    internal func authorizeWith(arguments: Any?, result: @escaping FlutterResult) {
+        guard let connection = (arguments as? [String: String])?["connection"] else {
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
+            return
+        }
+        Task {
+            do {
+                guard let safeConnection = PassageSocialConnection(rawValue: connection) else {
+                    let error = FlutterError(
+                        code: PassageFlutterError.SOCIAL_AUTH_ERROR.rawValue,
+                        message: "Invalid connection.",
+                        details: nil
+                    )
+                    result(error)
+                    return
+                }
+                guard let window = await UIApplication.shared.delegate?.window ?? nil else {
+                    let error = FlutterError(
+                        code: PassageFlutterError.SOCIAL_AUTH_ERROR.rawValue,
+                        message: "Could not access app window.",
+                        details: nil
+                    )
+                    result(error)
+                    return
+                }
+                let authResult = try await passage.authorize(with: safeConnection, in: window)
+                result(convertToJsonString(codable: authResult))
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.SOCIAL_AUTH_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+    
     // MARK: - Token Methods
         
     internal func getAuthToken(result: @escaping FlutterResult) {

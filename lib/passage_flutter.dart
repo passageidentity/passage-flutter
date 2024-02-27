@@ -1,5 +1,6 @@
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_models/passage_app_info.dart';
+import 'passage_flutter_models/passage_social_connection.dart';
 import 'passage_flutter_models/passage_user.dart';
 import 'passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
@@ -188,6 +189,19 @@ class PassageFlutter {
   ///  `PassageError`
   Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
     return PassageFlutterPlatform.instance.getMagicLinkStatus(magicLinkId);
+  }
+
+  // SOCIAL AUTH METHODS
+  Future<void> authorizeWith(PassageSocialConnection connection) {
+    return PassageFlutterPlatform.instance.authorizeWith(connection);
+  }
+
+  Future<AuthResult> finishSocialAuthentication(String code) {
+    return PassageFlutterPlatform.instance.finishSocialAuthentication(code);
+  }
+
+  Future<AuthResult> authorizeIOSWith(PassageSocialConnection connection) {
+    return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
   }
 
   // TOKEN METHODS

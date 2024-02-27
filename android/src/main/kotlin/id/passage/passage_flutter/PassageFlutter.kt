@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Build
 import com.google.gson.Gson
 import id.passage.android.Passage
+import id.passage.android.PassageSocialConnection
 import id.passage.android.PassageToken
 import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
@@ -182,6 +183,32 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                 result.success(jsonString)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.MAGIC_LINK_ERROR.name, e.message, e.toString())
+            }
+        }
+    }
+
+    // endregion
+
+    // region SOCIAL METHODS
+    fun authorizeWith(call: MethodCall, result: MethodChannel.Result) {
+        val connection = call.argument<String>("connection")
+            ?: return invalidArgumentError(result)
+        val validConnection = PassageSocialConnection.values().firstOrNull { it.value == connection }
+            ?: return result.error(PassageFlutterError.SOCIAL_AUTH_ERROR.name, "Invalid connection type", null)
+        passage.authorizeWith(validConnection)
+        result.success(null)
+    }
+
+    fun finishSocialAuthentication(call: MethodCall, result: MethodChannel.Result) {
+        val authCode = call.argument<String>("code")
+            ?: return invalidArgumentError(result)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val authResult = passage.finishSocialAuthentication(authCode)
+                val jsonString = Gson().toJson(authResult)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                result.error(PassageFlutterError.SOCIAL_AUTH_ERROR.name, e.message, e.toString())
             }
         }
     }

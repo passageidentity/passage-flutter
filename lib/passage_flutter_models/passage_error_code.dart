@@ -6,6 +6,7 @@ class PassageErrorCode {
   static const userUnauthorized = 'USER_UNAUTHORIZED';
   static const otpError = 'OTP_ERROR';
   static const magicLinkError = 'MAGIC_LINK_ERROR';
+  static const socialAuthError = 'SOCIAL_AUTH_ERROR';
   static const tokenError = 'TOKEN_ERROR';
   static const appInfoError = 'APP_INFO_ERROR';
   static const changeEmailError = 'CHANGE_EMAIL_ERROR';
