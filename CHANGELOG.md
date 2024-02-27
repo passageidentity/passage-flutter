@@ -1,3 +1,28 @@
+## 0.6.0
+
+### What's new
+
+Users can now log in to a Passage app using Social Login.
+Upon successful login using passage.authorizeWith, Passage Flutter will save the user's tokens to device.
+
+### Example code
+```dart
+const connection = PassageSocialConnection.github
+
+// Web and Android
+// Step 1: Send user to Social Login page
+passage.authorizeWith(connection);
+// Step 2: When Social Login page redirects to your app, extract the auth code to finish login
+final uri = Uri.parse(YOUR_REDIRECT_URI);
+final code = uri.queryParameters['code'];
+final authResult = await passage.finishSocialAuthentication(code);
+
+// iOS
+// iOS handles the process in a single step.
+final authResult = await passage.authorizeIOSWith(connection);
+```
+
+
 ## 0.5.0
 
 This release release deprecates `PassageAppInfo.authFallbackMethod` in favor of `PassageAppInfo.authMethods` and fixes an issue with token validation for web apps.
