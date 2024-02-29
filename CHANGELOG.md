@@ -1,3 +1,7 @@
+## 0.6.1
+
+Update Passage Android dependency.
+
 ## 0.6.0
 
 ### What's new
