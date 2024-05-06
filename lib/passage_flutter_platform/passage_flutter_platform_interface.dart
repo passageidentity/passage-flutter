@@ -34,16 +34,12 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // PASSKEY AUTH METHODS
 
-  Future<AuthResult> register(String identifier) {
-    throw UnimplementedError('register() has not been implemented.');
+  Future<AuthResult> registerWithPasskey(String identifier) {
+    throw UnimplementedError('registerWithPasskey() has not been implemented.');
   }
 
-  Future<AuthResult> login() {
-    throw UnimplementedError('login() only supported on Android and iOS.');
-  }
-
-  Future<AuthResult> loginWithIdentifier(String identifier) {
-    throw UnimplementedError('loginWithIdentifier() only supported on web.');
+  Future<AuthResult> loginWithPasskey(String? identifier) {
+    throw UnimplementedError('loginWithPasskey() as not been implemented.');
   }
 
   Future<bool> deviceSupportsPasskeys() {

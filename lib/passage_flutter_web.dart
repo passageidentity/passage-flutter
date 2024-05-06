@@ -46,7 +46,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // PASSKEY AUTH METHODS
 
   @override
-  Future<AuthResult> register(String identifier) async {
+  Future<AuthResult> registerWithPasskey(String identifier) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
@@ -62,13 +62,13 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult> loginWithIdentifier(String identifier) async {
+  Future<AuthResult> loginWithPasskey(String? identifier) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
-      final resultPromise = passage.login(identifier);
+      final resultPromise = passage.login(identifier ?? '');
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {

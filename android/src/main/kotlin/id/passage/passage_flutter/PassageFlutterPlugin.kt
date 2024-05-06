@@ -44,8 +44,8 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
       when (call.method) {
           "initWithAppId" -> {}
-          "register" -> passageFlutter?.register(call, result)
-          "login" -> passageFlutter?.login(result)
+          "registerWithPasskey" -> passageFlutter?.registerWithPasskey(call, result)
+          "loginWithPasskey" -> passageFlutter?.loginWithPasskey(call, result)
           "deviceSupportsPasskeys" -> passageFlutter?.deviceSupportsPasskeys(result)
           "newRegisterOneTimePasscode" -> passageFlutter?.newRegisterOneTimePasscode(call, result)
           "newLoginOneTimePasscode" -> passageFlutter?.newLoginOneTimePasscode(call, result)

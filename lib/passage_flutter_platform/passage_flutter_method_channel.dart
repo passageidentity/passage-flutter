@@ -25,10 +25,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // PASSKEY AUTH METHODS
 
   @override
-  Future<AuthResult> register(String identifier) async {
+  Future<AuthResult> registerWithPasskey(String identifier) async {
     try {
-      final jsonString = await methodChannel
-          .invokeMethod<String>('register', {'identifier': identifier});
+      final jsonString = await methodChannel.invokeMethod<String>(
+          'registerWithPasskey', {'identifier': identifier});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -36,9 +36,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult> login() async {
+  Future<AuthResult> loginWithPasskey(String? identifier) async {
     try {
-      final jsonString = await methodChannel.invokeMethod<String>('login');
+      final jsonString = await methodChannel
+          .invokeMethod<String>('loginWithPasskey', {'identifier': identifier});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
       throw PassageError.fromObject(object: e);

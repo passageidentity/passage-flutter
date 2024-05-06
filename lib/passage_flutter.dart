@@ -32,13 +32,20 @@ class PassageFlutter {
   ///  - User already exists
   ///  - App configuration was not done properly
   ///  - etc.
+  Future<AuthResult> registerWithPasskey(String identifier) {
+    return PassageFlutterPlatform.instance.registerWithPasskey(identifier);
+  }
+
+  /// **DEPRECATED. Use `registerWithPasskey` instead.**
+  @Deprecated('Use `registerWithPasskey` instead.')
   Future<AuthResult> register(String identifier) {
-    return PassageFlutterPlatform.instance.register(identifier);
+    return PassageFlutterPlatform.instance.registerWithPasskey(identifier);
   }
 
   /// Attempts to login a user with a passkey.
   ///
-  /// **NOTE:** Web apps should use `loginWithIdentifier` instead.
+  /// Parameters:
+  ///  - `identifier`: Email address or phone for the user (optional).
   ///
   /// Returns:
   ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
@@ -50,26 +57,20 @@ class PassageFlutter {
   ///  - User does not exist
   ///  - App configuration was not done properly
   ///  - etc.
+  Future<AuthResult> loginWithPasskey(String? identifier) {
+    return PassageFlutterPlatform.instance.loginWithPasskey(identifier);
+  }
+
+  /// **DEPRECATED. Use `loginWithPasskey` instead.**
+  @Deprecated('Use `loginWithPasskey` instead.')
   Future<AuthResult> login() {
-    return PassageFlutterPlatform.instance.login();
+    return PassageFlutterPlatform.instance.loginWithPasskey('');
   }
 
-  /// Attempts to login a user with a passkey.
-  ///
-  /// **NOTE:** Mobile apps should use `login` instead.
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device.
-  ///
-  /// Throws:
-  ///  A `PassageError` in cases such as:
-  ///  - User cancels the operation
-  ///  - User does not exist
-  ///  - App configuration was not done properly
-  ///  - etc.
+  /// **DEPRECATED. Use `loginWithPasskey` instead.**
+  @Deprecated('Use `loginWithPasskey` instead.')
   Future<AuthResult> loginWithIdentifier(String identifier) {
-    return PassageFlutterPlatform.instance.loginWithIdentifier(identifier);
+    return PassageFlutterPlatform.instance.loginWithPasskey(identifier);
   }
 
   Future<bool> deviceSupportsPasskeys() {

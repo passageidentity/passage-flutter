@@ -13,7 +13,7 @@ internal class PassageFlutter {
         passage = PassageAuth(appId: appId)
     }
     
-    internal func register(arguments: Any?, result: @escaping FlutterResult) {
+    internal func registerWithPasskey(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
             let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
@@ -42,15 +42,16 @@ internal class PassageFlutter {
         }
     }
     
-    internal func login(result: @escaping FlutterResult) {
+    internal func loginWithPasskey(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
             let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
             return
         }
+        let (identifier, _) = getIdentifier(from: arguments)
         Task {
             do {
-                let authResult = try await passage.loginWithPasskey()
+                let authResult = try await passage.loginWithPasskey(identifier: identifier)
                 result(convertToJsonString(codable: authResult))
             } catch PassageASAuthorizationError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError

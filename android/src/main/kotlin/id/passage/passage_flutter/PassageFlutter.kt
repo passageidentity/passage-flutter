@@ -34,7 +34,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
 
     // region PASSKEY METHODS
 
-    internal fun register(call: MethodCall, result: MethodChannel.Result) {
+    internal fun registerWithPasskey(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
             ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
@@ -54,10 +54,11 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         }
     }
 
-    internal fun login(result: MethodChannel.Result) {
+    internal fun loginWithPasskey(call: MethodCall, result: MethodChannel.Result) {
+        val identifier = call.argument<String>("identifier")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.loginWithPasskey("")
+                val authResult = passage.loginWithPasskey(identifier)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
