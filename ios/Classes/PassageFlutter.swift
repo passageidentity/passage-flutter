@@ -26,7 +26,13 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await passage.registerWithPasskey(identifier: identifier)
+                var passkeyCreationOptions: PasskeyCreationOptions? = nil
+                if let authenticatorAttachmentString = (arguments as? [String: String])?["authenticatorAttachment"] as? String,
+                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
+                {
+                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
+                }
+                let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
                 result(convertToJsonString(codable: authResult))
             } catch PassageASAuthorizationError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
@@ -351,7 +357,13 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let device = try await passage.addDevice()
+                var passkeyCreationOptions: PasskeyCreationOptions? = nil
+                if let authenticatorAttachmentString = (arguments as? [String: String])?["authenticatorAttachment"] as? String,
+                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
+                {
+                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
+                }
+                let device = try await passage.addDevice(options: passkeyCreationOptions)
                 result(convertToJsonString(codable: device))
             } catch {
                 let error = FlutterError(

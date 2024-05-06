@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import '/passage_flutter_models/auth_result.dart';
+import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passage_social_connection.dart';
@@ -34,7 +35,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // PASSKEY AUTH METHODS
 
-  Future<AuthResult> registerWithPasskey(String identifier) {
+  Future<AuthResult> registerWithPasskey(
+      String identifier, PasskeyCreationOptions? options) {
     throw UnimplementedError('registerWithPasskey() has not been implemented.');
   }
 
@@ -132,7 +134,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('getCurrentUser() has not been implemented.');
   }
 
-  Future<Passkey> addPasskey() {
+  Future<Passkey> addPasskey(PasskeyCreationOptions? options) {
     throw UnimplementedError('addPasskey() has not been implemented.');
   }
 

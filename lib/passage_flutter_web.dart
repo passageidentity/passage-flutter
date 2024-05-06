@@ -11,6 +11,7 @@ import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 
 import '/helpers/data_conversion_web.dart';
 import '/passage_flutter_models/auth_result.dart';
+import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_error.dart';
 import './passage_flutter_models/passage_error_code.dart';
@@ -46,13 +47,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // PASSKEY AUTH METHODS
 
   @override
-  Future<AuthResult> registerWithPasskey(String identifier) async {
+  Future<AuthResult> registerWithPasskey(
+      String identifier, PasskeyCreationOptions? options) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
-      final resultPromise = passage.register(identifier);
+      final resultPromise = passage.register(identifier, options?.toJson());
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -315,13 +317,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<Passkey> addPasskey() async {
+  Future<Passkey> addPasskey(PasskeyCreationOptions? options) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
-      final resultPromise = passage.getCurrentUser().addDevice();
+      final resultPromise =
+          passage.getCurrentUser().addDevice(options?.toJson());
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return Passkey.fromJson(jsObject);
     } catch (e) {

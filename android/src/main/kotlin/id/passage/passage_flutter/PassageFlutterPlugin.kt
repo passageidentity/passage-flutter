@@ -63,7 +63,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "identifierExists" -> passageFlutter?.identifierExists(call, result)
           "getCurrentUser" -> passageFlutter?.getCurrentUser(result)
           "signOut" -> passageFlutter?.signOut(result)
-          "addPasskey" -> passageFlutter?.addPasskey(result)
+          "addPasskey" -> passageFlutter?.addPasskey(call, result)
           "deletePasskey" -> passageFlutter?.deletePasskey(call, result)
           "editPasskeyName" -> passageFlutter?.editPasskeyName(call, result)
           "changeEmail" -> passageFlutter?.changeEmail(call, result)

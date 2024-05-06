@@ -6,6 +6,7 @@ import com.google.gson.Gson
 import id.passage.android.Passage
 import id.passage.android.PassageSocialConnection
 import id.passage.android.PassageToken
+import id.passage.android.PasskeyCreationOptions
 import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
 import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
@@ -37,9 +38,13 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     internal fun registerWithPasskey(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
             ?: return invalidArgumentError(result)
+        var options: PasskeyCreationOptions? = null
+        Gson().toJson(call.argument<Map<String, String>>("options"))?.let {
+            options = Gson().fromJson(it, PasskeyCreationOptions::class.java)
+        }
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.registerWithPasskey(identifier)
+                val authResult = passage.registerWithPasskey(identifier, options)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -300,11 +305,16 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         }
     }
 
-    fun addPasskey(result: MethodChannel.Result) {
+    fun addPasskey(call: MethodCall, result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-                val credential = user.addDevicePasskey(activity)
+                val user = passage.getCurrentUser()
+                    ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                var options: PasskeyCreationOptions? = null
+                Gson().toJson(call.argument<Map<String, String>>("options"))?.let {
+                    options = Gson().fromJson(it, PasskeyCreationOptions::class.java)
+                }
+                val credential = user.addDevicePasskey(activity, options)
                 val jsonString = Gson().toJson(credential)
                 result.success(jsonString)
             } catch (e: Exception) {
