@@ -54,7 +54,8 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
-      final resultPromise = passage.register(identifier, options?.toJson());
+      final jsOptions = js_util.jsify(options?.toJson());
+      final resultPromise = passage.register(identifier, jsOptions);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -323,8 +324,8 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
-      final resultPromise =
-          passage.getCurrentUser().addDevice(options?.toJson());
+      final jsOptions = js_util.jsify(options?.toJson());
+      final resultPromise = passage.getCurrentUser().addDevice(jsOptions);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return Passkey.fromJson(jsObject);
     } catch (e) {

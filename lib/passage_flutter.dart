@@ -62,7 +62,7 @@ class PassageFlutter {
   ///  - User does not exist
   ///  - App configuration was not done properly
   ///  - etc.
-  Future<AuthResult> loginWithPasskey(String? identifier) {
+  Future<AuthResult> loginWithPasskey([String? identifier]) {
     return PassageFlutterPlatform.instance.loginWithPasskey(identifier);
   }
 
