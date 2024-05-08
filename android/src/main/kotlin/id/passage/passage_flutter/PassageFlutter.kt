@@ -13,6 +13,7 @@ import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsExce
 import id.passage.android.exceptions.PassageUserException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
+import id.passage.android.model.AuthenticatorAttachment
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
@@ -38,12 +39,16 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     internal fun registerWithPasskey(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier")
             ?: return invalidArgumentError(result)
-        var options: PasskeyCreationOptions? = null
-        Gson().toJson(call.argument<Map<String, String>>("options"))?.let {
-            options = Gson().fromJson(it, PasskeyCreationOptions::class.java)
-        }
         CoroutineScope(Dispatchers.IO).launch {
             try {
+                var options: PasskeyCreationOptions? = null
+                call.argument<Map<String, String>>("options")?.let { map ->
+                    map["authenticatorAttachment"]?.let { authAttachmentString ->
+                        AuthenticatorAttachment.decode(authAttachmentString)?.let { authenticatorAttachment ->
+                            options = PasskeyCreationOptions(authenticatorAttachment)
+                        }
+                    }
+                }
                 val authResult = passage.registerWithPasskey(identifier, options)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
@@ -311,8 +316,12 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                 val user = passage.getCurrentUser()
                     ?: throw PassageUserUnauthorizedException("User is not authorized.")
                 var options: PasskeyCreationOptions? = null
-                Gson().toJson(call.argument<Map<String, String>>("options"))?.let {
-                    options = Gson().fromJson(it, PasskeyCreationOptions::class.java)
+                call.argument<Map<String, String>>("options")?.let { map ->
+                    map["authenticatorAttachment"]?.let { authAttachmentString ->
+                        AuthenticatorAttachment.decode(authAttachmentString)?.let { authenticatorAttachment ->
+                            options = PasskeyCreationOptions(authenticatorAttachment)
+                        }
+                    }
                 }
                 val credential = user.addDevicePasskey(activity, options)
                 val jsonString = Gson().toJson(credential)

@@ -31,7 +31,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     try {
       final jsonString = await methodChannel.invokeMethod<String>(
           'registerWithPasskey',
-          {'identifier': identifier, options: options?.toJson()});
+          {'identifier': identifier, 'options': options?.toJson()});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
