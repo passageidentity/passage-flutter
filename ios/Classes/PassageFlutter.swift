@@ -27,7 +27,8 @@ internal class PassageFlutter {
         Task {
             do {
                 var passkeyCreationOptions: PasskeyCreationOptions? = nil
-                if let authenticatorAttachmentString = (arguments as? [String: String])?["authenticatorAttachment"] as? String,
+                if let optionsDictionary = (arguments as? [String: Any])?["options"] as? [String: String],
+                   let authenticatorAttachmentString = optionsDictionary["authenticatorAttachment"],
                    let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
                 {
                     passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
@@ -358,7 +359,8 @@ internal class PassageFlutter {
         Task {
             do {
                 var passkeyCreationOptions: PasskeyCreationOptions? = nil
-                if let authenticatorAttachmentString = (arguments as? [String: String])?["authenticatorAttachment"] as? String,
+                if let optionsDictionary = (arguments as? [String: Any])?["options"] as? [String: String],
+                   let authenticatorAttachmentString = optionsDictionary["authenticatorAttachment"],
                    let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
                 {
                     passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
@@ -504,7 +506,7 @@ internal class PassageFlutter {
 extension PassageFlutter {
     
     private func getIdentifier(from arguments: Any?) -> (String?, FlutterError?) {
-        guard let identifier = (arguments as? [String: String])?["identifier"] else {
+        guard let identifier = (arguments as? [String: Any])?["identifier"] as? String else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             return (nil, error)
         }
