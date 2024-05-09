@@ -13,7 +13,7 @@ internal class PassageFlutter {
         passage = PassageAuth(appId: appId)
     }
     
-    internal func register(arguments: Any?, result: @escaping FlutterResult) {
+    internal func registerWithPasskey(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
             let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
@@ -26,7 +26,14 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await passage.registerWithPasskey(identifier: identifier)
+                var passkeyCreationOptions: PasskeyCreationOptions? = nil
+                if let optionsDictionary = (arguments as? [String: Any])?["options"] as? [String: String],
+                   let authenticatorAttachmentString = optionsDictionary["authenticatorAttachment"],
+                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
+                {
+                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
+                }
+                let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
                 result(convertToJsonString(codable: authResult))
             } catch PassageASAuthorizationError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
@@ -42,15 +49,16 @@ internal class PassageFlutter {
         }
     }
     
-    internal func login(result: @escaping FlutterResult) {
+    internal func loginWithPasskey(arguments: Any?, result: @escaping FlutterResult) {
         guard #available(iOS 16.0, *) else {
             let error = PassageFlutterError.PASSKEYS_NOT_SUPPORTED.defaultFlutterError
             result(error)
             return
         }
+        let (identifier, _) = getIdentifier(from: arguments)
         Task {
             do {
-                let authResult = try await passage.loginWithPasskey()
+                let authResult = try await passage.loginWithPasskey(identifier: identifier)
                 result(convertToJsonString(codable: authResult))
             } catch PassageASAuthorizationError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
@@ -350,7 +358,14 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let device = try await passage.addDevice()
+                var passkeyCreationOptions: PasskeyCreationOptions? = nil
+                if let optionsDictionary = (arguments as? [String: Any])?["options"] as? [String: String],
+                   let authenticatorAttachmentString = optionsDictionary["authenticatorAttachment"],
+                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
+                {
+                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
+                }
+                let device = try await passage.addDevice(options: passkeyCreationOptions)
                 result(convertToJsonString(codable: device))
             } catch {
                 let error = FlutterError(
@@ -491,7 +506,7 @@ internal class PassageFlutter {
 extension PassageFlutter {
     
     private func getIdentifier(from arguments: Any?) -> (String?, FlutterError?) {
-        guard let identifier = (arguments as? [String: String])?["identifier"] else {
+        guard let identifier = (arguments as? [String: Any])?["identifier"] as? String else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             return (nil, error)
         }

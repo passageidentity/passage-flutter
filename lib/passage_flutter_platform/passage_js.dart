@@ -8,7 +8,7 @@ class Passage {
   external factory Passage(String appId);
 
   // PASSKEY AUTH METHODS
-  external dynamic register(String identifier);
+  external dynamic register(String identifier, dynamic options);
   external dynamic login(String identifier);
   external IGetCredentialFeatures getCredentialAvailable();
 
@@ -41,7 +41,7 @@ class Passage {
 @JS()
 class User {
   external dynamic userInfo();
-  external dynamic addDevice();
+  external dynamic addDevice(dynamic options);
   external dynamic deleteDevice(String passkeyId);
   external dynamic editDevice(String passkeyId, dynamic obj);
   external dynamic changeEmail(String newEmail);

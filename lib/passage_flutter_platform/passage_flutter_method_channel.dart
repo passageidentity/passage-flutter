@@ -5,6 +5,7 @@ import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
 
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
+import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_error.dart';
 import '/passage_flutter_models/passage_user.dart';
@@ -25,10 +26,12 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // PASSKEY AUTH METHODS
 
   @override
-  Future<AuthResult> register(String identifier) async {
+  Future<AuthResult> registerWithPasskey(
+      String identifier, PasskeyCreationOptions? options) async {
     try {
-      final jsonString = await methodChannel
-          .invokeMethod<String>('register', {'identifier': identifier});
+      final jsonString = await methodChannel.invokeMethod<String>(
+          'registerWithPasskey',
+          {'identifier': identifier, 'options': options?.toJson()});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -36,9 +39,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult> login() async {
+  Future<AuthResult> loginWithPasskey(String? identifier) async {
     try {
-      final jsonString = await methodChannel.invokeMethod<String>('login');
+      final jsonString = await methodChannel
+          .invokeMethod<String>('loginWithPasskey', {'identifier': identifier});
       return AuthResult.fromJson(jsonString!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -264,9 +268,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<Passkey> addPasskey() async {
+  Future<Passkey> addPasskey(PasskeyCreationOptions? options) async {
     try {
-      final jsonString = await methodChannel.invokeMethod<String>('addPasskey');
+      final jsonString = await methodChannel
+          .invokeMethod<String>('addPasskey', {'options': options?.toJson()});
       return Passkey.fromJson(jsonString!);
     } catch (e) {
       throw PassageError.fromObject(object: e);

@@ -29,10 +29,10 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
         
         switch call.method {
         case "initWithAppId": ()
-        case "register":
-            passageFlutter.register(arguments: call.arguments, result: result)
-        case "login":
-            passageFlutter.login(result: result)
+        case "registerWithPasskey":
+            passageFlutter.registerWithPasskey(arguments: call.arguments, result: result)
+        case "loginWithPasskey":
+            passageFlutter.loginWithPasskey(arguments: call.arguments, result: result)
         case "deviceSupportsPasskeys":
             passageFlutter.deviceSupportsPasskeys(result: result)
         case "newRegisterOneTimePasscode":

@@ -44,8 +44,8 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
       when (call.method) {
           "initWithAppId" -> {}
-          "register" -> passageFlutter?.register(call, result)
-          "login" -> passageFlutter?.login(result)
+          "registerWithPasskey" -> passageFlutter?.registerWithPasskey(call, result)
+          "loginWithPasskey" -> passageFlutter?.loginWithPasskey(call, result)
           "deviceSupportsPasskeys" -> passageFlutter?.deviceSupportsPasskeys(result)
           "newRegisterOneTimePasscode" -> passageFlutter?.newRegisterOneTimePasscode(call, result)
           "newLoginOneTimePasscode" -> passageFlutter?.newLoginOneTimePasscode(call, result)
@@ -63,7 +63,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "identifierExists" -> passageFlutter?.identifierExists(call, result)
           "getCurrentUser" -> passageFlutter?.getCurrentUser(result)
           "signOut" -> passageFlutter?.signOut(result)
-          "addPasskey" -> passageFlutter?.addPasskey(result)
+          "addPasskey" -> passageFlutter?.addPasskey(call, result)
           "deletePasskey" -> passageFlutter?.deletePasskey(call, result)
           "editPasskeyName" -> passageFlutter?.editPasskeyName(call, result)
           "changeEmail" -> passageFlutter?.changeEmail(call, result)

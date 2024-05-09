@@ -1,3 +1,24 @@
+## 0.7.0
+
+### What's new
+
+* Added new and improved `registerWithPasskey` and `loginWithPasskey` methods.
+* Deprecated `login` and `register` methods.
+
+### Example code
+```dart
+final identifier = 'name@email.com'
+
+// Register a new user with a passkey and optionally provide `PasskeyCreationOptions`.
+// These example options will allow a user to register using a physical security key.
+final options = PasskeyCreationOptions(
+  authenticatorAttachment: AuthenticatorAttachment.crossPlatform);
+await _passage.registerWithPasskey(identifier, options);
+
+// Log in using a passkey and optionally pass a user identifier.
+await _passage.loginWithPasskey(identifier);
+```
+
 ## 0.6.1
 
 Update Passage Android dependency.

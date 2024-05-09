@@ -1,6 +1,7 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import '/passage_flutter_models/auth_result.dart';
+import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passage_social_connection.dart';
@@ -34,16 +35,13 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // PASSKEY AUTH METHODS
 
-  Future<AuthResult> register(String identifier) {
-    throw UnimplementedError('register() has not been implemented.');
+  Future<AuthResult> registerWithPasskey(
+      String identifier, PasskeyCreationOptions? options) {
+    throw UnimplementedError('registerWithPasskey() has not been implemented.');
   }
 
-  Future<AuthResult> login() {
-    throw UnimplementedError('login() only supported on Android and iOS.');
-  }
-
-  Future<AuthResult> loginWithIdentifier(String identifier) {
-    throw UnimplementedError('loginWithIdentifier() only supported on web.');
+  Future<AuthResult> loginWithPasskey(String? identifier) {
+    throw UnimplementedError('loginWithPasskey() as not been implemented.');
   }
 
   Future<bool> deviceSupportsPasskeys() {
@@ -136,7 +134,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('getCurrentUser() has not been implemented.');
   }
 
-  Future<Passkey> addPasskey() {
+  Future<Passkey> addPasskey(PasskeyCreationOptions? options) {
     throw UnimplementedError('addPasskey() has not been implemented.');
   }
 
