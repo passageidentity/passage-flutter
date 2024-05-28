@@ -1,3 +1,7 @@
+## 0.7.1
+
+Fixed issue with Android code obfuscation.
+
 ## 0.7.0
 
 ### What's new
