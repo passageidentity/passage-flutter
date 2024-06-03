@@ -100,3 +100,4 @@ If you decide to pass your app id in this way, you no longer need the following 
 ## 0.1.0
 
 * Initial Flutter SDK release.
+## 0.0.1\n\n- Description of changes\n
