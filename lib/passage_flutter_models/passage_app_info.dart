@@ -50,21 +50,6 @@ class PassageAppInfo implements PassageFlutterModel {
         .toList();
   }
 
-  static PassageAuthFallbackMethod getAuthFallbackMethod(
-      Map<String, dynamic> map) {
-    String? authFallbackMethod =
-        map['authFallbackMethod'] ?? map['auth_fallback_method'];
-    switch (authFallbackMethod) {
-      case 'magicLink':
-      case 'magic_link':
-        return PassageAuthFallbackMethod.magicLink;
-      case 'otp':
-        return PassageAuthFallbackMethod.otp;
-      default:
-        return PassageAuthFallbackMethod.none;
-    }
-  }
-
   static AuthMethods getAuthMethods(map) {
     return kIsWeb ? AuthMethods.fromJson(map) : AuthMethods.fromMap(map);
   }
