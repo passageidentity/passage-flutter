@@ -6,9 +6,6 @@ import '/helpers/data_conversion.dart'
 
 class PassageAppInfo implements PassageFlutterModel {
   final String allowedIdentifier;
-  @Deprecated(
-      'Check the authMethods property for the full list of supported authentication methods and their configurations.')
-  final PassageAuthFallbackMethod authFallbackMethod;
   final String authOrigin;
   final String id;
   final String name;
@@ -23,7 +20,6 @@ class PassageAppInfo implements PassageFlutterModel {
   PassageAppInfo.fromMap(Map<String, dynamic> map)
       : allowedIdentifier =
             map['allowedIdentifier'] ?? map['allowed_identifier'],
-        authFallbackMethod = getAuthFallbackMethod(map),
         authOrigin = map['authOrigin'] ?? map['auth_origin'],
         id = map['id'],
         name = map['name'],
