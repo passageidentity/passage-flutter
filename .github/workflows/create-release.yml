@@ -1,0 +1,291 @@
+name: Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release-type:
+        required: true
+        type: choice
+        description: What type of release
+        options:
+          - major
+          - minor
+          - patch
+
+jobs:
+  determine-next-versions:
+    name: Determine Next Version
+    runs-on: ubuntu-latest
+
+    outputs:
+      next-major: ${{ steps.nexttag.outputs.major }}
+      next-minor: ${{ steps.nexttag.outputs.minor }}
+      next-patch: ${{ steps.nexttag.outputs.patch }}
+      branch-major: ${{ steps.branchnames.outputs.major-branch }}
+      branch-minor: ${{ steps.branchnames.outputs.minor-branch }}
+      branch-patch: ${{ steps.branchnames.outputs.patch-branch }}
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get Previous Tag
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with:
+          fallback: 0.0.0
+
+      - name: Get Next Versions
+        id: nexttag
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - name: Build Branch Names
+        id: branchnames
+        run: |
+          echo "major-branch=release-major-v${{ steps.nexttag.outputs.major }}" >> $GITHUB_OUTPUT
+          echo "minor-branch=release-minor-v${{ steps.nexttag.outputs.minor }}" >> $GITHUB_OUTPUT
+          echo "patch-branch=release-patch-v${{ steps.nexttag.outputs.patch }}" >> $GITHUB_OUTPUT
+
+  create-release-branch:
+    name: Create Release Branch
+    runs-on: ubuntu-latest
+    needs: determine-next-versions
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Create major release branch
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        run: |
+          git checkout -b ${{ needs.determine-next-versions.outputs.branch-major }}
+          git push origin ${{ needs.determine-next-versions.outputs.branch-major }}
+
+      - name: Create minor release branch
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          git checkout -b ${{ needs.determine-next-versions.outputs.branch-minor }}
+          git push origin ${{ needs.determine-next-versions.outputs.branch-minor }}
+
+      - name: Create patch release branch
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          git checkout -b ${{ needs.determine-next-versions.outputs.branch-patch }}
+          git push origin ${{ needs.determine-next-versions.outputs.branch-patch }}
+
+  bump-version:
+    name: Bump the Version
+    runs-on: ubuntu-latest
+    needs: [determine-next-versions, create-release-branch]
+
+    steps:
+      - name: Check out code - major release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-major }}
+
+      - name: Check out code - minor release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
+
+      - name: Check out code - patch release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
+
+      - name: Update major version in pubspec.yaml and podspec
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-major }}
+          sed -i "s/version: .*/version: $new_version/" pubspec.yaml
+          sed -i "s/s.version      = '.*'/s.version      = '$new_version'/" ios/passage_flutter.podspec
+          echo "Updated to major version $new_version"
+
+      - name: Update minor version in pubspec.yaml and podspec
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-minor }}
+          sed -i "s/version: .*/version: $new_version/" pubspec.yaml
+          sed -i "s/s.version      = '.*'/s.version      = '$new_version'/" ios/passage_flutter.podspec
+          echo "Updated to minor version $new_version"
+
+      - name: Update patch version in pubspec.yaml and podspec
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-patch }}
+          sed -i "s/version: .*/version: $new_version/" pubspec.yaml
+          sed -i "s/s.version      = '.*'/s.version      = '$new_version'/" ios/passage_flutter.podspec
+          echo "Updated to patch version $new_version"
+
+      - name: Update CHANGELOG.md
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-${{ github.event.inputs.release-type }} }}
+          echo "## $new_version\n\n- Description of changes\n" >> CHANGELOG.md
+          echo "Updated CHANGELOG.md with version $new_version"
+
+      - name: Commit major version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        with:
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-major }}"
+          branch: ${{ needs.determine-next-versions.outputs.branch-major }}
+
+      - name: Commit minor version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-minor }}"
+          branch: ${{ needs.determine-next-versions.outputs.branch-minor }}
+
+      - name: Commit patch version change
+        uses: stefanzweifel/git-auto-commit-action@v4
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-patch }}"
+          branch: ${{ needs.determine-next-versions.outputs.branch-patch }}
+
+    create-github-release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [determine-next-versions, create-release-branch, bump-version]
+
+    steps:
+      - name: Check out code - major release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'major' }}
+
+      - name: Check out code - minor release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+
+      - name: Check out code - patch release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+
+      - name: Create Release - major
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-major }}"
+          generateReleaseNotes: true
+          draft: false
+
+      - name: Create Release - minor
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-minor }}"
+          generateReleaseNotes: true
+          draft: false
+
+      - name: Create Release - patch
+        uses: ncipollo/release-action@v1
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          tag: "v${{ needs.determine-next-versions.outputs.next-patch }}"
+          generateReleaseNotes: true
+          draft: false
+
+  create-pull-request:
+    name: Create Pull Request
+    runs-on: ubuntu-latest
+    needs: [ create-github-release, determine-next-versions ]
+
+    steps:
+      - name: Check out code - major release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-major }}
+
+      - name: Check out code - minor release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-minor }}
+
+      - name: Check out code - patch release
+        uses: actions/checkout@v3
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          ref: ${{ needs.determine-next-versions.outputs.branch-patch }}
+
+      - name: Create pull request for major release into main
+        uses: thomaseizinger/create-pull-request@1.0.0
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{needs.determine-next-versions.outputs.branch-major}}
+          base: main
+          title: v${{ needs.determine-next-versions.outputs.next-major }} into main
+          body: |
+            This PR was created by the create-release-branch workflow.
+            New Release: v${{ needs.determine-next-versions.outputs.next-major }}
+            I've updated the version name and code commit.
+
+      - name: Create pull request for minor release into main
+        uses: thomaseizinger/create-pull-request@1.0.0
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{needs.determine-next-versions.outputs.branch-minor}}
+          base: main
+          title: v${{ needs.determine-next-versions.outputs.next-minor }} into main
+          body: |
+            This PR was created by the create-release-branch workflow.
+            New Release: v${{ needs.determine-next-versions.outputs.next-minor }}
+            I've updated the version name and code commit.
+
+      - name: Create pull request for patch release into main
+        uses: thomaseizinger/create-pull-request@1.0.0
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          head: ${{needs.determine-next-versions.outputs.branch-patch}}
+          base: main
+          title: v${{ needs.determine-next-versions.outputs.next-patch }} into main
+          body: |
+            This PR was created by the create-release-branch workflow.
+            New Release: v${{ needs.determine-next-versions.outputs.next-patch }}
+            I've updated the version name and code commit.
+
+  publish-sdk:
+    name: Publish SDK
+    runs-on: ubuntu-latest
+    needs: [ create-github-release, determine-next-versions ]
+
+    steps:
+      - name: Trigger publish workflow - major
+        if: ${{ github.event.inputs.release-type == 'major' }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"publish", "client_payload": {"ref": "${{needs.determine-next-versions.outputs.branch-major}}"}}'
+
+      - name: Trigger publish workflow - minor
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"publish", "client_payload": {"ref": "${{needs.determine-next-versions.outputs.branch-minor}}"}}'
+
+      - name: Trigger publish workflow - patch
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            https://api.github.com/repos/${{ github.repository }}/dispatches \
+            -d '{"event_type":"publish", "client_payload": {"ref": "${{needs.determine-next-versions.outputs.branch-patch }}"}}'

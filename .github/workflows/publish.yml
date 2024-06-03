@@ -1,0 +1,38 @@
+name: Publish Flutter Package
+
+on:
+  repository_dispatch:
+    types: [publish]
+
+jobs:
+  publish:
+    name: Publish Flutter Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Authenticate to pub.dev
+        env:
+          PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
+        run: |
+          mkdir -p ~/Library/Application\ Support/dart
+          echo "$PUB_CREDENTIALS" > ~/Library/Application\ Support/dart/pub-credentials.json
+
+      - name: Dry run publish
+        run: dart pub publish --dry-run
+
+      - name: Publish package
+        run: yes | dart pub publish
+
+      - name: Clean up authentication
+        run: rm ~/Library/Application\ Support/dart/pub-credentials.json
