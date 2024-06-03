@@ -125,9 +125,24 @@ jobs:
           sed -i "s/s.version      = '.*'/s.version      = '$new_version'/" ios/passage_flutter.podspec
           echo "Updated to patch version $new_version"
 
-      - name: Update CHANGELOG.md
+      - name: Update CHANGELOG.md - major release
+        if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
-          new_version=${{ needs.determine-next-versions.outputs.next-${{ github.event.inputs.release-type }} }}
+          new_version=${{ needs.determine-next-versions.outputs.next-major }}
+          echo "## $new_version\n\n- Description of changes\n" >> CHANGELOG.md
+          echo "Updated CHANGELOG.md with version $new_version"
+
+      - name: Update CHANGELOG.md - minor release
+        if: ${{ github.event.inputs.release-type == 'minor' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-minor }}
+          echo "## $new_version\n\n- Description of changes\n" >> CHANGELOG.md
+          echo "Updated CHANGELOG.md with version $new_version"
+
+      - name: Update CHANGELOG.md - patch release
+        if: ${{ github.event.inputs.release-type == 'patch' }}
+        run: |
+          new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           echo "## $new_version\n\n- Description of changes\n" >> CHANGELOG.md
           echo "Updated CHANGELOG.md with version $new_version"
 
