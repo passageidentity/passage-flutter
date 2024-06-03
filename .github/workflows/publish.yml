@@ -29,10 +29,10 @@ jobs:
           echo "$PUB_CREDENTIALS" > ~/Library/Application\ Support/dart/pub-credentials.json
 
       - name: Dry run publish
-        run: dart pub publish --dry-run
+        run: flutter pub publish --dry-run
 
       - name: Publish package
-        run: yes | dart pub publish
+        run: yes | flutter pub publish
 
       - name: Clean up authentication
         run: rm ~/Library/Application\ Support/dart/pub-credentials.json
