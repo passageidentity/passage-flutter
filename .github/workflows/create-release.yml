@@ -152,7 +152,7 @@ jobs:
           commit_message: "Bumped version to ${{ needs.determine-next-versions.outputs.next-patch }}"
           branch: ${{ needs.determine-next-versions.outputs.branch-patch }}
 
-    create-github-release:
+  create-github-release:
     name: Create GitHub Release
     runs-on: ubuntu-latest
     needs: [determine-next-versions, create-release-branch, bump-version]
