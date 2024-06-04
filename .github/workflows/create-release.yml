@@ -24,6 +24,7 @@ jobs:
       branch-major: ${{ steps.branchnames.outputs.major-branch }}
       branch-minor: ${{ steps.branchnames.outputs.minor-branch }}
       branch-patch: ${{ steps.branchnames.outputs.patch-branch }}
+      previous-tag: ${{ steps.getprevioustag.outputs.previous-tag }}
 
     steps:
       - name: Check out code
@@ -32,16 +33,17 @@ jobs:
           fetch-depth: 0
 
       - name: Get Previous Tag
-        id: previoustag
-        uses: "WyriHaximus/github-action-get-previous-tag@v1"
-        with:
-          fallback: 0.0.0
+        id: getprevioustag
+        run: |
+          previous_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "previous_tag=$previous_tag" >> $GITHUB_ENV
+          echo "::set-output name=previous-tag::$previous_tag"
 
       - name: Get Next Versions
         id: nexttag
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
-          version: ${{ steps.previoustag.outputs.tag }}
+          version: ${{ env.previous_tag }}
 
       - name: Build Branch Names
         id: branchnames
@@ -153,7 +155,7 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          previous_tag=${{ steps.previoustag.outputs.tag }}
+          previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
@@ -162,7 +164,7 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          previous_tag=${{ steps.previoustag.outputs.tag }}
+          previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
@@ -171,7 +173,7 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          previous_tag=${{ steps.previoustag.outputs.tag }}
+          previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
