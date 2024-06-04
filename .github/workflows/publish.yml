@@ -1,7 +1,8 @@
 name: Publish Flutter Package
 
 on:
-  workflow_dispatch: # Allows the workflow to be manually triggered
+  repository_dispatch:
+    types: [publish]
 
 jobs:
   publish:
@@ -11,6 +12,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
