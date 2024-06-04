@@ -1,7 +1,7 @@
 name: Publish Flutter Package
 
 on:
-  workflow_dispatch:
+  workflow_dispatch: # Allows the workflow to be manually triggered
 
 jobs:
   publish:
@@ -24,8 +24,8 @@ jobs:
         env:
           PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
-          mkdir -p ~/Library/Application\ Support/dart
-          echo "$PUB_CREDENTIALS" > ~/Library/Application\ Support/dart/pub-credentials.json
+          mkdir -p ~/.pub-cache
+          echo "$PUB_CREDENTIALS" > ~/.pub-cache/credentials.json
 
       - name: Dry run publish
         run: flutter pub publish --dry-run
@@ -34,4 +34,4 @@ jobs:
         run: yes | flutter pub publish
 
       - name: Clean up authentication
-        run: rm ~/Library/Application\ Support/dart/pub-credentials.json
+        run: rm ~/.pub-cache/credentials.json
