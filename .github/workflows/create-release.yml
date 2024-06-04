@@ -153,24 +153,27 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          release_notes="## $new_version\n\n New major release\n\n"
-          echo -e "$release_notes$(cat CHANGELOG.md)" > CHANGELOG.md
+          previous_tag=${{ steps.previoustag.outputs.tag }}
+          release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
+          echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
       - name: Prepend to CHANGELOG.md - minor release
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          release_notes="## $new_version\n\n New minor release\n\n"
-          echo -e "$release_notes$(cat CHANGELOG.md)" > CHANGELOG.md
+          previous_tag=${{ steps.previoustag.outputs.tag }}
+          release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
+          echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
       - name: Prepend to CHANGELOG.md - patch release
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          release_notes="## $new_version\n\n New patch release\n\n"
-          echo -e "$release_notes$(cat CHANGELOG.md)" > CHANGELOG.md
+          previous_tag=${{ steps.previoustag.outputs.tag }}
+          release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
+          echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
       - name: Commit major version change
