@@ -33,6 +33,12 @@ jobs:
           fetch-depth: 0
           tags: true
 
+      - name: Fetch all tags
+        run: git fetch --tags
+
+      - name: Fetch all branches and commits
+        run: git fetch --all
+
       - name: Get Previous Tag
         id: getprevioustag
         run: |
@@ -40,6 +46,10 @@ jobs:
           echo "Previous Tag: $previous_tag"
           echo "previous_tag=$previous_tag" >> $GITHUB_ENV
           echo "::set-output name=previous-tag::$previous_tag"
+
+      - name: Verify Previous Tag
+        run: |
+          git show-ref --tags | grep $previous_tag
 
       - name: Get Next Versions
         id: nexttag
@@ -159,6 +169,7 @@ jobs:
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
           previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
+          echo "Release Notes: $release_notes"
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
@@ -168,6 +179,7 @@ jobs:
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
           previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
+          echo "Release Notes: $release_notes"
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
@@ -177,6 +189,7 @@ jobs:
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
+          echo "Release Notes: $release_notes"
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
           echo "Prepended CHANGELOG.md with version $new_version"
 
