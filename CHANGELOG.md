@@ -1,3 +1,7 @@
+## 0.7.3
+
+ New patch release
+
 ## 0.7.1
 
 Fixed issue with Android code obfuscation.
