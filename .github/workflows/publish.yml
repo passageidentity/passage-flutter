@@ -1,7 +1,8 @@
 name: Publish Flutter Package
 
 on:
-  workflow_dispatch:
+  repository_dispatch:
+    types: [publish]
 
 jobs:
   publish:
@@ -11,6 +12,8 @@ jobs:
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.client_payload.ref }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -24,8 +27,13 @@ jobs:
         env:
           PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
-          mkdir -p ~/Library/Application\ Support/dart
-          echo "$PUB_CREDENTIALS" > ~/Library/Application\ Support/dart/pub-credentials.json
+          if [ -z "$XDG_CONFIG_HOME" ]; then
+            CREDENTIALS_DIR="$HOME/.config/dart"
+          else
+            CREDENTIALS_DIR="$XDG_CONFIG_HOME/dart"
+          fi
+          mkdir -p "$CREDENTIALS_DIR"
+          echo "$PUB_CREDENTIALS" > "$CREDENTIALS_DIR/pub-credentials.json"
 
       - name: Dry run publish
         run: flutter pub publish --dry-run
@@ -34,4 +42,10 @@ jobs:
         run: yes | flutter pub publish
 
       - name: Clean up authentication
-        run: rm ~/Library/Application\ Support/dart/pub-credentials.json
+        run: |
+          if [ -z "$XDG_CONFIG_HOME" ]; then
+            CREDENTIALS_DIR="$HOME/.config/dart"
+          else
+            CREDENTIALS_DIR="$XDG_CONFIG_HOME/dart"
+          fi
+          rm "$CREDENTIALS_DIR/pub-credentials.json"
