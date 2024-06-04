@@ -31,11 +31,13 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          tags: true
 
       - name: Get Previous Tag
         id: getprevioustag
         run: |
           previous_tag=$(git describe --tags $(git rev-list --tags --max-count=1))
+          echo "Previous Tag: $previous_tag"
           echo "previous_tag=$previous_tag" >> $GITHUB_ENV
           echo "::set-output name=previous-tag::$previous_tag"
 
@@ -43,7 +45,7 @@ jobs:
         id: nexttag
         uses: "WyriHaximus/github-action-next-semvers@v1"
         with:
-          version: ${{ env.previous_tag }}
+          version: ${{ steps.getprevioustag.outputs.previous-tag }}
 
       - name: Build Branch Names
         id: branchnames
