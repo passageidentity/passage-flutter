@@ -24,8 +24,8 @@ jobs:
         env:
           PUB_CREDENTIALS: ${{ secrets.PUB_CREDENTIALS }}
         run: |
-          mkdir -p ~/.pub-cache
-          echo "$PUB_CREDENTIALS" > ~/.pub-cache/credentials.json
+          mkdir -p $HOME/.pub-cache
+          echo "$PUB_CREDENTIALS" > $HOME/.pub-cache/credentials.json
 
       - name: Dry run publish
         run: flutter pub publish --dry-run
@@ -34,4 +34,4 @@ jobs:
         run: yes | flutter pub publish
 
       - name: Clean up authentication
-        run: rm ~/.pub-cache/credentials.json
+        run: rm $HOME/.pub-cache/credentials.json
