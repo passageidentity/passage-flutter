@@ -105,8 +105,6 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'major' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
-          echo "Before update:"
-          cat ios/passage_flutter.podspec
           awk -v new_version="$new_version" '
           {
             if ($0 ~ /^  s.version/) {
@@ -116,8 +114,6 @@ jobs:
             }
           }' ios/passage_flutter.podspec > temp_podspec.podspec
           mv temp_podspec.podspec ios/passage_flutter.podspec
-          echo "After update:"
-          cat ios/passage_flutter.podspec
           sed -i "s/version: .*/version: $new_version/" pubspec.yaml
           echo "Updated to major version $new_version"
 
@@ -125,8 +121,6 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'minor' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
-          echo "Before update:"
-          cat ios/passage_flutter.podspec
           awk -v new_version="$new_version" '
           {
             if ($0 ~ /^  s.version/) {
@@ -136,8 +130,6 @@ jobs:
             }
           }' ios/passage_flutter.podspec > temp_podspec.podspec
           mv temp_podspec.podspec ios/passage_flutter.podspec
-          echo "After update:"
-          cat ios/passage_flutter.podspec
           sed -i "s/version: .*/version: $new_version/" pubspec.yaml
           echo "Updated to minor version $new_version"
 
@@ -145,8 +137,6 @@ jobs:
         if: ${{ github.event.inputs.release-type == 'patch' }}
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
-          echo "Before update:"
-          cat ios/passage_flutter.podspec
           awk -v new_version="$new_version" '
           {
             if ($0 ~ /^  s.version/) {
@@ -156,8 +146,6 @@ jobs:
             }
           }' ios/passage_flutter.podspec > temp_podspec.podspec
           mv temp_podspec.podspec ios/passage_flutter.podspec
-          echo "After update:"
-          cat ios/passage_flutter.podspec
           sed -i "s/version: .*/version: $new_version/" pubspec.yaml
           echo "Updated to patch version $new_version"
 
