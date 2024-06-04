@@ -168,6 +168,9 @@ jobs:
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-major }}
           previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
+          git fetch --tags
+          git fetch --all
+          git log -1
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
           echo "Release Notes: $release_notes"
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
@@ -178,6 +181,9 @@ jobs:
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-minor }}
           previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
+          git fetch --tags
+          git fetch --all
+          git log -1
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
           echo "Release Notes: $release_notes"
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
@@ -188,6 +194,9 @@ jobs:
         run: |
           new_version=${{ needs.determine-next-versions.outputs.next-patch }}
           previous_tag=${{ needs.determine-next-versions.outputs.previous-tag }}
+          git fetch --tags
+          git fetch --all
+          git log -1
           release_notes=$(git log --pretty=format:"* %s" $previous_tag..HEAD)
           echo "Release Notes: $release_notes"
           echo -e "## $new_version\n\n$release_notes\n\n$(cat CHANGELOG.md)" > CHANGELOG.md
