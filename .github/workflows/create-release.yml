@@ -33,12 +33,6 @@ jobs:
           fetch-depth: 0
           tags: true
 
-      - name: Fetch all tags
-        run: git fetch --tags
-
-      - name: Fetch all branches and commits
-        run: git fetch --all
-
       - name: Get Previous Tag
         id: getprevioustag
         run: |
@@ -46,10 +40,6 @@ jobs:
           echo "Previous Tag: $previous_tag"
           echo "previous_tag=$previous_tag" >> $GITHUB_ENV
           echo "::set-output name=previous-tag::$previous_tag"
-
-      - name: Verify Previous Tag
-        run: |
-          git show-ref --tags | grep $previous_tag
 
       - name: Get Next Versions
         id: nexttag
