@@ -1,3 +1,7 @@
+## 0.7.3
+
+* Merge pull request #45 from passageidentity/PSG-3992
+
 ## 0.7.1
 
 Fixed issue with Android code obfuscation.
