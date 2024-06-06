@@ -15,7 +15,7 @@ import org.mockito.Mockito
 
 internal class PassageFlutterPluginTest {
   @Test
-  fun onMethodCall_getPlatformVersion_returnsExpectedValue() {
+  fun onMethodCallGetPlatformVersionReturnsExpectedValue() {
     val plugin = PassageFlutterPlugin()
 
     val call = MethodCall("getPlatformVersion", null)

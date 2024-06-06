@@ -10,7 +10,6 @@ import id.passage.android.PasskeyCreationOptions
 import id.passage.android.exceptions.AppInfoException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
 import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
-import id.passage.android.exceptions.PassageUserException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 import id.passage.android.model.AuthenticatorAttachment
