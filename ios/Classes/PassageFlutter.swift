@@ -90,7 +90,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let otp = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifier)
+                let otp = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifier, language: "en")
                 result(otp.id)
             } catch {
                 let error = FlutterError(
@@ -192,6 +192,32 @@ internal class PassageFlutter {
             }
         }
     }
+
+    internal func overrideBasePath(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any], let basePath = args["path"] as? String else {
+            let error = FlutterError(
+                code: "INVALID_ARGUMENT",
+                message: "Invalid arguments provided",
+                details: nil
+            )
+            result(error)
+            return
+        }
+
+        Task {
+            do {
+                try await passage.overrideApiUrl(with: basePath)
+                result(nil)  // Successfully overridden the base path
+            } catch {
+                let error = FlutterError(
+                    code: "OVERRIDE_BASE_PATH_ERROR",
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+}
     
     internal func magicLinkActivate(arguments: Any?, result: @escaping FlutterResult) {
         guard let userMagicLink = (arguments as? [String: String])?["magicLink"] else {

@@ -33,6 +33,10 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('initWithAppId() has not been implemented.');
   }
 
+  Future<void> overrideBasePath(String path) async {
+    throw UnimplementedError('overrideBasePath() has not been implemented.');
+  }
+  
   // PASSKEY AUTH METHODS
 
   Future<AuthResult> registerWithPasskey(

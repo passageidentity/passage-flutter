@@ -29,6 +29,7 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
         
         switch call.method {
         case "initWithAppId": ()
+        case "overrideBasePath": passageFlutter.overrideBasePath(arguments: call.arguments, result: result)
         case "registerWithPasskey":
             passageFlutter.registerWithPasskey(arguments: call.arguments, result: result)
         case "loginWithPasskey":

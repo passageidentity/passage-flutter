@@ -44,6 +44,9 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
       when (call.method) {
           "initWithAppId" -> {}
+          "overrideBasePath" -> {
+            passageFlutter?.overrideBasePath(call, result)
+          }
           "registerWithPasskey" -> passageFlutter?.registerWithPasskey(call, result)
           "loginWithPasskey" -> passageFlutter?.loginWithPasskey(call, result)
           "deviceSupportsPasskeys" -> passageFlutter?.deviceSupportsPasskeys(result)
@@ -57,6 +60,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "authorizeWith" -> passageFlutter?.authorizeWith(call, result)
           "finishSocialAuthentication" -> passageFlutter?.finishSocialAuthentication(call, result)
           "getAuthToken" -> passageFlutter?.getAuthToken(result)
+          "setAuthToken" -> passageFlutter?.setAuthToken(call, result)
           "isAuthTokenValid" -> passageFlutter?.isAuthTokenValid(call, result)
           "refreshAuthToken" -> passageFlutter?.refreshAuthToken(result)
           "getAppInfo" -> passageFlutter?.getAppInfo(result)
