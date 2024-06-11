@@ -120,7 +120,7 @@ class GetMessageResponse {
 class MailosaurAPIClient {
   static const String serverId = 'ncor7c1m';
   static const String apiURL = 'https://mailosaur.com/api/messages';
-  static const String mailosaurAPIKey = 'udoOEVY0FNE11tTh'; // Replace with your actual API key
+  static const String mailosaurAPIKey = 'YOUR_MAILOSAUR_API_KEY_HERE'; 
 
   static String appUrl(String path) {
     return '$apiURL$path';

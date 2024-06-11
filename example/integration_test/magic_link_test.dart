@@ -84,7 +84,7 @@ void main() {
         final identifier =
             'authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net';
         await instance.newRegisterMagicLink(identifier);
-        await Future.delayed(Duration(milliseconds: 8000));
+        await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
         final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
         if (magicLinkStr.isEmpty) {
           fail('Test failed: Magic link is empty');
@@ -100,7 +100,7 @@ void main() {
       try {
         await instance.newLoginMagicLink(
             IntegrationTestConfig.EXISTING_USER_EMAIL_MAGIC_LINK);
-        await Future.delayed(Duration(milliseconds: 8000));
+        await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
         final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
         if (magicLinkStr.isEmpty) {
           fail('Test failed: Magic link is empty');
@@ -130,7 +130,7 @@ void main() {
       try {
         await instance.newLoginMagicLink(
             IntegrationTestConfig.DEACTIVATED_USER_EMAIL_MAGIC_LINK);
-        await Future.delayed(Duration(milliseconds: 8000));
+        await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
         final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
         if (magicLinkStr.isEmpty) {
           fail('Test failed: Magic link is empty');

@@ -2,25 +2,24 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
 import 'package:passage_flutter/passage_flutter_platform/passage_flutter_method_channel.dart';
 import 'package:passage_flutter/passage_flutter_platform/passage_flutter_platform_interface.dart';
-
-
+import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
 
 void main() {
  PassageFlutterPlatform instance = MethodChannelPassageFlutter();
 
   group('Integration Tests', () {
-    const String EXISTING_USER_EMAIL_OTP = 'authentigator+1716916054778@ncor7c1m.mailosaur.net';
+    const String EXISTING_USER_EMAIL_OTP = IntegrationTestConfig.EXISTING_USER_EMAIL_OTP;
 
   setUp(() async {
-    instance.initWithAppId('Ezbk6fSdx9pNQ7v7UbVEnzeC');
-    await instance.overrideBasePath("https://auth-uat.passage.dev/v1");
+    instance.initWithAppId(IntegrationTestConfig.APP_ID_OTP);
+    await instance.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
   });
 
     testWidgets('login with otp', (WidgetTester tester) async {
       try {
       final otpId = await instance.newLoginOneTimePasscode(EXISTING_USER_EMAIL_OTP);
-      await Future.delayed(Duration(milliseconds: 8000));
+      await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
       final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
       await instance.oneTimePasscodeActivate(otp, otpId);
       } catch (e) {
@@ -63,7 +62,7 @@ void main() {
     final identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net";
     try {
       final otpId = (await instance.newRegisterOneTimePasscode(identifier));
-      await Future.delayed(Duration(milliseconds: 8000)); // Simulate wait time
+      await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); // Simulate wait time
       final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
       await instance.oneTimePasscodeActivate(otp, otpId);
     } catch (e) {
@@ -98,7 +97,7 @@ void main() {
     final identifier = EXISTING_USER_EMAIL_OTP;
     try {
       final otpId = (await instance.newLoginOneTimePasscode(identifier));
-      await Future.delayed(Duration(milliseconds: 8000)); // Simulate wait time
+      await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); // Simulate wait time
       final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
       await instance.oneTimePasscodeActivate(otp, otpId);
     } catch (e) {

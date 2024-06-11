@@ -26,7 +26,7 @@ void main() {
   Future<void> loginWithOTP() async {
     final otpId = (await instance.newLoginOneTimePasscode(
         IntegrationTestConfig.EXISTING_USER_EMAIL_OTP));
-    await Future.delayed(Duration(milliseconds: 8000)); // Simulate wait time
+    await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); 
     final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
     await instance.oneTimePasscodeActivate(otp, otpId);
   }
