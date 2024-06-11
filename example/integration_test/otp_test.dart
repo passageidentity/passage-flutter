@@ -1,27 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
-import 'package:passage_flutter/passage_flutter_platform/passage_flutter_method_channel.dart';
-import 'package:passage_flutter/passage_flutter_platform/passage_flutter_platform_interface.dart';
 import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
 
 void main() {
- PassageFlutterPlatform instance = MethodChannelPassageFlutter();
+ PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
 
   group('Integration Tests', () {
     const String EXISTING_USER_EMAIL_OTP = IntegrationTestConfig.EXISTING_USER_EMAIL_OTP;
 
   setUp(() async {
-    instance.initWithAppId(IntegrationTestConfig.APP_ID_OTP);
-    await instance.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
+    //instance.initWithAppId(IntegrationTestConfig.APP_ID_OTP);
+    await passage.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
   });
 
     testWidgets('login with otp', (WidgetTester tester) async {
       try {
-      final otpId = await instance.newLoginOneTimePasscode(EXISTING_USER_EMAIL_OTP);
+      final otpId = await passage.newLoginOneTimePasscode(EXISTING_USER_EMAIL_OTP);
       await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
       final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-      await instance.oneTimePasscodeActivate(otp, otpId);
+      await passage.oneTimePasscodeActivate(otp, otpId);
       } catch (e) {
         fail('Expected AuthResult, but got an exception: $e');
       }
@@ -30,14 +29,14 @@ void main() {
 
 
   tearDown(() async {
-    await instance.signOut();
+    await passage.signOut();
   });
 
   testWidgets('testRegisterOTPValid', (WidgetTester tester) async {
     final date = DateTime.now().millisecondsSinceEpoch;
     final identifier = "authentigator+$date@passage.id";
     try {
-      await instance.newRegisterOneTimePasscode(identifier);
+      await passage.newRegisterOneTimePasscode(identifier);
     } catch (e) {
       fail('Test failed due to unexpected exception: $e');
     }
@@ -46,7 +45,7 @@ void main() {
   testWidgets('testRegisterOTPNotValid', (WidgetTester tester) async {
     final identifier = "INVALID_IDENTIFIER";
     try {
-      await instance.newRegisterOneTimePasscode(identifier);
+      await passage.newRegisterOneTimePasscode(identifier);
       fail('Test should throw PassageError');
     } catch (e) {
       if (e is PassageError) {
@@ -61,10 +60,10 @@ void main() {
     final date = DateTime.now().millisecondsSinceEpoch;
     final identifier = "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net";
     try {
-      final otpId = (await instance.newRegisterOneTimePasscode(identifier));
+      final otpId = (await passage.newRegisterOneTimePasscode(identifier));
       await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); // Simulate wait time
       final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-      await instance.oneTimePasscodeActivate(otp, otpId);
+      await passage.oneTimePasscodeActivate(otp, otpId);
     } catch (e) {
       fail('Test failed due to unexpected exception: $e');
     }
@@ -73,7 +72,7 @@ void main() {
   testWidgets('testLoginOTPValid', (WidgetTester tester) async {
     final identifier = EXISTING_USER_EMAIL_OTP;
     try {
-      await instance.newLoginOneTimePasscode(identifier);
+      await passage.newLoginOneTimePasscode(identifier);
     } catch (e) {
       fail('Test failed due to unexpected exception: $e');
     }
@@ -82,7 +81,7 @@ void main() {
   testWidgets('testLoginOTPNotValid', (WidgetTester tester) async {
     final identifier = "INVALID_IDENTIFIER";
     try {
-      await instance.newLoginOneTimePasscode(identifier);
+      await passage.newLoginOneTimePasscode(identifier);
       fail('Test should throw NewLoginOneTimePasscodeInvalidIdentifierException');
     } catch (e) {
       if (e is PassageError) {
@@ -96,10 +95,10 @@ void main() {
   testWidgets('testActivateLoginOTPValid', (WidgetTester tester) async {
     final identifier = EXISTING_USER_EMAIL_OTP;
     try {
-      final otpId = (await instance.newLoginOneTimePasscode(identifier));
+      final otpId = (await passage.newLoginOneTimePasscode(identifier));
       await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); // Simulate wait time
       final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-      await instance.oneTimePasscodeActivate(otp, otpId);
+      await passage.oneTimePasscodeActivate(otp, otpId);
     } catch (e) {
       fail('Test failed due to unexpected exception: $e');
     }
@@ -107,4 +106,3 @@ void main() {
 
   });
 }
-

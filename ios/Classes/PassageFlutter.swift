@@ -90,7 +90,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let otp = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifier, language: "en")
+                let otp = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifier)
                 result(otp.id)
             } catch {
                 let error = FlutterError(

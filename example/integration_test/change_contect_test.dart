@@ -1,33 +1,30 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
-import 'package:passage_flutter/passage_flutter_platform/passage_flutter_method_channel.dart';
-import 'package:passage_flutter/passage_flutter_platform/passage_flutter_platform_interface.dart';
-
 import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
 
 void main() {
-  PassageFlutterPlatform instance = MethodChannelPassageFlutter();
+  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
 
   setUp(() {
-    instance.initWithAppId(IntegrationTestConfig.APP_ID_OTP);
-    instance.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
+    passage.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
   });
 
   tearDown(() async {
     try {
-      await instance.signOut();
+      await passage.signOut();
     } catch (e) {
       print('Error during sign out: $e');
     }
   });
 
   Future<void> loginWithOTP() async {
-    final otpId = (await instance.newLoginOneTimePasscode(
+    final otpId = (await passage.newLoginOneTimePasscode(
         IntegrationTestConfig.EXISTING_USER_EMAIL_OTP));
     await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); // Simulate wait time
     final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-    await instance.oneTimePasscodeActivate(otp, otpId);
+    await passage.oneTimePasscodeActivate(otp, otpId);
   }
 
   group('ChangeContactTests', () {
@@ -38,7 +35,7 @@ void main() {
         await loginWithOTP();
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier = 'authentigator+$date@passage.id';
-        final response = await instance.changeEmail(identifier);
+        final response = await passage.changeEmail(identifier);
         expect(response, isNotNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
@@ -49,7 +46,7 @@ void main() {
       try {
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier = 'authentigator+$date@passage.id';
-        await instance.changeEmail(identifier);
+        await passage.changeEmail(identifier);
         fail('Test should throw PassageUserUnauthorizedException');
       } catch (e) {
         if (e is PassageError) {
@@ -65,7 +62,7 @@ void main() {
       //expect(IntegrationTestConfig.AUTH_TOKEN.isNotEmpty, true);
       try {
         await loginWithOTP();
-        final response = instance.changePhone('+14155552671');
+        final response = passage.changePhone('+14155552671');
         expect(response, isNotNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
@@ -77,7 +74,7 @@ void main() {
       // expect(IntegrationTestConfig.AUTH_TOKEN.isNotEmpty, true);
       try {
         await loginWithOTP();
-        final response = await instance.changePhone('444');
+        final response = await passage.changePhone('444');
         expect(response, isNotNull);
         fail('Test should throw PassageUserRequestException');
       } catch (e) {
@@ -91,7 +88,7 @@ void main() {
 
     test('testChangePhoneUnAuthed', () async {
       try {
-        await instance.changePhone('+14155552671');
+        await passage.changePhone('+14155552671');
         fail('Test should throw PassageUserUnauthorizedException');
       } catch (e) {
         if (e is PassageError) {

@@ -1,43 +1,36 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:passage_flutter/passage_flutter_platform/passage_flutter_method_channel.dart';
-import 'package:passage_flutter/passage_flutter_platform/passage_flutter_platform_interface.dart';
+import 'package:passage_flutter/passage_flutter.dart';
 import 'IntegrationTestConfig.dart';
-import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
-import 'package:passage_flutter/passage_flutter_models/passage_user.dart';
-
 import 'mailosaur_api_client.dart';
 
 void main() {
-  PassageFlutterPlatform instance = MethodChannelPassageFlutter();
+  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
 
   setUp(() {
-    instance.initWithAppId(IntegrationTestConfig.APP_ID_OTP);
-    instance.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
+    passage.overrideBasePath(IntegrationTestConfig.API_BASE_URL);
   });
 
   tearDown(() async {
     try {
-      await instance.signOut();
+      await passage.signOut();
     } catch (e) {
       print('Error during sign out: $e');
     }
   });
 
   Future<void> loginWithOTP() async {
-    final otpId = (await instance.newLoginOneTimePasscode(
+    final otpId = (await passage.newLoginOneTimePasscode(
         IntegrationTestConfig.EXISTING_USER_EMAIL_OTP));
     await Future.delayed(const Duration(milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS)); 
     final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-    await instance.oneTimePasscodeActivate(otp, otpId);
+    await passage.oneTimePasscodeActivate(otp, otpId);
   }
 
   group('CurrentUserTests', () {
     test('testCurrentUser', () async {
-      // Make sure we have an authToken.
-      //expect(IntegrationTestConfig.AUTH_TOKEN.isNotEmpty, true);
       try {
         await loginWithOTP();
-        final response = await instance.getCurrentUser();
+        final response = await passage.getCurrentUser();
         expect(response?.id, IntegrationTestConfig.CURRENT_USER.id);
         expect(response?.email, IntegrationTestConfig.CURRENT_USER.email);
         expect(response?.status, IntegrationTestConfig.CURRENT_USER.status);
@@ -52,7 +45,7 @@ void main() {
 
     test('testCurrentUserNotAuthorized', () async {
       try {
-        final response = await instance.getCurrentUser();
+        final response = await passage.getCurrentUser();
         if (response == null) {
           expect(true, true);
         } else {
@@ -63,17 +56,4 @@ void main() {
       }
     });
   });
-}
-
-class Passage {
-  static void setAuthToken(String token) {
-    // Implement this method to set the auth token
-  }
-}
-
-extension on PassageUser {
-  Future<PassageUser?> getCurrentUser() async {
-    // Implement this method to get the current user
-    return this;
-  }
 }
