@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
 
@@ -120,9 +121,12 @@ class GetMessageResponse {
 class MailosaurAPIClient {
   static const String serverId = 'ncor7c1m';
   static const String apiURL = 'https://mailosaur.com/api/messages';
-  static const String mailosaurAPIKey = 'YOUR_MAILOSAUR_API_KEY_HERE'; 
+  static const String mailosaurAPIKey = 'udoOEVY0FNE11tTh';
 
   static String appUrl(String path) {
+    if (kIsWeb) {
+      return 'http://localhost:3000/api/messages$path';
+    }
     return '$apiURL$path';
   }
 
@@ -160,6 +164,7 @@ class MailosaurAPIClient {
     try {
       final messages = await listMessages();
       if (messages.isEmpty) return '';
+      messages.sort((a, b) => b.received.compareTo(a.received));
       final message = await getMessage(messages[0].id);
       final oneTimePasscode = message.html.codes.first.value;
       return oneTimePasscode;
@@ -171,7 +176,8 @@ class MailosaurAPIClient {
   static Future<GetMessageResponse> getMessage(String id) async {
     final url = appUrl('/$id');
     final request = await buildRequest(url);
-    final response = await http.Response.fromStream(await http.Client().send(request));
+    final response =
+        await http.Response.fromStream(await http.Client().send(request));
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
@@ -184,7 +190,8 @@ class MailosaurAPIClient {
   static Future<List<ListMessage>> listMessages() async {
     final url = appUrl('?server=$serverId');
     final request = await buildRequest(url);
-    final response = await http.Response.fromStream(await http.Client().send(request));
+    final response =
+        await http.Response.fromStream(await http.Client().send(request));
 
     if (response.statusCode == 200) {
       final jsonResponse = jsonDecode(response.body);
