@@ -31,7 +31,7 @@ jobs:
         run: |
           flutter pub get
           npm install
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp
 
       - name: Start Chromedriver
         run: |
@@ -40,8 +40,8 @@ jobs:
 
       - name: Start Proxy Server
         run: node proxy_server.js
-        working-directory: passage-flutter/proxy-server
+        working-directory: ./integrationtestapp/proxy-server
 
       - name: Run Web tests
         run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp

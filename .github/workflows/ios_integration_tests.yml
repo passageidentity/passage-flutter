@@ -18,12 +18,12 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp
 
       - name: Install CocoaPods
         run: pod install --project-directory=./ios
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp
 
       - name: Run iOS tests
         run: flutter drive --target=integration_test/magic_link_test.dart -d ios
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp

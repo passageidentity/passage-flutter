@@ -36,7 +36,7 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp
 
       - name: Start emulator
         run: |
@@ -47,4 +47,4 @@ jobs:
 
       - name: Run Android tests
         run: flutter drive --target=integration_test/magic_link_test.dart -d android
-        working-directory: passage-flutter
+        working-directory: ./integrationtestapp
