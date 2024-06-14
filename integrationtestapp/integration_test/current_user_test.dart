@@ -1,17 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
-import 'IntegrationTestConfig.dart';
+import 'integration_test_config.dart';
 import 'mailosaur_api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'platform_helper/platform_helper.dart';
 
 void main() {
   PassageFlutter passage =
-      PassageFlutter(IntegrationTestConfig.APP_ID_MAGIC_LINK);
+      PassageFlutter(IntegrationTestConfig.appIdMagicLink);
 
   setUp(() async {
     if (!kIsWeb) {
-      String basePath = IntegrationTestConfig.API_BASE_URL;
+      String basePath = IntegrationTestConfig.apiBaseUrl;
       if (PlatformHelper.isAndroid) {
         basePath += '/v1';
       }
@@ -23,16 +23,16 @@ void main() {
     try {
       await passage.signOut();
     } catch (e) {
-      print('Error during sign out: $e');
+      // an error happened during sign out
     }
   });
 
   Future<void> loginWithMagicLink() async {
     try {
       await passage.newLoginMagicLink(
-          IntegrationTestConfig.EXISTING_USER_EMAIL_MAGIC_LINK);
+          IntegrationTestConfig.existingUserEmailMagicLink);
       await Future.delayed(const Duration(
-          milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+          milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
       final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
       if (magicLinkStr.isEmpty) {
         fail('Test failed: Magic link is empty');
@@ -48,15 +48,15 @@ void main() {
       try {
         await loginWithMagicLink();
         final response = await passage.getCurrentUser();
-        expect(response?.id, IntegrationTestConfig.CURRENT_USER.id);
-        expect(response?.email, IntegrationTestConfig.CURRENT_USER.email);
-        expect(response?.status, IntegrationTestConfig.CURRENT_USER.status);
+        expect(response?.id, IntegrationTestConfig.currentUser.id);
+        expect(response?.email, IntegrationTestConfig.currentUser.email);
+        expect(response?.status, IntegrationTestConfig.currentUser.status);
         expect(response?.emailVerified,
-            IntegrationTestConfig.CURRENT_USER.emailVerified);
-        expect(response?.phone, IntegrationTestConfig.CURRENT_USER.phone);
+            IntegrationTestConfig.currentUser.emailVerified);
+        expect(response?.phone, IntegrationTestConfig.currentUser.phone);
         expect(response?.phoneVerified,
-            IntegrationTestConfig.CURRENT_USER.phoneVerified);
-        expect(response?.webauthn, IntegrationTestConfig.CURRENT_USER.webauthn);
+            IntegrationTestConfig.currentUser.phoneVerified);
+        expect(response?.webauthn, IntegrationTestConfig.currentUser.webauthn);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
       }

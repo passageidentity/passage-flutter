@@ -2,16 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
-import 'IntegrationTestConfig.dart';
+import 'integration_test_config.dart';
 import 'mailosaur_api_client.dart';
 import 'platform_helper/platform_helper.dart';
 
 void main() {
-  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
+  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.appIdOtp);
 
   setUp(() async {
     if (!kIsWeb) {
-      String basePath = IntegrationTestConfig.API_BASE_URL;
+      String basePath = IntegrationTestConfig.apiBaseUrl;
       if (PlatformHelper.isAndroid) {
         basePath += '/v1';
       }
@@ -23,13 +23,13 @@ void main() {
     try {
       await passage.signOut();
     } catch (e) {
-      print('Error during sign out: $e');
+      // an error happened during sign out
     }
   });
 
   group('Otp Tests', () {
-    const String EXISTING_USER_EMAIL_OTP =
-        IntegrationTestConfig.EXISTING_USER_EMAIL_OTP;
+    const String existingUserEmailOtp =
+        IntegrationTestConfig.existingUserEmailOtp;
 
     test('testRegisterOTPValid', () async {
       final date = DateTime.now().millisecondsSinceEpoch;
@@ -42,7 +42,7 @@ void main() {
     });
 
     test('testLoginOTPValid', () async {
-      final identifier = EXISTING_USER_EMAIL_OTP;
+      const identifier = existingUserEmailOtp;
       try {
         await passage.newLoginOneTimePasscode(identifier);
       } catch (e) {
@@ -51,11 +51,11 @@ void main() {
     });
 
     test('testRegisterOTPNotValid', () async {
-      final identifier = "INVALID_IDENTIFIER";
+      const identifier = "INVALID_IDENTIFIER";
       try {
         await passage.newRegisterOneTimePasscode(identifier);
         await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+            milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
         fail('Test should throw PassageError');
       } catch (e) {
         if (e is PassageError) {
@@ -74,7 +74,7 @@ void main() {
         try {
           final otpId = (await passage.newRegisterOneTimePasscode(identifier));
           await Future.delayed(const Duration(
-              milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+              milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
           final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
           await passage.oneTimePasscodeActivate(otp, otpId);
         } catch (e) {
@@ -84,7 +84,7 @@ void main() {
     }
 
     test('testLoginOTPNotValid', () async {
-      final identifier = "INVALID_IDENTIFIER";
+      const identifier = "INVALID_IDENTIFIER";
       try {
         await passage.newLoginOneTimePasscode(identifier);
         fail(
@@ -101,11 +101,11 @@ void main() {
 // Skip this test on the web
     if (!kIsWeb) {
       test('testActivateLoginOTPValid', () async {
-        final identifier = EXISTING_USER_EMAIL_OTP;
+        const identifier = existingUserEmailOtp;
         try {
           final otpId = (await passage.newLoginOneTimePasscode(identifier));
           await Future.delayed(const Duration(
-              milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+              milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
           final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
           await passage.oneTimePasscodeActivate(otp, otpId);
         } catch (e) {

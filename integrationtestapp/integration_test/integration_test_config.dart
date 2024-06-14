@@ -1,18 +1,18 @@
 import 'package:passage_flutter/passage_flutter_models/passage_user.dart';
 
 class IntegrationTestConfig {
-  static const String API_BASE_URL = "https://auth-uat.passage.dev";
-  static const String APP_ID_OTP = "Ezbk6fSdx9pNQ7v7UbVEnzeC";
-  static const String APP_ID_MAGIC_LINK = "Pea2GdtBHN3esylK4ZRlF19U";
-  static const int WAIT_TIME_MILLISECONDS = 8000;
-  static const String EXISTING_USER_EMAIL_OTP =
+  static const String apiBaseUrl = "https://auth-uat.passage.dev";
+  static const String appIdOtp = "Ezbk6fSdx9pNQ7v7UbVEnzeC";
+  static const String appIdMagicLink = "Pea2GdtBHN3esylK4ZRlF19U";
+  static const int waitTimeMilliseconds = 8000;
+  static const String existingUserEmailOtp =
       "authentigator+1716916054778@ncor7c1m.mailosaur.net";
-  static const String EXISTING_USER_EMAIL_MAGIC_LINK =
+  static const String existingUserEmailMagicLink =
       "authentigator+1716572384858@ncor7c1m.mailosaur.net";
-  static const String DEACTIVATED_USER_EMAIL_MAGIC_LINK =
+  static const String deactivatedUserEmailMagicLink =
       "authentigator+1716778790434@ncor7c1m.mailosaur.net";
 
-  static final PassageUser CURRENT_USER = PassageUser.fromMap({
+  static final PassageUser currentUser = PassageUser.fromMap({
     'id': "rDZm8yMxTuZMu0oXaEFOAtV3",
     'email': "authentigator+1716572384858@ncor7c1m.mailosaur.net",
     'status': 'active',
