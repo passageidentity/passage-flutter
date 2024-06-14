@@ -231,14 +231,6 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         result.success(token)
     }
 
-    // region TOKEN METHODS
-    fun setAuthToken(call: MethodCall, result: MethodChannel.Result) {
-        val authToken = call.argument<String>("authToken")
-            ?: return invalidArgumentError(result)
-           // passage.tokenStore.setAuthToken(authToken)
-        result.success(null)
-    }
-
     fun isAuthTokenValid(call: MethodCall, result: MethodChannel.Result) {
         val authToken = call.argument<String>("authToken")
             ?: return invalidArgumentError(result)

@@ -309,8 +309,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @override
   Future<String> changeEmail(String newEmail) async {
     try {
-      final magicLinkId =
-          await methodChannel.invokeMethod<String>('changeEmail', {'newEmail': newEmail});
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('changeEmail', {'newEmail': newEmail});
       return magicLinkId!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -320,8 +320,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @override
   Future<String> changePhone(String newPhone) async {
     try {
-      final magicLinkId =
-          await methodChannel.invokeMethod<String>('changePhone', {'newPhone': newPhone});
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('changePhone', {'newPhone': newPhone});
       return magicLinkId!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
