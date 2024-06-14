@@ -1,9 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-xmlns:tools="http://schemas.android.com/tools">
+xmlns:tools="http://schemas.android.com/tools"
+    package="com.example.integrationtestapp">
     <application
-        android:label="example_flutter"
+        android:label="integrationtestapp_flutter"
         tools:replace="android:label"
-        android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         
         <!-- Necessary for passkey authentication, do not delete. -->

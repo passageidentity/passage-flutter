@@ -1,5 +1,6 @@
 const express = require('express');
 const request = require('request');
+const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000; // Proxy server port
 
@@ -14,12 +15,18 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+const mailosaurAPIKey = 'udoOEVY0FNE11tTh';
+
+// Proxy for Mailosaur API
 app.get('/api/messages', (req, res) => {
   const url = 'https://mailosaur.com/api/messages' + req.originalUrl.replace('/api/messages', '');
   console.log(`Proxying request to: ${url}`);
   request({
     url: url,
-    headers: { 'Authorization': 'Basic ' + Buffer.from('udoOEVY0FNE11tTh').toString('base64') }
+    headers: { 'Authorization': 'Basic ' + Buffer.from('api:' + mailosaurAPIKey).toString('base64') }
   }, (error, response, body) => {
     if (error) {
       console.error(`Error proxying request: ${error}`);
@@ -36,7 +43,7 @@ app.get('/api/messages/:id', (req, res) => {
   console.log(`Proxying request to: ${url}`);
   request({
     url: url,
-    headers: { 'Authorization': 'Basic ' + Buffer.from('udoOEVY0FNE11tTh').toString('base64') }
+    headers: { 'Authorization': 'Basic ' + Buffer.from('api:' + mailosaurAPIKey).toString('base64') }
   }, (error, response, body) => {
     if (error) {
       console.error(`Error proxying request: ${error}`);

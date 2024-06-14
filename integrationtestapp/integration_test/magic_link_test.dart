@@ -4,21 +4,21 @@ import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
 import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
-import 'dart:io' if (dart.library.html) 'dart:html' as platform;
+import 'platform_helper/platform_helper.dart';
 
 void main() {
   PassageFlutter passage =
       PassageFlutter(IntegrationTestConfig.APP_ID_MAGIC_LINK);
 
-  setUp(() async {
-      if (!kIsWeb) {
-        String basePath = IntegrationTestConfig.API_BASE_URL;
-        if (platform.Platform.isAndroid) {
-          basePath += '/v1';
-        }
-        await passage.overrideBasePath(basePath);
+setUp(() async {
+    if (!kIsWeb) {
+      String basePath = IntegrationTestConfig.API_BASE_URL;
+      if (PlatformHelper.isAndroid) {
+        basePath += '/v1';
       }
-    });
+      await passage.overrideBasePath(basePath);
+    }
+  });
 
   tearDownAll(() async {
     try {
@@ -122,6 +122,8 @@ void main() {
           fail('Test failed: Magic link is empty');
         }
         await passage.magicLinkActivate(magicLinkStr);
+        var a  = await passage.getCurrentUser();
+        var b = a;
       } catch (e) {
         fail('Expected to activate login magic link, but got an exception: $e');
       }

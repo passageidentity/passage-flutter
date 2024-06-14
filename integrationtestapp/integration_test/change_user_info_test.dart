@@ -1,25 +1,26 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
 import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
-import 'dart:io' if (dart.library.html) 'dart:html' as platform;
-import 'package:flutter/foundation.dart';
+import 'platform_helper/platform_helper.dart';
 
 void main() {
-  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
+  PassageFlutter passage =
+      PassageFlutter(IntegrationTestConfig.APP_ID_MAGIC_LINK);
 
   setUp(() async {
-      if (!kIsWeb) {
-        String basePath = IntegrationTestConfig.API_BASE_URL;
-        if (platform.Platform.isAndroid) {
-          basePath += '/v1';
-        }
-        await passage.overrideBasePath(basePath);
+    if (!kIsWeb) {
+      String basePath = IntegrationTestConfig.API_BASE_URL;
+      if (PlatformHelper.isAndroid) {
+        basePath += '/v1';
       }
-    });
+      await passage.overrideBasePath(basePath);
+    }
+  });
 
-  tearDown(() async {
+  tearDownAll(() async {
     try {
       await passage.signOut();
     } catch (e) {
@@ -27,22 +28,26 @@ void main() {
     }
   });
 
-  Future<void> loginWithOTP() async {
-    final otpId = (await passage.newLoginOneTimePasscode(
-        IntegrationTestConfig.EXISTING_USER_EMAIL_OTP));
-    await Future.delayed(const Duration(
-        milliseconds: IntegrationTestConfig
-            .WAIT_TIME_MILLISECONDS)); // Simulate wait time
-    final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-    await passage.oneTimePasscodeActivate(otp, otpId);
+  Future<void> loginWithMagicLink() async {
+     try {
+        await passage.newLoginMagicLink(
+            IntegrationTestConfig.EXISTING_USER_EMAIL_MAGIC_LINK);
+        await Future.delayed(const Duration(
+            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+        final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
+        if (magicLinkStr.isEmpty) {
+          fail('Test failed: Magic link is empty');
+        }
+        await passage.magicLinkActivate(magicLinkStr);
+      } catch (e) {
+        fail('Expected to activate login magic link, but got an exception: $e');
+      }
   }
 
   group('ChangeContactTests', () {
     test('testChangeEmail', () async {
-      // Make sure we have an authToken.
-      //expect(IntegrationTestConfig.AUTH_TOKEN.isNotEmpty, true);
       try {
-        await loginWithOTP();
+        await loginWithMagicLink();
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier = 'authentigator+$date@passage.id';
         final response = await passage.changeEmail(identifier);
@@ -54,6 +59,7 @@ void main() {
 
     test('testChangeEmailUnAuthed', () async {
       try {
+        await passage.signOut();
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier = 'authentigator+$date@passage.id';
         await passage.changeEmail(identifier);
@@ -68,10 +74,8 @@ void main() {
     });
 
     test('testChangePhone', () async {
-      // Make sure we have an authToken.
-      //expect(IntegrationTestConfig.AUTH_TOKEN.isNotEmpty, true);
       try {
-        await loginWithOTP();
+        await loginWithMagicLink();
         final response = passage.changePhone('+14155552671');
         expect(response, isNotNull);
       } catch (e) {
@@ -80,10 +84,8 @@ void main() {
     });
 
     test('testChangePhoneInvalid', () async {
-      // Make sure we have an authToken.
-      // expect(IntegrationTestConfig.AUTH_TOKEN.isNotEmpty, true);
       try {
-        await loginWithOTP();
+        await loginWithMagicLink();
         final response = await passage.changePhone('444');
         expect(response, isNotNull);
         fail('Test should throw PassageError');

@@ -121,7 +121,7 @@ class GetMessageResponse {
 class MailosaurAPIClient {
   static const String serverId = 'ncor7c1m';
   static const String apiURL = 'https://mailosaur.com/api/messages';
-  static const String mailosaurAPIKey = 'API_KEY_HERE';
+  static const String mailosaurAPIKey = 'udoOEVY0FNE11tTh';
 
   static String appUrl(String path) {
     if (kIsWeb) {
@@ -200,4 +200,23 @@ class MailosaurAPIClient {
       throw Exception('Failed to load messages');
     }
   }
+}
+
+
+
+
+Future<http.Response> simpleGetRequest(String url) async {
+  return await http.get(Uri.parse(url), headers: {
+    'Accept': 'application/json', 
+  });
+}
+
+Future<http.Response> simplePostRequest(String url, Map<String, String> body) async {
+  return await http.post(
+    Uri.parse(url),
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded', 
+    },
+    body: body,
+  );
 }

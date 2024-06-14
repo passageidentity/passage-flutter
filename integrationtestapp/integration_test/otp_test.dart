@@ -4,20 +4,20 @@ import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
 import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
-import 'dart:io' if (dart.library.html) 'dart:html' as platform;
+import 'platform_helper/platform_helper.dart';
 
 void main() {
   PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
 
   setUp(() async {
-      if (!kIsWeb) {
-        String basePath = IntegrationTestConfig.API_BASE_URL;
-        if (platform.Platform.isAndroid) {
-          basePath += '/v1';
-        }
-        await passage.overrideBasePath(basePath);
+    if (!kIsWeb) {
+      String basePath = IntegrationTestConfig.API_BASE_URL;
+      if (PlatformHelper.isAndroid) {
+        basePath += '/v1';
       }
-    });
+      await passage.overrideBasePath(basePath);
+    }
+  });
 
   tearDownAll(() async {
     try {
@@ -36,8 +36,15 @@ void main() {
       final identifier = "authentigator+$date@33333.id";
       try {
         await passage.newRegisterOneTimePasscode(identifier);
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+      } catch (e) {
+        fail('Test failed due to unexpected exception: $e');
+      }
+    });
+
+        test('testLoginOTPValid', () async {
+      final identifier = EXISTING_USER_EMAIL_OTP;
+      try {
+        await passage.newLoginOneTimePasscode(identifier);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
       }
@@ -58,32 +65,23 @@ void main() {
         }
       }
     });
-
-    test('testActivateRegisterOTPValid', () async {
-      final date = DateTime.now().millisecondsSinceEpoch;
-      final identifier =
-          "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net";
-      try {
-        final otpId = (await passage.newRegisterOneTimePasscode(identifier));
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
-        final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-        await passage.oneTimePasscodeActivate(otp, otpId);
-      } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
-      }
-    });
-
-    test('testLoginOTPValid', () async {
-      final identifier = EXISTING_USER_EMAIL_OTP;
-      try {
-        await passage.newLoginOneTimePasscode(identifier);
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
-      } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
-      }
-    });
+// Skip this test on the web
+    if (!kIsWeb) {
+      test('testActivateRegisterOTPValid', () async {
+        final date = DateTime.now().millisecondsSinceEpoch;
+        final identifier =
+            "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net";
+        try {
+          final otpId = (await passage.newRegisterOneTimePasscode(identifier));
+          await Future.delayed(const Duration(
+              milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+          final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
+          await passage.oneTimePasscodeActivate(otp, otpId);
+        } catch (e) {
+          fail('Test failed due to unexpected exception: $e');
+        }
+      });
+    }
 
     test('testLoginOTPNotValid', () async {
       final identifier = "INVALID_IDENTIFIER";
@@ -102,17 +100,20 @@ void main() {
       }
     });
 
-    test('testActivateLoginOTPValid', () async {
-      final identifier = EXISTING_USER_EMAIL_OTP;
-      try {
-        final otpId = (await passage.newLoginOneTimePasscode(identifier));
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
-        final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-        await passage.oneTimePasscodeActivate(otp, otpId);
-      } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
-      }
-    });
+// Skip this test on the web
+    if (!kIsWeb) {
+      test('testActivateLoginOTPValid', () async {
+        final identifier = EXISTING_USER_EMAIL_OTP;
+        try {
+          final otpId = (await passage.newLoginOneTimePasscode(identifier));
+          await Future.delayed(const Duration(
+              milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+          final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
+          await passage.oneTimePasscodeActivate(otp, otpId);
+        } catch (e) {
+          fail('Test failed due to unexpected exception: $e');
+        }
+      });
+    }
   });
 }

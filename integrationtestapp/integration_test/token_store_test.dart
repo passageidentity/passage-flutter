@@ -2,16 +2,16 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 import 'IntegrationTestConfig.dart';
 import 'mailosaur_api_client.dart';
-import 'dart:io' if (dart.library.html) 'dart:html' as platform;
 import 'package:flutter/foundation.dart';
+import 'platform_helper/platform_helper.dart';
 
 void main() {
-  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_OTP);
+  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_MAGIC_LINK);
 
-  setUp(() async {
+ setUp(() async {
       if (!kIsWeb) {
         String basePath = IntegrationTestConfig.API_BASE_URL;
-        if (platform.Platform.isAndroid) {
+        if (PlatformHelper.isAndroid) {
           basePath += '/v1';
         }
         await passage.overrideBasePath(basePath);
@@ -26,19 +26,26 @@ void main() {
     }
   });
 
-  Future<void> loginWithOTP() async {
-    final otpId = (await passage.newLoginOneTimePasscode(
-        IntegrationTestConfig.EXISTING_USER_EMAIL_OTP));
-    await Future.delayed(const Duration(
-        milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
-    final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();
-    await passage.oneTimePasscodeActivate(otp, otpId);
+  Future<void> loginWithMagicLink() async {
+    try {
+        await passage.newLoginMagicLink(
+            IntegrationTestConfig.EXISTING_USER_EMAIL_MAGIC_LINK);
+        await Future.delayed(const Duration(
+            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+        final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
+        if (magicLinkStr.isEmpty) {
+          fail('Test failed: Magic link is empty');
+        }
+        await passage.magicLinkActivate(magicLinkStr);
+      } catch (e) {
+        fail('Expected to activate login magic link, but got an exception: $e');
+      }
   }
 
   group('TokenStoreTests', () {
     test('testCurrentUser_isNotNull', () async {
       try {
-        await loginWithOTP();
+        await loginWithMagicLink();
         final currentUser = await passage.getCurrentUser();
         expect(currentUser, isNotNull);
       } catch (e) {
@@ -58,7 +65,7 @@ void main() {
 
     test('authToken_isNotNull', () async {
       try {
-        await loginWithOTP();
+        await loginWithMagicLink();
         final authToken = await passage.getAuthToken();
         expect(authToken, isNotNull);
       } catch (e) {
