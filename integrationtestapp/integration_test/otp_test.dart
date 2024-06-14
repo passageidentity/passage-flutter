@@ -41,7 +41,7 @@ void main() {
       }
     });
 
-        test('testLoginOTPValid', () async {
+    test('testLoginOTPValid', () async {
       final identifier = EXISTING_USER_EMAIL_OTP;
       try {
         await passage.newLoginOneTimePasscode(identifier);
@@ -87,8 +87,6 @@ void main() {
       final identifier = "INVALID_IDENTIFIER";
       try {
         await passage.newLoginOneTimePasscode(identifier);
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
         fail(
             'Test should throw NewLoginOneTimePasscodeInvalidIdentifierException');
       } catch (e) {

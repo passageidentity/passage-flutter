@@ -202,20 +202,18 @@ class MailosaurAPIClient {
   }
 }
 
-
-
-
 Future<http.Response> simpleGetRequest(String url) async {
   return await http.get(Uri.parse(url), headers: {
-    'Accept': 'application/json', 
+    'Accept': 'application/json',
   });
 }
 
-Future<http.Response> simplePostRequest(String url, Map<String, String> body) async {
+Future<http.Response> simplePostRequest(
+    String url, Map<String, String> body) async {
   return await http.post(
     Uri.parse(url),
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded', 
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: body,
   );

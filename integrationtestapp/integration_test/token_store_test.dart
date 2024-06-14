@@ -6,17 +6,18 @@ import 'package:flutter/foundation.dart';
 import 'platform_helper/platform_helper.dart';
 
 void main() {
-  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.APP_ID_MAGIC_LINK);
+  PassageFlutter passage =
+      PassageFlutter(IntegrationTestConfig.APP_ID_MAGIC_LINK);
 
- setUp(() async {
-      if (!kIsWeb) {
-        String basePath = IntegrationTestConfig.API_BASE_URL;
-        if (PlatformHelper.isAndroid) {
-          basePath += '/v1';
-        }
-        await passage.overrideBasePath(basePath);
+  setUp(() async {
+    if (!kIsWeb) {
+      String basePath = IntegrationTestConfig.API_BASE_URL;
+      if (PlatformHelper.isAndroid) {
+        basePath += '/v1';
       }
-    });
+      await passage.overrideBasePath(basePath);
+    }
+  });
 
   tearDown(() async {
     try {
@@ -28,18 +29,18 @@ void main() {
 
   Future<void> loginWithMagicLink() async {
     try {
-        await passage.newLoginMagicLink(
-            IntegrationTestConfig.EXISTING_USER_EMAIL_MAGIC_LINK);
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
-        final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
-        if (magicLinkStr.isEmpty) {
-          fail('Test failed: Magic link is empty');
-        }
-        await passage.magicLinkActivate(magicLinkStr);
-      } catch (e) {
-        fail('Expected to activate login magic link, but got an exception: $e');
+      await passage.newLoginMagicLink(
+          IntegrationTestConfig.EXISTING_USER_EMAIL_MAGIC_LINK);
+      await Future.delayed(const Duration(
+          milliseconds: IntegrationTestConfig.WAIT_TIME_MILLISECONDS));
+      final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
+      if (magicLinkStr.isEmpty) {
+        fail('Test failed: Magic link is empty');
       }
+      await passage.magicLinkActivate(magicLinkStr);
+    } catch (e) {
+      fail('Expected to activate login magic link, but got an exception: $e');
+    }
   }
 
   group('TokenStoreTests', () {
