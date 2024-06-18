@@ -33,15 +33,12 @@ jobs:
         run: flutter pub get
         working-directory: ./integrationtestapp
 
-      - name: Start emulator
+      - name: Start emulator and run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: 29
           target: google_apis
           arch: x86_64
           profile: Nexus 6
           working-directory: ./integrationtestapp
-
-      - name: Run Android tests
-        run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d android
-        working-directory: ./integrationtestapp
+          script: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d android
