@@ -1,0 +1,52 @@
+
+name: Android Integration Tests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      android-emulator:
+        image: cirrusci/android-sdk:30
+        ports:
+          - 5554:5554
+          - 5555:5555
+          - 5556:5556
+        options: >-
+          --device virtio
+          --snapshot
+          --memory 2048
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ./integrationtestapp
+
+      - name: Start emulator
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libgl1-mesa-glx
+          flutter emulators --launch emulator
+          adb devices
+
+      - name: Run Android tests
+        run: flutter drive --target=integration_test/magic_link_test.dart -d android
+        working-directory: ./integrationtestapp
+

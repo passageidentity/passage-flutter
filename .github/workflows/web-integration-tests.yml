@@ -1,0 +1,48 @@
+name: Web Integration Tests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      web:
+        image: selenium/standalone-chrome:latest
+        ports:
+          - 4444:4444
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install dependencies
+        run: |
+          flutter pub get
+          npm install
+        working-directory: ./integrationtestapp
+
+      - name: Start Chromedriver
+        run: |
+          chromedriver --port=4444 &
+          sleep 5
+
+      - name: Start Proxy Server
+        run: node proxy_server.js
+        working-directory: ./integrationtestapp/proxy-server
+
+      - name: Run Web tests
+        run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200
+        working-directory: ./integrationtestapp
+
