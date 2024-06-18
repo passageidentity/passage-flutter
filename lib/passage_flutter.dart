@@ -116,6 +116,11 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
   }
 
+  Future<void> overrideBasePath(String path) async {
+    return await PassageFlutterPlatform.instance
+        .overrideBasePath(path);
+  }
+
   /// Activates a one-time passcode when a user inputs it. This function handles both login and registration one-time passcodes.
   ///
   /// Parameters:

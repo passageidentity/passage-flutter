@@ -422,6 +422,13 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         }
     }
 
+    fun overrideBasePath(call: MethodCall, result: MethodChannel.Result) {
+        val path = call.argument<String>("path")
+            ?: return invalidArgumentError(result)
+        passage.overrideBasePath(path)
+        result.success(null)
+    }
+
     // endregion
 
 }

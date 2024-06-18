@@ -23,6 +23,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     await methodChannel.invokeMethod('initWithAppId', {'appId': appId});
   }
 
+  @override
+  Future<void> overrideBasePath(String path) async {
+    await methodChannel.invokeMethod('overrideBasePath', {'path': path});
+  }
+
   // PASSKEY AUTH METHODS
 
   @override
@@ -304,8 +309,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @override
   Future<String> changeEmail(String newEmail) async {
     try {
-      final magicLinkId =
-          await methodChannel.invokeMethod<String>('changeEmail');
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('changeEmail', {'newEmail': newEmail});
       return magicLinkId!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -315,8 +320,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   @override
   Future<String> changePhone(String newPhone) async {
     try {
-      final magicLinkId =
-          await methodChannel.invokeMethod<String>('changePhone');
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('changePhone', {'newPhone': newPhone});
       return magicLinkId!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
