@@ -40,5 +40,6 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: Nexus 6
-          script: flutter drive --target=integration_test/magic_link_test.dart -d android
-        working-directory: ./integrationtestapp
+          script: |
+            cd ./integrationtestapp
+            flutter drive --target=integration_test/magic_link_test.dart -d android
