@@ -137,7 +137,7 @@ class MailosaurAPIClient {
 
   static String get authHeader {
     const key = String.fromEnvironment("MAILOSAUR_API_KEY", defaultValue: "default_key");
-    print('testkey: $key')
+    print('testkey: $key');
     final apiKey = 'api:$key';
     final encodedApiKey = base64Encode(utf8.encode(apiKey));
     return 'Basic $encodedApiKey';
