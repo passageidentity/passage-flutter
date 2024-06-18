@@ -33,12 +33,6 @@ jobs:
         run: flutter pub get
         working-directory: ./integrationtestapp
 
-      - name: Set environment variables
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-        run: |
-          echo "export MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}" >> $GITHUB_ENV
-
       - name: Start emulator and run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -46,5 +40,4 @@ jobs:
           target: google_apis
           arch: x86_64
           profile: Nexus 6
-          working-directory: ./integrationtestapp
-          script: flutter test integration_test/magic_link_test.dart -d emulator-5554
+          script: flutter test integration_test/magic_link_test.dart -d emulator-5554 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
