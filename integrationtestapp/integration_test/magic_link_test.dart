@@ -11,7 +11,6 @@ void main() {
       PassageFlutter(IntegrationTestConfig.appIdMagicLink);
 
   setUpAll(() async {
-    TestWidgetsFlutterBinding.ensureInitialized();
     if (!kIsWeb) {
       String basePath = IntegrationTestConfig.apiBaseUrl;
       if (PlatformHelper.isAndroid) {
