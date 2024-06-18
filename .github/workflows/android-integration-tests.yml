@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Set up Java
@@ -33,13 +33,15 @@ jobs:
         run: flutter pub get
         working-directory: ./integrationtestapp
 
-      - name: Run Android tests
+      - name: Start emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 33
+          api-level: 34
           target: google_apis
           arch: x86_64
           profile: Nexus 6
-          script: |
-            cd ./integrationtestapp
-            flutter drive --target=integration_test/magic_link_test.dart -d android
+          working-directory: ./integrationtestapp
+
+      - name: Run Android tests
+        run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d android
+        working-directory: ./integrationtestapp
