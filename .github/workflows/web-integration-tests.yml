@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd integrationtestapp/proxy-server
+          cd proxy-server
           npm install
           cd ../..
           flutter pub get
