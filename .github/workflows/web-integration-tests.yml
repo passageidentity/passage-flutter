@@ -41,7 +41,9 @@ jobs:
           sleep 5
 
       - name: Start Proxy Server
-        run: node integrationtestapp/proxy-server/proxy_server.js
+        run: |
+          nohup node integrationtestapp/proxy-server/proxy_server.js &
+          sleep 5
 
       - name: Run Web tests
         run: |
