@@ -24,18 +24,26 @@ jobs:
         run: pod install --project-directory=ios
         working-directory: ./integrationtestapp
 
+      - name: List available simulators
+        run: xcrun simctl list devices
+        id: list_simulators
+
+      - name: Extract device ID
+        run: echo "::set-output name=device_id::$(xcrun simctl list devices | grep -m 1 '(Booted)' | awk '{print $2}')"
+        id: extract_device_id
+
       - name: Launch iOS Simulator
         run: |
           sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
           sudo xcodebuild -license accept
           sudo xcodebuild -runFirstLaunch
-          xcrun simctl boot AEF8E16C-71D7-4EC3-A554-D1AC7C562E53
-          xcrun simctl bootstatus AEF8E16C-71D7-4EC3-A554-D1AC7C562E53
+          xcrun simctl boot ${{ steps.extract_device_id.outputs.device_id }}
+          xcrun simctl bootstatus ${{ steps.extract_device_id.outputs.device_id }}
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
       - name: Run iOS tests
-        run: flutter test integration_test/*.dart -d AEF8E16C-71D7-4EC3-A554-D1AC7C562E53 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        run: flutter test integration_test/*.dart -d ${{ steps.extract_device_id.outputs.device_id }} --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
