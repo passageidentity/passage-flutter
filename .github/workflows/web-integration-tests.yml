@@ -30,7 +30,9 @@ jobs:
       - name: Install dependencies
         run: |
           flutter pub get
-          npm install
+          if [ -f ./integrationtestapp/package.json ]; then
+            npm install
+          fi
         working-directory: ./integrationtestapp
 
       - name: Start Chromedriver
@@ -45,4 +47,3 @@ jobs:
       - name: Run Web tests
         run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200
         working-directory: ./integrationtestapp
-
