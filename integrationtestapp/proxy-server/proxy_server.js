@@ -18,7 +18,7 @@ app.use((req, res, next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const mailosaurAPIKey = 'YOUR_API_KEY_HERE';
+const mailosaurAPIKey = process.env.MAILOSAUR_API_KEY || 'default_key';
 
 // Proxy for Mailosaur API
 app.get('/api/messages', (req, res) => {
