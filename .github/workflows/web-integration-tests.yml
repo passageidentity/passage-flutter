@@ -29,10 +29,10 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd integrationtestapp/proxy-server
+          npm install
+          cd ../..
           flutter pub get
-          if [ -f ./integrationtestapp/package.json ]; then
-            npm install
-          fi
         working-directory: ./integrationtestapp
 
       - name: Start Chromedriver
@@ -41,9 +41,13 @@ jobs:
           sleep 5
 
       - name: Start Proxy Server
-        run: node proxy_server.js
-        working-directory: ./integrationtestapp/proxy-server
+        run: node integrationtestapp/proxy-server/proxy_server.js
 
       - name: Run Web tests
-        run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200
+        run: |
+          for test in integration_test/*.dart; do
+            flutter drive --driver=test_driver/integration_test.dart --target=$test -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
+          done
         working-directory: ./integrationtestapp
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
