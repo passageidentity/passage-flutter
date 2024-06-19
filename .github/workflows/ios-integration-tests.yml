@@ -27,10 +27,11 @@ jobs:
       - name: List available simulators
         id: list_simulators
         run: |
-          xcrun simctl list devices | grep -E 'iPhone [0-9]+ \(.*\)' | grep -Eo '[0-9A-F-]{36}' | head -n 1
+          SIMULATOR_ID=$(xcrun simctl list devices | grep -E 'iPhone [0-9]+ \(.*\)' | grep -Eo '[0-9A-F-]{36}' | head -n 1)
+          echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
 
       - name: Start iOS simulator
-        run: xcrun simctl boot ${{ steps.list_simulators.outputs.simulator_id }}
+        run: xcrun simctl boot $SIMULATOR_ID
 
       - name: Run iOS tests
         run: flutter test integration_test/*.dart -d "iPhone 12" --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
