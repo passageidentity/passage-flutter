@@ -54,7 +54,7 @@ jobs:
         uses: coactions/setup-xvfb@v1
         with:
           run: |
-            cd integrationtestapp
-            flutter drive --driver=test_driver/integration_test.dart --target=integration_test/change_user_info_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+            flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+          working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
