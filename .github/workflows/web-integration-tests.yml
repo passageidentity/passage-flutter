@@ -8,12 +8,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    services:
-      web:
-        image: selenium/standalone-chrome:latest
-        ports:
-          - 4444:4444
-
     steps:
       - uses: actions/checkout@v4
 
@@ -35,15 +29,21 @@ jobs:
           flutter pub get
         working-directory: ./integrationtestapp
 
-      - name: Start Chromedriver
+      - name: Set up ChromeDriver
+        uses: nanasess/setup-chromedriver@v2
+        with:
+          chromedriver-version: 'latest' 
+      - name: Start Xvfb
         run: |
-          chromedriver --port=4444 &
-          sleep 5
-
+          export DISPLAY=:99
+          sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+      
       - name: Start Proxy Server
         run: |
           nohup node integrationtestapp/proxy-server/proxy_server.js &
           sleep 5
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
       - name: Run Web tests
         run: |
