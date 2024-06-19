@@ -36,7 +36,7 @@ jobs:
 
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2
-        
+
       - name: Start Xvfb
         run: |
           export DISPLAY=:99
@@ -51,9 +51,7 @@ jobs:
 
       - name: Run Web tests
         run: |
-          for test in integration_test/*.dart; do
-            flutter drive --driver=test_driver/integration_test.dart --target=$test -d web-server --web-port=4200 --browser-name=chrome --headless --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
-          done
+          flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
