@@ -29,10 +29,10 @@ jobs:
         with:
           model: 'iPhone 14'
 
-      - name: List available simulators
-        id: list_simulators
+      - name: Extract Simulator ID
+        id: extract_simulator_id
         run: |
-          SIMULATOR_ID=$(xcrun simctl list devices | grep -E 'iPhone [0-9]+ \(.*\)' | grep -Eo '[0-9A-F-]{36}' | head -n 1)
+          SIMULATOR_ID=$(xcrun simctl list devices | grep -E 'iPhone 14 \(.*\)' | grep -Eo '[0-9A-F-]{36}')
           echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
 
       - name: Run iOS tests
