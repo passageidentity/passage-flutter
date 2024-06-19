@@ -24,26 +24,13 @@ jobs:
         run: pod install --project-directory=ios
         working-directory: ./integrationtestapp
 
-      - name: List available simulators
-        run: xcrun simctl list devices
-        id: list_simulators
-
-      - name: Extract device ID
-        run: echo "::set-output name=device_id::$(xcrun simctl list devices | grep -m 1 '(Booted)' | awk '{print $2}')"
-        id: extract_device_id
-
-      - name: Launch iOS Simulator
-        run: |
-          sudo xcode-select --switch /Applications/Xcode.app/Contents/Developer
-          sudo xcodebuild -license accept
-          sudo xcodebuild -runFirstLaunch
-          xcrun simctl boot ${{ steps.extract_device_id.outputs.device_id }}
-          xcrun simctl bootstatus ${{ steps.extract_device_id.outputs.device_id }}
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+      - name: Start iOS Simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: 'iPhone 8'
 
       - name: Run iOS tests
-        run: flutter test integration_test/*.dart -d ${{ steps.extract_device_id.outputs.device_id }} --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d ios --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
