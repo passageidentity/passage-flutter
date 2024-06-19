@@ -54,42 +54,10 @@ jobs:
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
-      - name: Run magic_link_test.dart with XVFB
+      - name: Run Web tests with XVFB
         run: |
-          export DISPLAY=:99
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d web-server --web-port=4200 --browser-name=chrome --headless --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/change_user_info_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-
-      - name: Run otp_test.dart with XVFB
-        run: |
-          export DISPLAY=:99
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/otp_test.dart -d web-server --web-port=4200 --browser-name=chrome --headless --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
-        working-directory: ./integrationtestapp
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-
-      - name: Run token_store_test.dart with XVFB
-        run: |
-          export DISPLAY=:99
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/token_store_test.dart -d web-server --web-port=4200 --browser-name=chrome --headless --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
-        working-directory: ./integrationtestapp
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-
-      - name: Run change_user_info_test.dart with XVFB
-        run: |
-          export DISPLAY=:99
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/change_user_info_test.dart -d web-server --web-port=4200 --browser-name=chrome --headless --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
-        working-directory: ./integrationtestapp
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-
-      - name: Run current_user_test.dart with XVFB
-        run: |
-          export DISPLAY=:99
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/current_user_test.dart -d web-server --web-port=4200 --browser-name=chrome --headless --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
-        working-directory: ./integrationtestapp
-        env:
-          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+          
