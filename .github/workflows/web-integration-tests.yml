@@ -33,7 +33,7 @@ jobs:
         run: |
           sudo apt-get update
           wget https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/google-chrome-stable_125.0.6422.141-1_amd64.deb
-          sudo apt-get install -y ./google-chrome-stable_125.0.6422.141-1_amd64.deb
+          sudo apt-get install -y --allow-downgrades ./google-chrome-stable_125.0.6422.141-1_amd64.deb
 
       - name: Install ChromeDriver
         run: |
