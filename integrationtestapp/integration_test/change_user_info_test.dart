@@ -33,6 +33,7 @@ void main() {
       }
       await passage.overrideBasePath(basePath);
     }
+    await passage.signOut();
     await loginWithMagicLink();
   });
 
