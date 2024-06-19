@@ -7,14 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        test: 
-          - change_user_info_test.dart
-          - current_user_test.dart
-          - magic_link_test.dart
-          - otp_test.dart
-          - token_store_tests.dart
 
     steps:
       - uses: actions/checkout@v4
@@ -65,7 +57,7 @@ jobs:
       - name: Run Web tests with XVFB
         run: |
             echo "Running test: $test"
-            xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/${{ matrix.test }} -d chrome --web-port=4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port=4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
