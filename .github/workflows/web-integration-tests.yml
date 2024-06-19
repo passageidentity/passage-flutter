@@ -57,7 +57,7 @@ jobs:
       - name: Run Web tests with XVFB
         run: |
           for test in integration_test/*.dart; do
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=$test -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=$test -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
           done
         working-directory: ./integrationtestapp
         env:
