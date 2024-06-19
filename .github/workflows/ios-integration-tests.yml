@@ -1,0 +1,36 @@
+name: iOS Integration Tests
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.1'
+
+      - name: Install dependencies
+        run: flutter pub get
+        working-directory: ./integrationtestapp
+
+      - name: Install CocoaPods
+        run: pod install --project-directory=ios
+        working-directory: ./integrationtestapp
+
+      - name: Install simulator
+        uses: futureware-tech/simulator-action@v3
+        with:
+          model: 'iPhone 14'
+
+      - name: Run iOS tests
+        run: flutter test integration_test/*.dart -d D9B9FD9F-A0A3-422F-8D9B-35F8CC886FF3 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        working-directory: ./integrationtestapp
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}

@@ -2,15 +2,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
-import 'integration_test_config.dart';
-import 'mailosaur_api_client.dart';
-import 'platform_helper/platform_helper.dart';
+import 'helper/integration_test_config.dart';
+import 'helper/mailosaur_api_client.dart';
+import 'helper/platform_helper.dart';
 
 void main() {
   PassageFlutter passage =
       PassageFlutter(IntegrationTestConfig.appIdMagicLink);
 
-  setUp(() async {
+  setUpAll(() async {
     if (!kIsWeb) {
       String basePath = IntegrationTestConfig.apiBaseUrl;
       if (PlatformHelper.isAndroid) {
@@ -20,7 +20,7 @@ void main() {
     }
   });
 
-  tearDownAll(() async {
+  tearDown(() async {
     try {
       await passage.signOut();
     } catch (e) {

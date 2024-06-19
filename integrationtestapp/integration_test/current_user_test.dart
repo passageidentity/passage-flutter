@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
-import 'integration_test_config.dart';
-import 'mailosaur_api_client.dart';
+import 'helper/integration_test_config.dart';
+import 'helper/mailosaur_api_client.dart';
 import 'package:flutter/foundation.dart';
-import 'platform_helper/platform_helper.dart';
+import 'helper/platform_helper.dart';
 
 void main() {
   PassageFlutter passage =
