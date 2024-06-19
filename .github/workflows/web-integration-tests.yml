@@ -50,9 +50,10 @@ jobs:
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
-      - name: Run Web tests
-        run: |
-          xvfb-run -s "-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/change_user_info_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
-        working-directory: ./integrationtestapp
+      - name: Run Web tests with XVFB
+        uses: coactions/setup-xvfb@v1
+        with:
+          run: flutter drive --driver=test_driver/integration_test.dart --target=integration_test/change_user_info_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+        working-directory: ./integrationtestapp
