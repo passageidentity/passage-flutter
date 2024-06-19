@@ -36,8 +36,7 @@ jobs:
 
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2
-        with:
-          chromedriver-version: 'latest' 
+        
       - name: Start Xvfb
         run: |
           export DISPLAY=:99
