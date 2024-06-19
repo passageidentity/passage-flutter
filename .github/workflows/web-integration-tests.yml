@@ -29,6 +29,11 @@ jobs:
           flutter pub get
         working-directory: ./integrationtestapp
 
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
       - name: Set up ChromeDriver
         uses: nanasess/setup-chromedriver@v2
         with:
