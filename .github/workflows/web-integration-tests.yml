@@ -54,12 +54,37 @@ jobs:
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
 
-      - name: Run Web tests with XVFB
+      - name: Run Web tests with XVFB - change_user_info_test
         run: |
-          for test in integration_test/*.dart; do
-          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=$test -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }} || exit 1
-          done
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/change_user_info_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
-          
+      
+      - name: Run Web tests with XVFB - current_user_test
+        run: |
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/current_user_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        working-directory: ./integrationtestapp
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+
+      - name: Run Web tests with XVFB - magic_link_test
+        run: |
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/magic_link_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        working-directory: ./integrationtestapp
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+      
+      - name: Run Web tests with XVFB - otp_test
+        run: |
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/otp_test.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        working-directory: ./integrationtestapp
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
+
+      - name: Run Web tests with XVFB -token_store_tests
+        run: |
+          nohup xvfb-run --auto-servernum --server-args="-screen 0 1280x1024x24" flutter drive --driver=test_driver/integration_test.dart --target=integration_test/token_store_tests.dart -d chrome --web-port 4200 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        working-directory: ./integrationtestapp
+        env:
+          MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
