@@ -20,7 +20,7 @@ void main() {
     }
   });
 
-  tearDownAll(() async {
+  tearDown(() async {
     try {
       await passage.signOut();
     } catch (e) {
