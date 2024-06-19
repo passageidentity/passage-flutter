@@ -29,15 +29,21 @@ jobs:
           flutter pub get
         working-directory: ./integrationtestapp
 
-      - name: Install Google Chrome
+      - name: Install specific version of Google Chrome
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
+          wget https://dl.google.com/linux/deb/pool/main/g/google-chrome-stable/google-chrome-stable_125.0.6422.141-1_amd64.deb
+          sudo apt-get install -y ./google-chrome-stable_125.0.6422.141-1_amd64.deb
 
       - name: Install ChromeDriver
         run: |
           sudo apt-get install -y xvfb
-          CHROMEDRIVER_VERSION="125.0.6422.141"
+          CHROME_VERSION=$(google-chrome --version | grep -oP '\d+\.\d+\.\d+' | head -1)
+          CHROMEDRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_$CHROME_VERSION")
+          if [[ "$CHROMEDRIVER_VERSION" == *"Error"* ]]; then
+            CHROMEDRIVER_VERSION=$(curl -sS "https://chromedriver.storage.googleapis.com/LATEST_RELEASE")
+          fi
+          echo "Chrome Version: $CHROME_VERSION"
           echo "ChromeDriver Version: $CHROMEDRIVER_VERSION"
           curl -sS -o /tmp/chromedriver.zip "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
           sudo unzip /tmp/chromedriver.zip chromedriver -d /usr/local/bin/
