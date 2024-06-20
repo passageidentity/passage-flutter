@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:json_annotation/json_annotation.dart';
-import 'dart:io';
 
 part 'mailosaur_api_client.g.dart'; // Ensure this path is correct
 
@@ -119,14 +118,10 @@ class GetMessageResponse {
   Map<String, dynamic> toJson() => _$GetMessageResponseToJson(this);
 }
 
-String getMailosaurApiKey() {
-  return Platform.environment['MAILOSAUR_API_KEY'] ?? 'default_key';
-}
-
 class MailosaurAPIClient {
   static const String serverId = 'ncor7c1m';
   static const String apiURL = 'https://mailosaur.com/api/messages';
-  static final String mailosaurAPIKey = getMailosaurApiKey();
+  static const String mailosaurAPIKey = "YOUR_MAILOSAUR_API_KEY";
 
   static String appUrl(String path) {
     if (kIsWeb) {
@@ -136,7 +131,7 @@ class MailosaurAPIClient {
   }
 
   static String get authHeader {
-    const key = String.fromEnvironment("MAILOSAUR_API_KEY", defaultValue: "default_key");
+    const key = String.fromEnvironment("MAILOSAUR_API_KEY", defaultValue: mailosaurAPIKey);
     final apiKey = 'api:$key';
     final encodedApiKey = base64Encode(utf8.encode(apiKey));
     return 'Basic $encodedApiKey';

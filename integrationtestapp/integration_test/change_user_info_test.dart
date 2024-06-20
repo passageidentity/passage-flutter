@@ -30,7 +30,6 @@ void main() {
 
   Future<void> loginWithMagicLink() async {
      try {
-        await passage.signOut();
         await passage.newLoginMagicLink(
             IntegrationTestConfig.existingUserEmailMagicLink);
         await Future.delayed(const Duration(
@@ -48,7 +47,6 @@ void main() {
   group('ChangeContactTests', () {
     test('testChangeEmail', () async {
       try {
-         await passage.signOut();
         await loginWithMagicLink();
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier = 'authentigator+$date@passage.id';
@@ -74,17 +72,6 @@ void main() {
         }
       }
     });
-
-    // test('testChangePhone', () async {
-    //   try {
-    //      await passage.signOut();
-    //     await loginWithMagicLink();
-    //     final response = passage.changePhone('+14155552671');
-    //     expect(response, isNotNull);
-    //   } catch (e) {
-    //     fail('Test failed due to unexpected exception: $e');
-    //   }
-    // });
 
     test('testChangePhoneInvalid', () async {
       try {
