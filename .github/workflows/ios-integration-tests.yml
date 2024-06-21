@@ -1,8 +1,7 @@
 name: iOS Integration Tests
 
 on:
-  pull_request:
-    branches: [ "main" ]
+  workflow_run:
     workflows: ["Android Integration Tests"]
     types:
       - completed
