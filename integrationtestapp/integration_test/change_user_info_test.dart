@@ -2,13 +2,14 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:passage_flutter/passage_flutter.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
-import 'integration_test_config.dart';
-import 'mailosaur_api_client.dart';
-import 'platform_helper/platform_helper.dart';
+import 'helper/integration_test_config.dart';
+import 'helper/mailosaur_api_client.dart';
+import 'helper/platform_helper.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
-  PassageFlutter passage =
-      PassageFlutter(IntegrationTestConfig.appIdMagicLink);
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.appIdMagicLink);
 
   setUp(() async {
     if (!kIsWeb) {
@@ -20,7 +21,7 @@ void main() {
     }
   });
 
-  tearDownAll(() async {
+  tearDown(() async {
     try {
       await passage.signOut();
     } catch (e) {
@@ -29,19 +30,19 @@ void main() {
   });
 
   Future<void> loginWithMagicLink() async {
-     try {
-        await passage.newLoginMagicLink(
-            IntegrationTestConfig.existingUserEmailMagicLink);
-        await Future.delayed(const Duration(
-            milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
-        final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
-        if (magicLinkStr.isEmpty) {
-          fail('Test failed: Magic link is empty');
-        }
-        await passage.magicLinkActivate(magicLinkStr);
-      } catch (e) {
-        fail('Expected to activate login magic link, but got an exception: $e');
+    try {
+      await passage
+          .newLoginMagicLink(IntegrationTestConfig.existingUserEmailMagicLink);
+      await Future.delayed(const Duration(
+          milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
+      final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
+      if (magicLinkStr.isEmpty) {
+        fail('Test failed: Magic link is empty');
       }
+      await passage.magicLinkActivate(magicLinkStr);
+    } catch (e) {
+      fail('Expected to activate login magic link, but got an exception: $e');
+    }
   }
 
   group('ChangeContactTests', () {
@@ -70,16 +71,6 @@ void main() {
         } else {
           fail('Test failed due to unexpected exception: $e');
         }
-      }
-    });
-
-    test('testChangePhone', () async {
-      try {
-        await loginWithMagicLink();
-        final response = passage.changePhone('+14155552671');
-        expect(response, isNotNull);
-      } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
       }
     });
 

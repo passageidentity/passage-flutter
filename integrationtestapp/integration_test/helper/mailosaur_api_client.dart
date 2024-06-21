@@ -121,7 +121,7 @@ class GetMessageResponse {
 class MailosaurAPIClient {
   static const String serverId = 'ncor7c1m';
   static const String apiURL = 'https://mailosaur.com/api/messages';
-  static const String mailosaurAPIKey = 'YOUR_API_KEY_HERE';
+  static const String mailosaurAPIKey = "YOUR_MAILOSAUR_API_KEY";
 
   static String appUrl(String path) {
     if (kIsWeb) {
@@ -131,7 +131,8 @@ class MailosaurAPIClient {
   }
 
   static String get authHeader {
-    const apiKey = 'api:$mailosaurAPIKey';
+    const key = String.fromEnvironment("MAILOSAUR_API_KEY", defaultValue: mailosaurAPIKey);
+    final apiKey = 'api:$key';
     final encodedApiKey = base64Encode(utf8.encode(apiKey));
     return 'Basic $encodedApiKey';
   }
