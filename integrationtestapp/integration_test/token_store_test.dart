@@ -4,10 +4,11 @@ import 'helper/integration_test_config.dart';
 import 'helper/mailosaur_api_client.dart';
 import 'package:flutter/foundation.dart';
 import 'helper/platform_helper.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
-  PassageFlutter passage =
-      PassageFlutter(IntegrationTestConfig.appIdMagicLink);
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
+  PassageFlutter passage = PassageFlutter(IntegrationTestConfig.appIdMagicLink);
 
   setUp(() async {
     if (!kIsWeb) {
@@ -29,8 +30,8 @@ void main() {
 
   Future<void> loginWithMagicLink() async {
     try {
-      await passage.newLoginMagicLink(
-          IntegrationTestConfig.existingUserEmailMagicLink);
+      await passage
+          .newLoginMagicLink(IntegrationTestConfig.existingUserEmailMagicLink);
       await Future.delayed(const Duration(
           milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
       final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();

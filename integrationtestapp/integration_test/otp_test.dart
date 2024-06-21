@@ -5,8 +5,10 @@ import 'package:passage_flutter/passage_flutter_models/passage_error.dart';
 import 'helper/integration_test_config.dart';
 import 'helper/mailosaur_api_client.dart';
 import 'helper/platform_helper.dart';
+import 'package:integration_test/integration_test.dart';
 
 void main() {
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   PassageFlutter passage = PassageFlutter(IntegrationTestConfig.appIdOtp);
 
   setUp(() async {
