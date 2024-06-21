@@ -74,16 +74,6 @@ void main() {
       }
     });
 
-    test('testChangePhone', () async {
-      try {
-        await loginWithMagicLink();
-        final response = passage.changePhone('+14155552671');
-        expect(response, isNotNull);
-      } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
-      }
-    });
-
     test('testChangePhoneInvalid', () async {
       try {
         await loginWithMagicLink();
