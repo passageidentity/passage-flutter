@@ -3,6 +3,10 @@ name: Android Integration Tests
 on:
   pull_request:
     branches: [ "main" ]
+    workflows: ["Web Integration Tests"]
+    types:
+      - completed
+
 
 jobs:
   build:

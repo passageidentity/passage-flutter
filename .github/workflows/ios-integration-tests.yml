@@ -3,11 +3,14 @@ name: iOS Integration Tests
 on:
   pull_request:
     branches: [ "main" ]
+    workflows: ["Android Integration Tests"]
+    types:
+      - completed
+
 
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
       - uses: actions/checkout@v4
 
