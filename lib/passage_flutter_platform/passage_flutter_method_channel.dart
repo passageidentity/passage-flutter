@@ -327,4 +327,38 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
       throw PassageError.fromObject(object: e);
     }
   }
+
+  @override
+  Future<String> hostedAuthStart() async {
+    try {
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('hostedAuthStart');
+      return magicLinkId!;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<String> hostedAuthFinish(String code, String clientSecret, String state) async {
+    try {
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('hostedAuthFinish', {'code': code, 'clientSecret': clientSecret, 'state': state});
+      return magicLinkId!;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<String> hostedLogout() async {
+    try {
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('hostedLogout');
+      return magicLinkId!;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
 }

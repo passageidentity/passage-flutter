@@ -353,4 +353,40 @@ class PassageFlutter {
   Future<String> changePhone(String newPhone) {
     return PassageFlutterPlatform.instance.changePhone(newPhone);
   }
+
+  // OIDC Methods
+  
+  /// Start Hosted Auth
+  ///
+  /// Authorizes user via a Hosted Login feature.
+  /// Throws:
+  ///  `PassageError`
+    
+  Future<void> hostedAuthStart() {
+    return PassageFlutterPlatform.instance.hostedAuthStart();
+  }
+
+  /// Finish Hosted Auth
+  ///
+  /// Finishes a Hosted login/sign up by exchanging the auth code for Passage tokens.
+  /// Parameters:
+  /// code: The code returned from the Hosted login.
+  /// clientSecret: The client secret for the Passage App.
+  /// state: The state returned from the Hosted login.
+  /// Throws:
+  ///  `PassageError`
+
+  Future<void> hostedAuthFinish(String code, String clientSecret, String state) {
+    return PassageFlutterPlatform.instance.hostedAuthFinish(code, clientSecret, state);
+  }
+
+  /// Logout with hosted auth
+  //
+  /// Throws:
+  ///  `PassageError`
+
+  Future<void> hostedLogout() {
+    return PassageFlutterPlatform.instance.hostedLogout();
+  }
+
 }

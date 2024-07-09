@@ -157,4 +157,16 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
   Future<String> changePhone(String newPhone) {
     throw UnimplementedError('changePhone() has not been implemented.');
   }
+
+  Future<String> hostedAuthStart() {
+    throw UnimplementedError('hostedAuthStart() has not been implemented.');
+  }
+
+  Future<String> hostedAuthFinish(String code, String clientSecret, String state) {
+    throw UnimplementedError('hostedAuthFinish() has not been implemented.');
+  }
+
+  Future<String> hostedLogout() {
+    throw UnimplementedError('hostedLogout() has not been implemented.');
+  }
 }
