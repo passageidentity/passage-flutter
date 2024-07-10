@@ -76,6 +76,12 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
             passageFlutter.changePhone(arguments: call.arguments, result: result)
         case "identifierExists":
             passageFlutter.identifierExists(arguments: call.arguments, result: result)
+        case "hostedAuthStart":
+            passageFlutter.hostedAuthStart(result: result)
+        case "hostedAuthFinish":
+            passageFlutter.hostedAuthFinish(arguments: call.arguments, result: result)
+        case "hostedLogout":
+            passageFlutter.hostedLogout(result: result)
         default:
             result(FlutterMethodNotImplemented)
         }

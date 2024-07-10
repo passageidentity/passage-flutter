@@ -526,6 +526,63 @@ internal class PassageFlutter {
             result(convertToJsonString(codable: user))
         }
     }
+
+    internal func hostedAuthStart(result: @escaping FlutterResult) {
+        Task {
+            do {
+                try await passage.hostedAuthStart()
+                result(nil)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.START_HOSTED_AUTH_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+
+    internal func hostedAuthFinish(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+            let code = args["code"] as? String,
+            let clientSecret = args["clientSecret"] as? String,
+            let state = args["state"] as? String else {
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
+            return
+        }
+
+        Task {
+            do {
+                let user = try await passage.hostedAuthFinish(code: code, clientSecret: clientSecret, state: state)
+                result(nil)  // Successfully authenticated
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.FINISH_HOSTED_AUTH_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+
+    internal func hostedLogout(result: @escaping FlutterResult) {
+        Task {
+            do {
+                try await passage.hostedLogout()
+                result(nil)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
     
 }
 
