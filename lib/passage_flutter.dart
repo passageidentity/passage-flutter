@@ -356,9 +356,9 @@ class PassageFlutter {
 
   // OIDC Methods
   
-  /// Start Hosted Auth
+  /// Authentication Method for Hosted Apps
   ///
-  /// Authorizes user via a Hosted Login feature.
+  /// If your Passage app is Hosted, use this method to register and log in your user. This method will open up a Passage login experience
   /// Throws:
   ///  `PassageError`
     
@@ -370,9 +370,9 @@ class PassageFlutter {
   ///
   /// Finishes a Hosted login/sign up by exchanging the auth code for Passage tokens.
   /// Parameters:
-  /// code: The code returned from the Hosted login.
-  /// clientSecret: The client secret for the Passage App.
-  /// state: The state returned from the Hosted login.
+  /// code: The code returned from app link redirect to your activity.
+  /// clientSecret: You hosted app's client secret, found in Passage Console's OIDC Settings.
+  /// state: The state returned from app link redirect to your activity.
   /// Throws:
   ///  `PassageError`
 
@@ -380,8 +380,9 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.hostedAuthFinish(code, clientSecret, state);
   }
 
-  /// Logout with hosted auth
-  //
+  /// Logout Method for Hosted Apps
+  ///
+  /// If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
   /// Throws:
   ///  `PassageError`
 
