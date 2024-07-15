@@ -74,6 +74,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "hostedAuthStart" -> passageFlutter?.hostedAuthStart(result)
           "hostedAuthFinish" -> passageFlutter?.hostedAuthFinish(call, result)
           "hostedLogout" -> passageFlutter?.hostedLogout(result)
+          "hostedLogoutWithIdToken" -> passageFlutter?.hostedLogout(call, result)
           else -> {
               result.notImplemented()
           }

@@ -1,4 +1,5 @@
 import 'passage_flutter_models/auth_result.dart';
+import 'passage_flutter_models/auth_result_with_id_token.dart';
 import 'passage_flutter_models/authenticator_attachment.dart';
 import 'passage_flutter_models/passage_app_info.dart';
 import 'passage_flutter_models/passage_social_connection.dart';
@@ -354,7 +355,7 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.changePhone(newPhone);
   }
 
-  // OIDC Methods
+  // Hosted Auth Methods
   
   /// Authentication Method for Hosted Apps
   ///
@@ -364,6 +365,19 @@ class PassageFlutter {
     
   Future<void> hostedAuthStart() {
     return PassageFlutterPlatform.instance.hostedAuthStart();
+  }
+
+  // Hosted Auth Methods
+  
+  /// Authentication Method for Hosted Apps
+  /// ONLY FOR iOS
+  /// If your Passage app is Hosted, use this method to register and log in your user. This method will open up a Passage login experience
+  /// 
+  /// Throws:
+  ///  `PassageError`
+    
+  Future<AuthResultWithIdToken> hostedAuthIOS(String clientSecret) {
+    return PassageFlutterPlatform.instance.hostedAuthIOS(clientSecret);
   }
 
   /// Finish Hosted Auth
@@ -376,7 +390,7 @@ class PassageFlutter {
   /// Throws:
   ///  `PassageError`
 
-  Future<void> hostedAuthFinish(String code, String clientSecret, String state) {
+  Future<AuthResultWithIdToken> hostedAuthFinish(String code, String clientSecret, String state) {
     return PassageFlutterPlatform.instance.hostedAuthFinish(code, clientSecret, state);
   }
 
@@ -388,6 +402,18 @@ class PassageFlutter {
 
   Future<void> hostedLogout() {
     return PassageFlutterPlatform.instance.hostedLogout();
+  }
+
+  // Logout Method for Hosted Apps
+  ///
+  /// If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+  /// Parameters:
+  /// idToken: The auth id token, used to log the user our of any remaining web sessions.
+  /// Throws:
+  ///  `PassageError`
+
+  Future<void> hostedLogoutWithIdToken(String idToken) {
+    return PassageFlutterPlatform.instance.hostedLogoutWithIdToken(idToken);
   }
 
 }

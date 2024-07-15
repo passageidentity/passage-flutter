@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
 
+import '../passage_flutter_models/auth_result_with_id_token.dart';
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
@@ -329,22 +330,46 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> hostedAuthStart() async {
+  Future<void> hostedAuthStart() async {
+    if (Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.hostedAuthStart,
+          message: 'Not supported on iOS. Use hostedAuthIOS instead.');
+    }
     try {
-      final magicLinkId = await methodChannel
-          .invokeMethod<String>('hostedAuthStart');
-      return magicLinkId!;
+      await methodChannel.invokeMethod<String>('hostedAuthStart');
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
   }
 
   @override
-  Future<String> hostedAuthFinish(String code, String clientSecret, String state) async {
+  Future<AuthResultWithIdToken> hostedAuthIOS(String clientSecret) async {
+    if (!Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.hostedAuthFinish,
+          message: 'Only supported on iOS. Use hostedAuthStart instead.');
+    }
     try {
-      final magicLinkId = await methodChannel
-          .invokeMethod<String>('hostedAuthFinish', {'code': code, 'clientSecret': clientSecret, 'state': state});
-      return magicLinkId!;
+      final authResultWithIdToken = await methodChannel
+          .invokeMethod<AuthResultWithIdToken>('hostedAuth', {'clientSecret': clientSecret});
+      return authResultWithIdToken!;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<AuthResultWithIdToken> hostedAuthFinish(String code, String clientSecret, String state) async {
+    if (Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.hostedAuthFinish,
+          message: 'Not supported on iOS. Use hostedAuthIOS instead.');
+    }
+    try {
+      final authResultWithIdToken = await methodChannel
+          .invokeMethod<AuthResultWithIdToken>('hostedAuthFinish', {'code': code, 'clientSecret': clientSecret, 'state': state});
+      return authResultWithIdToken!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
@@ -355,6 +380,17 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     try {
       final magicLinkId = await methodChannel
           .invokeMethod<String>('hostedLogout');
+      return magicLinkId!;
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<String> hostedLogoutWithIdToken(String idToken) async {
+    try {
+      final magicLinkId = await methodChannel
+          .invokeMethod<String>('hostedLogoutWithIdToken', {'idToken': idToken});
       return magicLinkId!;
     } catch (e) {
       throw PassageError.fromObject(object: e);

@@ -456,8 +456,8 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
             ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.hostedAuthFinish(code, clientSecret, state) 
-                result.success(null)
+                val AuthResultWithIdToken = passage.hostedAuthFinish(code, clientSecret, state) 
+                result.success(AuthResultWithIdToken)
             } catch (e: Exception) {
                 val error = PassageFlutterError.FINISH_HOSTED_AUTH_ERROR
                 result.error(error.name, e.message, e.toString())
@@ -469,6 +469,21 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 passage.hostedLogout()
+                result.success(null)
+            } catch (e: Exception) {
+                val error = PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+    
+
+    fun hostedLogout(call: MethodCall, result: MethodChannel.Result) {
+        val idToken = call.argument<String>("idToken")
+            ?: return invalidArgumentError(result)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                passage.hostedLogout(idToken)
                 result.success(null)
             } catch (e: Exception) {
                 val error = PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR

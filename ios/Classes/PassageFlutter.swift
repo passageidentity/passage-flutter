@@ -527,39 +527,19 @@ internal class PassageFlutter {
         }
     }
 
-    internal func hostedAuthStart(result: @escaping FlutterResult) {
-        Task {
-            do {
-                try await passage.hostedAuthStart()
-                result(nil)
-            } catch {
-                let error = FlutterError(
-                    code: PassageFlutterError.START_HOSTED_AUTH_ERROR.rawValue,
-                    message: error.localizedDescription,
-                    details: nil
-                )
-                result(error)
-            }
-        }
-    }
-
-    internal func hostedAuthFinish(arguments: Any?, result: @escaping FlutterResult) {
-        guard let args = arguments as? [String: Any],
-            let code = args["code"] as? String,
-            let clientSecret = args["clientSecret"] as? String,
-            let state = args["state"] as? String else {
+    internal func hostedAuth(result: @escaping FlutterResult) {
+        guard let clientSecret = (arguments as? [String: String])?["clientSecret"] else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
         }
-
         Task {
             do {
-                let user = try await passage.hostedAuthFinish(code: code, clientSecret: clientSecret, state: state)
-                result(nil)  // Successfully authenticated
+                val AuthResultWithIdToken = try await passage.hostedAuth(clientSecret)
+                result(AuthResultWithIdToken)
             } catch {
                 let error = FlutterError(
-                    code: PassageFlutterError.FINISH_HOSTED_AUTH_ERROR.rawValue,
+                    code: PassageFlutterError.START_HOSTED_AUTH_ERROR.rawValue,
                     message: error.localizedDescription,
                     details: nil
                 )
@@ -572,6 +552,27 @@ internal class PassageFlutter {
         Task {
             do {
                 try await passage.hostedLogout()
+                result(nil)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
+    }
+
+    internal func hostedLogout(arguments: Any?, result: @escaping FlutterResult) {
+        guard let idToken = (arguments as? [String: String])?["idToken"] else {
+            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+            result(error)
+            return
+        }
+        Task {
+            do {
+                try await passage.hostedLogout(idToken)
                 result(nil)
             } catch {
                 let error = FlutterError(

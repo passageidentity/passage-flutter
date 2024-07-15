@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import '../passage_flutter_models/auth_result_with_id_token.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
@@ -158,15 +159,23 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('changePhone() has not been implemented.');
   }
 
-  Future<String> hostedAuthStart() {
+  Future<void> hostedAuthStart() {
     throw UnimplementedError('hostedAuthStart() has not been implemented.');
   }
 
-  Future<String> hostedAuthFinish(String code, String clientSecret, String state) {
+  Future<AuthResultWithIdToken> hostedAuthIOS(String clientSecret) {
+    throw UnimplementedError('hostedAuthStart() has not been implemented.');
+  }
+
+  Future<AuthResultWithIdToken> hostedAuthFinish(String code, String clientSecret, String state) {
     throw UnimplementedError('hostedAuthFinish() has not been implemented.');
   }
 
   Future<String> hostedLogout() {
     throw UnimplementedError('hostedLogout() has not been implemented.');
+  }
+
+  Future<String> hostedLogoutWithIdToken(String idToken) {
+    throw UnimplementedError('hostedLogoutWithIdToken() has not been implemented.');
   }
 }
