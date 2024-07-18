@@ -376,8 +376,8 @@ class PassageFlutter {
   /// Throws:
   ///  `PassageError`
     
-  Future<AuthResultWithIdToken> hostedAuthIOS(String clientSecret) {
-    return PassageFlutterPlatform.instance.hostedAuthIOS(clientSecret);
+  Future<AuthResult> hostedAuthIOS() {
+    return PassageFlutterPlatform.instance.hostedAuthIOS();
   }
 
   /// Finish Hosted Auth
@@ -390,8 +390,8 @@ class PassageFlutter {
   /// Throws:
   ///  `PassageError`
 
-  Future<AuthResultWithIdToken> hostedAuthFinish(String code, String clientSecret, String state) {
-    return PassageFlutterPlatform.instance.hostedAuthFinish(code, clientSecret, state);
+  Future<AuthResult> hostedAuthFinish(String code, String state) {
+    return PassageFlutterPlatform.instance.hostedAuthFinish(code, state);
   }
 
   /// Logout Method for Hosted Apps
@@ -402,18 +402,6 @@ class PassageFlutter {
 
   Future<void> hostedLogout() {
     return PassageFlutterPlatform.instance.hostedLogout();
-  }
-
-  // Logout Method for Hosted Apps
-  ///
-  /// If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
-  /// Parameters:
-  /// idToken: The auth id token, used to log the user our of any remaining web sessions.
-  /// Throws:
-  ///  `PassageError`
-
-  Future<void> hostedLogoutWithIdToken(String idToken) {
-    return PassageFlutterPlatform.instance.hostedLogoutWithIdToken(idToken);
   }
 
 }

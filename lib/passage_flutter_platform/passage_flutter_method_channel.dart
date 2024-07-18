@@ -344,54 +344,47 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResultWithIdToken> hostedAuthIOS(String clientSecret) async {
+  Future<AuthResult> hostedAuthIOS() async {
     if (!Platform.isIOS) {
       throw PassageError(
-          code: PassageErrorCode.hostedAuthFinish,
+          code: PassageErrorCode.hostedAuthIOS,
           message: 'Only supported on iOS. Use hostedAuthStart instead.');
     }
     try {
       final authResultWithIdToken = await methodChannel
-          .invokeMethod<AuthResultWithIdToken>('hostedAuth', {'clientSecret': clientSecret});
-      return authResultWithIdToken!;
+          .invokeMethod<String>('hostedAuth');
+      return AuthResult.fromJson(authResultWithIdToken!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
   }
 
   @override
-  Future<AuthResultWithIdToken> hostedAuthFinish(String code, String clientSecret, String state) async {
-    if (Platform.isIOS) {
-      throw PassageError(
-          code: PassageErrorCode.hostedAuthFinish,
-          message: 'Not supported on iOS. Use hostedAuthIOS instead.');
-    }
-    try {
-      final authResultWithIdToken = await methodChannel
-          .invokeMethod<AuthResultWithIdToken>('hostedAuthFinish', {'code': code, 'clientSecret': clientSecret, 'state': state});
-      return authResultWithIdToken!;
-    } catch (e) {
-      throw PassageError.fromObject(object: e);
-    }
+Future<AuthResult> hostedAuthFinish(String code, String state) async {
+  if (Platform.isIOS) {
+    throw PassageError(
+        code: PassageErrorCode.hostedAuthFinish,
+        message: 'Not supported on iOS. Use hostedAuthIOS instead.');
   }
+  try {
+    final Map<Object?, Object?>? result = await methodChannel.invokeMethod<Map<Object?, Object?>>(
+      'hostedAuthFinish',
+      {'code': code, 'state': state},
+    );
+    final authResult = AuthResult.fromJson(result!['authResult']);
+    final idToken = result['idToken'] as String;
+    return authResult;
+  } catch (e) {
+    throw PassageError.fromObject(object: e);
+  }
+}
+
 
   @override
-  Future<String> hostedLogout() async {
+  Future<void> hostedLogout() async {
     try {
-      final magicLinkId = await methodChannel
-          .invokeMethod<String>('hostedLogout');
-      return magicLinkId!;
-    } catch (e) {
-      throw PassageError.fromObject(object: e);
-    }
-  }
-
-  @override
-  Future<String> hostedLogoutWithIdToken(String idToken) async {
-    try {
-      final magicLinkId = await methodChannel
-          .invokeMethod<String>('hostedLogoutWithIdToken', {'idToken': idToken});
-      return magicLinkId!;
+      return await methodChannel
+          .invokeMethod<void>('hostedLogout');
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }

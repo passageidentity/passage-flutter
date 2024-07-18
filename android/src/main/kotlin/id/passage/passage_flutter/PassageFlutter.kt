@@ -450,14 +450,17 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun hostedAuthFinish(call: MethodCall, result: MethodChannel.Result) {
         val code = call.argument<String>("code")
             ?: return invalidArgumentError(result)
-        val clientSecret = call.argument<String>("clientSecret")
-            ?: return invalidArgumentError(result)
         val state = call.argument<String>("state")
             ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val AuthResultWithIdToken = passage.hostedAuthFinish(code, clientSecret, state) 
-                result.success(AuthResultWithIdToken)
+                val authResultWithIdToken = passage.hostedAuthFinish(code, state) 
+                val jsonString = Gson().toJson(authResultWithIdToken.first)
+                val map = mapOf(
+                    "authResult" to jsonString,
+                    "idToken" to authResultWithIdToken.second
+                )
+                result.success(map)
             } catch (e: Exception) {
                 val error = PassageFlutterError.FINISH_HOSTED_AUTH_ERROR
                 result.error(error.name, e.message, e.toString())
@@ -469,21 +472,6 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 passage.hostedLogout()
-                result.success(null)
-            } catch (e: Exception) {
-                val error = PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR
-                result.error(error.name, e.message, e.toString())
-            }
-        }
-    }
-    
-
-    fun hostedLogout(call: MethodCall, result: MethodChannel.Result) {
-        val idToken = call.argument<String>("idToken")
-            ?: return invalidArgumentError(result)
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                passage.hostedLogout(idToken)
                 result.success(null)
             } catch (e: Exception) {
                 val error = PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR

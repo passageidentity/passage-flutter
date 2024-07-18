@@ -163,19 +163,16 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('hostedAuthStart() has not been implemented.');
   }
 
-  Future<AuthResultWithIdToken> hostedAuthIOS(String clientSecret) {
+  Future<AuthResult> hostedAuthIOS() {
     throw UnimplementedError('hostedAuthStart() has not been implemented.');
   }
 
-  Future<AuthResultWithIdToken> hostedAuthFinish(String code, String clientSecret, String state) {
+  Future<AuthResult> hostedAuthFinish(String code, String state) {
     throw UnimplementedError('hostedAuthFinish() has not been implemented.');
   }
 
-  Future<String> hostedLogout() {
+  Future<void> hostedLogout() {
     throw UnimplementedError('hostedLogout() has not been implemented.');
   }
 
-  Future<String> hostedLogoutWithIdToken(String idToken) {
-    throw UnimplementedError('hostedLogoutWithIdToken() has not been implemented.');
-  }
 }
