@@ -2,8 +2,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
-
-import '../passage_flutter_models/auth_result_with_id_token.dart';
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
@@ -372,7 +370,6 @@ Future<AuthResult> hostedAuthFinish(String code, String state) async {
       {'code': code, 'state': state},
     );
     final authResult = AuthResult.fromJson(result!['authResult']);
-    final idToken = result['idToken'] as String;
     return authResult;
   } catch (e) {
     throw PassageError.fromObject(object: e);
