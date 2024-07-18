@@ -35,7 +35,7 @@ internal class PassageFlutter {
                 }
                 let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
                 result(convertToJsonString(codable: authResult))
-            } catch PassageASAuthorizationError.canceled {
+            } catch RegisterWithPasskeyError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
             } catch {
@@ -60,7 +60,7 @@ internal class PassageFlutter {
             do {
                 let authResult = try await passage.loginWithPasskey(identifier: identifier)
                 result(convertToJsonString(codable: authResult))
-            } catch PassageASAuthorizationError.canceled {
+            } catch LoginWithPasskeyError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
             } catch {
@@ -138,7 +138,7 @@ internal class PassageFlutter {
                 result(convertToJsonString(codable: authResult))
             } catch {
                 var errorCode = PassageFlutterError.OTP_ERROR.rawValue
-                if case PassageOTPError.exceededAttempts = error {
+                if case OneTimePasscodeActivateError.exceededAttempts = error {
                     errorCode = PassageFlutterError.OTP_ACTIVATION_EXCEEDED_ATTEMPTS.rawValue
                 }
                 let error = FlutterError(
@@ -339,11 +339,7 @@ internal class PassageFlutter {
     internal func getAppInfo(result: @escaping FlutterResult) {
         Task {
             do {
-                guard let appInfo = try await PassageAuth.appInfo() else {
-                    let error = PassageFlutterError.APP_INFO_ERROR.defaultFlutterError
-                    result(error)
-                    return
-                }
+                let appInfo = try await passage.appInfo()
                 result(convertToJsonString(codable: appInfo))
             } catch {
                 let error = FlutterError(
@@ -528,15 +524,10 @@ internal class PassageFlutter {
     }
 
     internal func hostedAuth(result: @escaping FlutterResult) {
-        guard let clientSecret = (arguments as? [String: String])?["clientSecret"] else {
-            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
-            result(error)
-            return
-        }
         Task {
             do {
-                val AuthResultWithIdToken = try await passage.hostedAuth(clientSecret)
-                result(AuthResultWithIdToken)
+                let authResult = try await passage.hostedAuth()
+                result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.START_HOSTED_AUTH_ERROR.rawValue,
@@ -552,27 +543,6 @@ internal class PassageFlutter {
         Task {
             do {
                 try await passage.hostedLogout()
-                result(nil)
-            } catch {
-                let error = FlutterError(
-                    code: PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR.rawValue,
-                    message: error.localizedDescription,
-                    details: nil
-                )
-                result(error)
-            }
-        }
-    }
-
-    internal func hostedLogout(arguments: Any?, result: @escaping FlutterResult) {
-        guard let idToken = (arguments as? [String: String])?["idToken"] else {
-            let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
-            result(error)
-            return
-        }
-        Task {
-            do {
-                try await passage.hostedLogout(idToken)
                 result(nil)
             } catch {
                 let error = FlutterError(

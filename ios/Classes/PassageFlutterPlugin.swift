@@ -77,11 +77,9 @@ public class PassageFlutterPlugin: NSObject, FlutterPlugin {
         case "identifierExists":
             passageFlutter.identifierExists(arguments: call.arguments, result: result)
         case "hostedAuth":
-            passageFlutter.hostedAuth(arguments: call.arguments,result: result)
+            passageFlutter.hostedAuth(result: result)
         case "hostedLogout":
             passageFlutter.hostedLogout(result: result)
-        case "hostedLogoutWithIdToken":
-            passageFlutter.hostedLogout(arguments: call.arguments, result: result)
         default:
             result(FlutterMethodNotImplemented)
         }
