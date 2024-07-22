@@ -1,7 +1,7 @@
 import 'package:passage_flutter/passage_flutter_models/passage_user.dart';
 
 class IntegrationTestConfig {
-  static const String apiBaseUrl = "https://auth-uat.passage.dev";
+  static const String apiBaseUrl = "https://auth-uat.passage.dev/v1";
   static const String appIdOtp = "Ezbk6fSdx9pNQ7v7UbVEnzeC";
   static const String appIdMagicLink = "Pea2GdtBHN3esylK4ZRlF19U";
   static const int waitTimeMilliseconds = 8000;

@@ -48,7 +48,7 @@ android {
     dependencies {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
-        implementation 'id.passage.android:passage:1.8.1'
+        implementation 'id.passage.android:passage:1.8.2'
         implementation 'com.google.code.gson:gson:2.9.0'
     }
 

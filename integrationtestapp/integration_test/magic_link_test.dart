@@ -14,9 +14,6 @@ void main() {
   setUpAll(() async {
     if (!kIsWeb) {
       String basePath = IntegrationTestConfig.apiBaseUrl;
-      if (PlatformHelper.isAndroid) {
-        basePath += '/v1';
-      }
       await passage.overrideBasePath(basePath);
     }
   });
