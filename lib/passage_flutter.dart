@@ -353,4 +353,54 @@ class PassageFlutter {
   Future<String> changePhone(String newPhone) {
     return PassageFlutterPlatform.instance.changePhone(newPhone);
   }
+
+  // Hosted Auth Methods
+  
+  /// Authentication Method for Hosted Apps
+  ///
+  /// If your Passage app is Hosted, use this method to register and log in your user. This method will open up a Passage login experience
+  /// Throws:
+  ///  `PassageError`
+    
+  Future<void> hostedAuthStart() {
+    return PassageFlutterPlatform.instance.hostedAuthStart();
+  }
+
+  // Hosted Auth Methods
+  
+  /// Authentication Method for Hosted Apps
+  /// ONLY FOR iOS
+  /// If your Passage app is Hosted, use this method to register and log in your user. This method will open up a Passage login experience
+  /// 
+  /// Throws:
+  ///  `PassageError`
+    
+  Future<AuthResult> hostedAuthIOS() {
+    return PassageFlutterPlatform.instance.hostedAuthIOS();
+  }
+
+  /// Finish Hosted Auth
+  ///
+  /// Finishes a Hosted login/sign up by exchanging the auth code for Passage tokens.
+  /// Parameters:
+  /// code: The code returned from app link redirect to your activity.
+  /// clientSecret: You hosted app's client secret, found in Passage Console's OIDC Settings.
+  /// state: The state returned from app link redirect to your activity.
+  /// Throws:
+  ///  `PassageError`
+
+  Future<AuthResult> hostedAuthFinish(String code, String state) {
+    return PassageFlutterPlatform.instance.hostedAuthFinish(code, state);
+  }
+
+  /// Logout Method for Hosted Apps
+  ///
+  /// If your Passage app is Hosted, use this method to log out your user. This method will briefly open up a web view where it will log out the
+  /// Throws:
+  ///  `PassageError`
+
+  Future<void> hostedLogout() {
+    return PassageFlutterPlatform.instance.hostedLogout();
+  }
+
 }

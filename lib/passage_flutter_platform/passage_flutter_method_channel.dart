@@ -2,7 +2,6 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
-
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
@@ -327,4 +326,65 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
       throw PassageError.fromObject(object: e);
     }
   }
+
+  @override
+  Future<void> hostedAuthStart() async {
+    if (Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.hostedAuthStart,
+          message: 'Not supported on iOS. Use hostedAuthIOS instead.');
+    }
+    try {
+      await methodChannel.invokeMethod<String>('hostedAuthStart');
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<AuthResult> hostedAuthIOS() async {
+    if (!Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.hostedAuthIOS,
+          message: 'Only supported on iOS. Use hostedAuthStart instead.');
+    }
+    try {
+      final authResultWithIdToken = await methodChannel
+          .invokeMethod<String>('hostedAuth');
+      return AuthResult.fromJson(authResultWithIdToken!);
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+Future<AuthResult> hostedAuthFinish(String code, String state) async {
+  if (Platform.isIOS) {
+    throw PassageError(
+        code: PassageErrorCode.hostedAuthFinish,
+        message: 'Not supported on iOS. Use hostedAuthIOS instead.');
+  }
+  try {
+    final Map<Object?, Object?>? result = await methodChannel.invokeMethod<Map<Object?, Object?>>(
+      'hostedAuthFinish',
+      {'code': code, 'state': state},
+    );
+    final authResult = AuthResult.fromJson(result!['authResult']);
+    return authResult;
+  } catch (e) {
+    throw PassageError.fromObject(object: e);
+  }
+}
+
+
+  @override
+  Future<void> hostedLogout() async {
+    try {
+      return await methodChannel
+          .invokeMethod<void>('hostedLogout');
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
 }
