@@ -1,5 +1,5 @@
 const express = require('express');
-const request = require('request');
+const axios = require('axios'); // Import axios
 const bodyParser = require('body-parser');
 const app = express();
 const PORT = 3000; // Proxy server port
@@ -21,38 +21,34 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const mailosaurAPIKey = process.env.MAILOSAUR_API_KEY || 'default_key';
 
 // Proxy for Mailosaur API
-app.get('/api/messages', (req, res) => {
+app.get('/api/messages', async (req, res) => {
   const url = 'https://mailosaur.com/api/messages' + req.originalUrl.replace('/api/messages', '');
   console.log(`Proxying request to: ${url}`);
-  request({
-    url: url,
-    headers: { 'Authorization': 'Basic ' + Buffer.from('api:' + mailosaurAPIKey).toString('base64') }
-  }, (error, response, body) => {
-    if (error) {
-      console.error(`Error proxying request: ${error}`);
-      res.status(500).send(error);
-    } else {
-      console.log(`Response from Mailosaur: ${response.statusCode}`);
-      res.status(response.statusCode).send(body);
-    }
-  });
+  try {
+    const response = await axios.get(url, {
+      headers: { 'Authorization': 'Basic ' + Buffer.from('api:' + mailosaurAPIKey).toString('base64') }
+    });
+    console.log(`Response from Mailosaur: ${response.status}`);
+    res.status(response.status).send(response.data);
+  } catch (error) {
+    console.error(`Error proxying request: ${error}`);
+    res.status(500).send(error.toString());
+  }
 });
 
-app.get('/api/messages/:id', (req, res) => {
+app.get('/api/messages/:id', async (req, res) => {
   const url = `https://mailosaur.com/api/messages/${req.params.id}`;
   console.log(`Proxying request to: ${url}`);
-  request({
-    url: url,
-    headers: { 'Authorization': 'Basic ' + Buffer.from('api:' + mailosaurAPIKey).toString('base64') }
-  }, (error, response, body) => {
-    if (error) {
-      console.error(`Error proxying request: ${error}`);
-      res.status(500).send(error);
-    } else {
-      console.log(`Response from Mailosaur: ${response.statusCode}`);
-      res.status(response.statusCode).send(body);
-    }
-  });
+  try {
+    const response = await axios.get(url, {
+      headers: { 'Authorization': 'Basic ' + Buffer.from('api:' + mailosaurAPIKey).toString('base64') }
+    });
+    console.log(`Response from Mailosaur: ${response.status}`);
+    res.status(response.status).send(response.data);
+  } catch (error) {
+    console.error(`Error proxying request: ${error}`);
+    res.status(500).send(error.toString());
+  }
 });
 
 app.listen(PORT, () => {
