@@ -30,20 +30,11 @@ jobs:
         working-directory: ./integrationtestapp
 
       - name: Set up Google Chrome and ChromeDriver
-        run: |
-          # Install the correct version of Google Chrome (127)
-          sudo apt-get update
-          sudo apt-get install -y google-chrome-stable
-
-          # Download the matching version of ChromeDriver
-          CHROMEDRIVER_VERSION=$(google-chrome --version | grep -oP '\d{1,2}\.\d{1,2}\.\d{1,2}' | sed 's/^\(.*\)\.\(.*\)$/\1.\2/')
-          wget "https://chromedriver.storage.googleapis.com/${CHROMEDRIVER_VERSION}/chromedriver_linux64.zip"
-          unzip chromedriver_linux64.zip
-          sudo mv chromedriver /usr/local/bin/chromedriver
-
-          # Verify installations
-          google-chrome --version
-          chromedriver --version
+        uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 127
+          install-chromedriver: true
+          install-dependencies: true
 
       - name: Start Xvfb
         run: |
