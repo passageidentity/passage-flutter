@@ -431,4 +431,55 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
 
     // endregion
 
+    // region Hosted Auth 
+
+
+    fun hostedAuthStart(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                passage.hostedAuthStart()
+                result.success(null)
+            } catch (e: Exception) {
+                val error = PassageFlutterError.START_HOSTED_AUTH_ERROR
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+
+    fun hostedAuthFinish(call: MethodCall, result: MethodChannel.Result) {
+        val code = call.argument<String>("code")
+            ?: return invalidArgumentError(result)
+        val state = call.argument<String>("state")
+            ?: return invalidArgumentError(result)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val authResultWithIdToken = passage.hostedAuthFinish(code, state) 
+                val jsonString = Gson().toJson(authResultWithIdToken.first)
+                val map = mapOf(
+                    "authResult" to jsonString,
+                    "idToken" to authResultWithIdToken.second
+                )
+                result.success(map)
+            } catch (e: Exception) {
+                val error = PassageFlutterError.FINISH_HOSTED_AUTH_ERROR
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun hostedLogout(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                passage.hostedLogout()
+                result.success(null)
+            } catch (e: Exception) {
+                val error = PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    // endregion
+
 }

@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'passage_flutter'
-  s.version          = '0.7.3'
+  s.version          = '0.8.0'
   s.summary          = 'Passkey authentication for your Flutter app'
   s.description      = <<-DESC
   Passkey authentication for your Flutter app
@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
-  s.dependency 'Passage', '1.6.0'
+  s.dependency 'Passage', '1.8.1'
   s.platform = :ios, '14.0'
 
   # Flutter.framework does not contain a i386 slice.

@@ -71,6 +71,9 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "editPasskeyName" -> passageFlutter?.editPasskeyName(call, result)
           "changeEmail" -> passageFlutter?.changeEmail(call, result)
           "changePhone" -> passageFlutter?.changePhone(call, result)
+          "hostedAuthStart" -> passageFlutter?.hostedAuthStart(result)
+          "hostedAuthFinish" -> passageFlutter?.hostedAuthFinish(call, result)
+          "hostedLogout" -> passageFlutter?.hostedLogout(result)
           else -> {
               result.notImplemented()
           }
