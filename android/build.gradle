@@ -1,18 +1,10 @@
+plugins {
+    id "com.android.library"
+    id "kotlin-android"
+}
+
 group 'id.passage.passage_flutter'
 version '1.0-SNAPSHOT'
-
-buildscript {
-    ext.kotlin_version = '1.8.10'
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.1'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-    }
-}
 
 allprojects {
     repositories {
@@ -21,10 +13,8 @@ allprojects {
     }
 }
 
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-
 android {
+    namespace 'id.passage.passage_flutter'
     compileSdkVersion 34
 
     compileOptions {
@@ -49,7 +39,7 @@ android {
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
         testImplementation 'org.mockito:mockito-core:5.0.0'
         implementation 'id.passage.android:passage:1.8.2'
-        implementation 'com.google.code.gson:gson:2.9.0'
+        implementation 'com.google.code.gson:gson:2.10.1'
     }
 
     testOptions {
@@ -63,5 +53,4 @@ android {
             }
         }
     }
-
 }
