@@ -140,7 +140,7 @@ jobs:
           model: 'iPhone 14'
 
       - name: Run iOS tests
-        run: flutter test integration_test/*.dart -d 2AD22772-5472-4EB0-97DE-883C5B789032 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        run: flutter test integration_test/*.dart -d 2CBBC7F8-8C98-4142-8292-D5833BB30F8F --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
