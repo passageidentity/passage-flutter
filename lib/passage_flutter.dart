@@ -1,3 +1,4 @@
+import 'package:passage_flutter/passage_otp.dart';
 import 'package:passage_flutter/passage_passkey.dart';
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_models/authenticator_attachment.dart';
@@ -9,11 +10,13 @@ import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageFlutter {
   late final PassagePasskey passkey;
+  late final PassageOneTimePasscode oneTimePasscode;
   PassageFlutter([String? appId]) {
     if (appId != null) {
       PassageFlutterPlatform.instance.initWithAppId(appId);
     }
     passkey = PassagePasskey();
+    oneTimePasscode = PassageOneTimePasscode();
   }
 
   Future<void> overrideBasePath(String path) async {
