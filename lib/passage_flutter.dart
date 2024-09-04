@@ -82,59 +82,9 @@ class PassageFlutter {
     return PassageFlutterPlatform.instance.deviceSupportsPasskeys();
   }
 
-  // OTP METHODS
-
-  /// Creates and sends a new one-time passcode for registration.
-  ///
-  /// Parameters:
-  ///  - `identifier`: The Passage User's identifier.
-  ///
-  /// Returns:
-  ///  A `Future<String>` that returns a one-time passcode ID used to activate
-  ///  the passcode in `oneTimePasscodeActivate`.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<String> newRegisterOneTimePasscode(String identifier) {
-    return PassageFlutterPlatform.instance
-        .newRegisterOneTimePasscode(identifier);
-  }
-
-  /// Creates and sends a new one-time passcode for logging in.
-  ///
-  /// Parameters:
-  ///  - `identifier`: The Passage User's identifier.
-  ///
-  /// Returns:
-  ///  A `Future<String>` that returns a one-time passcode ID used to activate
-  ///  the passcode in `oneTimePasscodeActivate`.
-  ///
-  /// Throws:
-  ///  `PassageError`
-
-  Future<String> newLoginOneTimePasscode(String identifier) {
-    return PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
-  }
-
   Future<void> overrideBasePath(String path) async {
     return await PassageFlutterPlatform.instance
         .overrideBasePath(path);
-  }
-
-  /// Activates a one-time passcode when a user inputs it. This function handles both login and registration one-time passcodes.
-  ///
-  /// Parameters:
-  ///  - `otp`: The one-time passcode.
-  ///  - `otpId`: The one-time passcode ID.
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) {
-    return PassageFlutterPlatform.instance.oneTimePasscodeActivate(otp, otpId);
   }
 
   // MAGIC LINK METHODS
