@@ -1,3 +1,4 @@
+import 'package:passage_flutter/passage_passkey.dart';
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_models/authenticator_attachment.dart';
 import 'passage_flutter_models/passage_app_info.dart';
@@ -7,79 +8,12 @@ import 'passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageFlutter {
+  late final PassagePasskey passkey;
   PassageFlutter([String? appId]) {
     if (appId != null) {
       PassageFlutterPlatform.instance.initWithAppId(appId);
     }
-  }
-
-  // PASSKEY AUTH METHODS
-
-  /// Attempts to create and register a new user with a passkey.
-  ///
-  /// The method will try to register a user using the provided identifier which
-  /// can be either an email address or a phone number.
-  ///
-  /// Parameters:
-  ///  - `identifier`: Email address or phone for the user.
-  ///  - `options`: Optional configuration for passkey creation.
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device.
-  ///
-  /// Throws:
-  ///  A `PassageError` in cases such as:
-  ///  - User cancels the operation
-  ///  - User already exists
-  ///  - App configuration was not done properly
-  ///  - etc.
-  Future<AuthResult> registerWithPasskey(String identifier,
-      [PasskeyCreationOptions? options]) {
-    return PassageFlutterPlatform.instance
-        .registerWithPasskey(identifier, options);
-  }
-
-  /// **DEPRECATED. Use `registerWithPasskey` instead.**
-  @Deprecated('Use `registerWithPasskey` instead.')
-  Future<AuthResult> register(String identifier) {
-    return PassageFlutterPlatform.instance
-        .registerWithPasskey(identifier, null);
-  }
-
-  /// Attempts to login a user with a passkey.
-  ///
-  /// Parameters:
-  ///  - `identifier`: Email address or phone for the user (optional).
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device.
-  ///
-  /// Throws:
-  ///  A `PassageError` in cases such as:
-  ///  - User cancels the operation
-  ///  - User does not exist
-  ///  - App configuration was not done properly
-  ///  - etc.
-  Future<AuthResult> loginWithPasskey([String? identifier]) {
-    return PassageFlutterPlatform.instance.loginWithPasskey(identifier);
-  }
-
-  /// **DEPRECATED. Use `loginWithPasskey` instead.**
-  @Deprecated('Use `loginWithPasskey` instead.')
-  Future<AuthResult> login() {
-    return PassageFlutterPlatform.instance.loginWithPasskey('');
-  }
-
-  /// **DEPRECATED. Use `loginWithPasskey` instead.**
-  @Deprecated('Use `loginWithPasskey` instead.')
-  Future<AuthResult> loginWithIdentifier(String identifier) {
-    return PassageFlutterPlatform.instance.loginWithPasskey(identifier);
-  }
-
-  Future<bool> deviceSupportsPasskeys() {
-    return PassageFlutterPlatform.instance.deviceSupportsPasskeys();
+    passkey = PassagePasskey();
   }
 
   Future<void> overrideBasePath(String path) async {
