@@ -8,6 +8,7 @@ class PassageOneTimePasscode {
   ///
   /// Parameters:
   ///  - `identifier`: The Passage User's identifier.
+  ///  - `language`: The language code for the one time passcode.
   ///
   /// Returns:
   ///  A `Future<String>` that returns a one-time passcode ID used to activate
@@ -15,7 +16,7 @@ class PassageOneTimePasscode {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<String> register(String identifier) {
+  Future<String> register(String identifier, String? language) {
     return PassageFlutterPlatform.instance
         .newRegisterOneTimePasscode(identifier);
   }
@@ -24,6 +25,7 @@ class PassageOneTimePasscode {
   ///
   /// Parameters:
   ///  - `identifier`: The Passage User's identifier.
+  ///  - `language`: The language code for the one time passcode.
   ///
   /// Returns:
   ///  A `Future<String>` that returns a one-time passcode ID used to activate
@@ -32,15 +34,15 @@ class PassageOneTimePasscode {
   /// Throws:
   ///  `PassageError`
 
-  Future<String> login(String identifier) {
+  Future<String> login(String identifier, String? language) {
     return PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
   }
 
   /// Activates a one-time passcode when a user inputs it. This function handles both login and registration one-time passcodes.
   ///
   /// Parameters:
-  ///  - `otp`: The one-time passcode.
-  ///  - `otpId`: The one-time passcode ID.
+  ///  - `oneTimePasscode`: The one-time passcode.
+  ///  - `id`: The one-time passcode ID.
   ///
   /// Returns:
   ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
@@ -48,8 +50,8 @@ class PassageOneTimePasscode {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<AuthResult> activate(String otp, String otpId) {
-    return PassageFlutterPlatform.instance.oneTimePasscodeActivate(otp, otpId);
+  Future<AuthResult> activate(String oneTimePasscode, String id) {
+    return PassageFlutterPlatform.instance.oneTimePasscodeActivate(oneTimePasscode, id);
   }
 
 }
