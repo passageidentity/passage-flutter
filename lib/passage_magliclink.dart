@@ -1,3 +1,4 @@
+import 'package:passage_flutter/models/magic_link.dart';
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
@@ -15,8 +16,9 @@ class PassageMagliclink {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<String> register(String identifier, String? language) {
-    return PassageFlutterPlatform.instance.newRegisterMagicLink(identifier);
+  Future<MagicLink> register(String identifier, String? language) async {
+    String magicLinkId = await PassageFlutterPlatform.instance.newRegisterMagicLink(identifier);
+    return MagicLink(magicLinkId);
   }
 
 
@@ -27,13 +29,14 @@ class PassageMagliclink {
   ///  - `language`: The language code for the magic link.
   ///
   /// Returns:
-  ///  A `Future<String>` that returns a magic link ID used to check the status
-  ///  of the magic link with `getMagicLinkStatus`.
+  ///  A `Future<MagicLink>` containing the magic link ID, which can be used to track the
+  ///  magic link's status using the `getMagicLinkStatus` method.
   ///
   /// Throws:
   ///  `PassageError`
-  Future<String> login(String identifier, String? language) {
-    return PassageFlutterPlatform.instance.newLoginMagicLink(identifier);
+  Future<MagicLink> login(String identifier, String? language) async {
+    String magicLinkId = await PassageFlutterPlatform.instance.newLoginMagicLink(identifier);
+    return MagicLink(magicLinkId);
   }
 
   /// Activates a magic link. This function handles both login and registration magic links.
