@@ -1,4 +1,4 @@
-
+import 'package:passage_flutter/models/one_time_passcode.dart';
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
@@ -16,9 +16,11 @@ class PassageOneTimePasscode {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<String> register(String identifier, String? language) {
-    return PassageFlutterPlatform.instance
+  Future<OneTimePasscode> register(String identifier, String? language) async {
+    String oneTimePasscodeId =  await PassageFlutterPlatform.instance
         .newRegisterOneTimePasscode(identifier);
+    return OneTimePasscode(oneTimePasscodeId);
+
   }
 
   /// Creates and sends a new one-time passcode for logging in.
@@ -34,8 +36,9 @@ class PassageOneTimePasscode {
   /// Throws:
   ///  `PassageError`
 
-  Future<String> login(String identifier, String? language) {
-    return PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
+  Future<OneTimePasscode> login(String identifier, String? language) async {
+    String oneTimePasscodeId =  await  PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
+    return OneTimePasscode(oneTimePasscodeId);
   }
 
   /// Activates a one-time passcode when a user inputs it. This function handles both login and registration one-time passcodes.
