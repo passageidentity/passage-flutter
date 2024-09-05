@@ -91,17 +91,13 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // SOCIAL AUTH METHODS
 
-  Future<void> authorizeWith(PassageSocialConnection connection) {
+  Future<void> authorizeWith(SocialConnection connection) {
     throw UnimplementedError('authorizeWith() has not been implemented.');
   }
 
   Future<AuthResult> finishSocialAuthentication(String code) {
     throw UnimplementedError(
         'finishSocialAuthentication() has not been implemented.');
-  }
-
-  Future<AuthResult> authorizeIOSWith(PassageSocialConnection connection) {
-    throw UnimplementedError('authorizeIOSWith() has not been implemented.');
   }
 
   // TOKEN METHODS
