@@ -1,3 +1,5 @@
+import 'package:passage_flutter/passage_otp.dart';
+import 'package:passage_flutter/passage_magliclink.dart';
 import 'package:passage_flutter/passage_passkey.dart';
 import 'package:passage_flutter/passage_social.dart';
 import 'passage_flutter_models/auth_result.dart';
@@ -10,135 +12,22 @@ import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 class PassageFlutter {
   late final PassagePasskey passkey;
   late final PassageSocial social;
+  late final PassageOneTimePasscode oneTimePasscode;
+  late final PassageMagliclink magliclink;
   PassageFlutter([String? appId]) {
     if (appId != null) {
       PassageFlutterPlatform.instance.initWithAppId(appId);
     }
     passkey = PassagePasskey();
     social = PassageSocial();
-  }
-
-  // OTP METHODS
-
-  /// Creates and sends a new one-time passcode for registration.
-  ///
-  /// Parameters:
-  ///  - `identifier`: The Passage User's identifier.
-  ///
-  /// Returns:
-  ///  A `Future<String>` that returns a one-time passcode ID used to activate
-  ///  the passcode in `oneTimePasscodeActivate`.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<String> newRegisterOneTimePasscode(String identifier) {
-    return PassageFlutterPlatform.instance
-        .newRegisterOneTimePasscode(identifier);
-  }
-
-  /// Creates and sends a new one-time passcode for logging in.
-  ///
-  /// Parameters:
-  ///  - `identifier`: The Passage User's identifier.
-  ///
-  /// Returns:
-  ///  A `Future<String>` that returns a one-time passcode ID used to activate
-  ///  the passcode in `oneTimePasscodeActivate`.
-  ///
-  /// Throws:
-  ///  `PassageError`
-
-  Future<String> newLoginOneTimePasscode(String identifier) {
-    return PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
+    oneTimePasscode = PassageOneTimePasscode();
+    magliclink = PassageMagliclink();
   }
 
   Future<void> overrideBasePath(String path) async {
     return await PassageFlutterPlatform.instance
         .overrideBasePath(path);
   }
-
-  /// Activates a one-time passcode when a user inputs it. This function handles both login and registration one-time passcodes.
-  ///
-  /// Parameters:
-  ///  - `otp`: The one-time passcode.
-  ///  - `otpId`: The one-time passcode ID.
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) {
-    return PassageFlutterPlatform.instance.oneTimePasscodeActivate(otp, otpId);
-  }
-
-  // MAGIC LINK METHODS
-
-  /// Creates and sends a new magic link for registration.
-  ///
-  /// Parameters:
-  ///  - `identifier`: The Passage User's identifier.
-  ///
-  /// Returns:
-  ///  A `Future<String>` that returns a magic link ID used to check the status
-  ///  of the magic link with `getMagicLinkStatus`.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<String> newRegisterMagicLink(String identifier) {
-    return PassageFlutterPlatform.instance.newRegisterMagicLink(identifier);
-  }
-
-  /// Creates and sends a new magic link for logging in.
-  ///
-  /// Parameters:
-  ///  - `identifier`: The Passage User's identifier.
-  ///
-  /// Returns:
-  ///  A `Future<String>` that returns a magic link ID used to check the status
-  ///  of the magic link with `getMagicLinkStatus`.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<String> newLoginMagicLink(String identifier) {
-    return PassageFlutterPlatform.instance.newLoginMagicLink(identifier);
-  }
-
-  /// Activates a magic link. This function handles both login and registration magic links.
-  ///
-  /// Parameters:
-  ///  - `magicLink`: The magic link from the URL sent to the user.
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<AuthResult> magicLinkActivate(String magicLink) {
-    return PassageFlutterPlatform.instance.magicLinkActivate(magicLink);
-  }
-
-  /// Looks up a magic link by ID and checks if it has been verified. This function is most commonly used to
-  /// iteratively check if a user has clicked a magic link to login. Once the link has been verified,
-  /// Passage will return authentication information via this function. This enables cross-device login.
-  ///
-  /// Parameters:
-  ///  - `magicLinkId`: The magic link ID.
-  ///
-  /// Returns:
-  ///  A `Future<AuthResult?>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device, or `null` if
-  ///  the magic link has not been verified.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
-    return PassageFlutterPlatform.instance.getMagicLinkStatus(magicLinkId);
-  }
-
- 
 
   // TOKEN METHODS
 

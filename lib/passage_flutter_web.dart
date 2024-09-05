@@ -174,11 +174,11 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) async {
+  Future<AuthResult> getMagicLinkStatus(String magicLinkId) async {
     try {
       final resultPromise = passage.getMagicLinkStatus(magicLinkId);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject == null ? null : AuthResult.fromJson(jsObject);
+      return AuthResult.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.magicLinkError);
