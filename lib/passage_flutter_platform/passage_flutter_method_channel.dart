@@ -131,7 +131,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) async {
+  Future<AuthResult> getMagicLinkStatus(String magicLinkId) async {
     try {
       final jsonString = await methodChannel.invokeMethod<String>(
           'getMagicLinkStatus', {'magicLinkId': magicLinkId});

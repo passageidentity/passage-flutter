@@ -68,7 +68,7 @@ class PassageMagliclink {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<AuthResult?> status(String id) {
+  Future<AuthResult> status(String id) {
     return PassageFlutterPlatform.instance.getMagicLinkStatus(id);
   }
 
