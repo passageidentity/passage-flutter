@@ -7,6 +7,7 @@ class PassageMagliclink {
   ///
   /// Parameters:
   ///  - `identifier`: The Passage User's identifier.
+  ///  - `language`: The language code for the magic link.
   ///
   /// Returns:
   ///  A `Future<String>` that returns a magic link ID used to check the status
@@ -23,6 +24,7 @@ class PassageMagliclink {
   ///
   /// Parameters:
   ///  - `identifier`: The Passage User's identifier.
+  ///  - `language`: The language code for the magic link.
   ///
   /// Returns:
   ///  A `Future<String>` that returns a magic link ID used to check the status
@@ -54,7 +56,7 @@ class PassageMagliclink {
   /// Passage will return authentication information via this function. This enables cross-device login.
   ///
   /// Parameters:
-  ///  - `magicLinkId`: The magic link ID.
+  ///  - `id`: The magic link ID.
   ///
   /// Returns:
   ///  A `Future<AuthResult?>` object that includes a redirect URL and saves the
@@ -63,8 +65,8 @@ class PassageMagliclink {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<AuthResult?> status(String magicLinkId) {
-    return PassageFlutterPlatform.instance.getMagicLinkStatus(magicLinkId);
+  Future<AuthResult?> status(String id) {
+    return PassageFlutterPlatform.instance.getMagicLinkStatus(id);
   }
 
 }
