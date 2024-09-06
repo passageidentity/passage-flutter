@@ -100,6 +100,10 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
         'finishSocialAuthentication() has not been implemented.');
   }
 
+  Future<AuthResult> authorizeIOSWith(SocialConnection connection) {
+    return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
+  }
+
   // TOKEN METHODS
 
   Future<String?> getAuthToken() {

@@ -10,4 +10,8 @@ class PassageSocial {
   Future<AuthResult> finish(String code) {
     return PassageFlutterPlatform.instance.finishSocialAuthentication(code);
   }
+
+  Future<AuthResult> authorizeIOS(SocialConnection connection) {
+    return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
+  }
 }
