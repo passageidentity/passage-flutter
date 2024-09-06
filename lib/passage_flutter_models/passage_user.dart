@@ -5,7 +5,7 @@ import '/helpers/data_conversion.dart'
 import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_model.dart';
 
-class PassageUser implements PassageFlutterModel {
+class CurrentUser implements PassageFlutterModel {
   final String id;
   final String? status;
   final String? email;
@@ -21,7 +21,7 @@ class PassageUser implements PassageFlutterModel {
   final List<dynamic>? webauthnDevices;
   final List<String>? webauthnTypes;
 
-  PassageUser.fromMap(Map<String, dynamic> map)
+  CurrentUser.fromMap(Map<String, dynamic> map)
       : id = map['id'],
         status = map['status'],
         email = map['email'],
@@ -42,7 +42,7 @@ class PassageUser implements PassageFlutterModel {
         webauthnTypes =
             List<String>.from(map['webauthnTypes'] ?? map['webauthn_types']);
 
-  factory PassageUser.fromJson(jsonString) {
-    return fromJson(jsonString, PassageUser.fromMap);
+  factory CurrentUser.fromJson(jsonString) {
+    return fromJson(jsonString, CurrentUser.fromMap);
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:passage_flutter/models/magic_link.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
@@ -247,11 +248,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<PassageUser?> identifierExists(String identifier) async {
+  Future<CurrentUser?> identifierExists(String identifier) async {
     try {
       final jsonString = await methodChannel
           .invokeMethod<String>('identifierExists', {'identifier': identifier});
-      return jsonString == null ? null : PassageUser.fromJson(jsonString);
+      return jsonString == null ? null : CurrentUser.fromJson(jsonString);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
@@ -260,11 +261,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // USER METHODS
 
   @override
-  Future<PassageUser?> getCurrentUser() async {
+  Future<CurrentUser> getCurrentUser() async {
     try {
       final jsonString =
           await methodChannel.invokeMethod<String>('getCurrentUser');
-      return jsonString == null ? null : PassageUser.fromJson(jsonString);
+      return CurrentUser.fromJson(jsonString);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
@@ -305,22 +306,22 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> changeEmail(String newEmail) async {
+  Future<MagicLink> changeEmail(String newEmail) async {
     try {
       final magicLinkId = await methodChannel
           .invokeMethod<String>('changeEmail', {'newEmail': newEmail});
-      return magicLinkId!;
+      return MagicLink(magicLinkId!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
   }
 
   @override
-  Future<String> changePhone(String newPhone) async {
+  Future<MagicLink> changePhone(String newPhone) async {
     try {
       final magicLinkId = await methodChannel
           .invokeMethod<String>('changePhone', {'newPhone': newPhone});
-      return magicLinkId!;
+      return MagicLink(magicLinkId!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }

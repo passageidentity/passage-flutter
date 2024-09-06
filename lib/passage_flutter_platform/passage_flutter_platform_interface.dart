@@ -1,5 +1,6 @@
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
+import '../models/magic_link.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
@@ -128,13 +129,13 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('getAppInfo() has not been implemented.');
   }
 
-  Future<PassageUser?> identifierExists(String identifier) {
+  Future<CurrentUser?> identifierExists(String identifier) {
     throw UnimplementedError('identifierExists() has not been implemented.');
   }
 
   // USER METHODS
 
-  Future<PassageUser?> getCurrentUser() {
+  Future<CurrentUser> getCurrentUser() {
     throw UnimplementedError('getCurrentUser() has not been implemented.');
   }
 
@@ -150,11 +151,11 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('editPasskeyName() has not been implemented.');
   }
 
-  Future<String> changeEmail(String newEmail) {
+  Future<MagicLink> changeEmail(String newEmail) {
     throw UnimplementedError('changeEmail() has not been implemented.');
   }
 
-  Future<String> changePhone(String newPhone) {
+  Future<MagicLink> changePhone(String newPhone) {
     throw UnimplementedError('changePhone() has not been implemented.');
   }
 
