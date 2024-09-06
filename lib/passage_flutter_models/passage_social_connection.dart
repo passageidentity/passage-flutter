@@ -1,17 +1,17 @@
-enum PassageSocialConnection {
+enum SocialConnection {
   apple,
   github,
   google,
 }
 
-extension PassageSocialConnectionExtension on PassageSocialConnection {
+extension PassageSocialConnectionExtension on SocialConnection {
   String get value {
     switch (this) {
-      case PassageSocialConnection.apple:
+      case SocialConnection.apple:
         return 'apple';
-      case PassageSocialConnection.github:
+      case SocialConnection.github:
         return 'github';
-      case PassageSocialConnection.google:
+      case SocialConnection.google:
         return 'google';
       default:
         throw Exception('Unknown PassageSocialConnection value');

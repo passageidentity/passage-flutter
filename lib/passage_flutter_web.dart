@@ -188,7 +188,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // SOCIAL AUTH METHODS
 
   @override
-  Future<void> authorizeWith(PassageSocialConnection connection) async {
+  Future<void> authorizeWith(SocialConnection connection) async {
     try {
       final resultPromise = passage.authorizeWith(connection.value);
       await js_util.promiseToFuture(resultPromise);

@@ -1,16 +1,17 @@
 import 'package:passage_flutter/passage_otp.dart';
 import 'package:passage_flutter/passage_magliclink.dart';
 import 'package:passage_flutter/passage_passkey.dart';
+import 'package:passage_flutter/passage_social.dart';
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_models/authenticator_attachment.dart';
 import 'passage_flutter_models/passage_app_info.dart';
-import 'passage_flutter_models/passage_social_connection.dart';
 import 'passage_flutter_models/passage_user.dart';
 import 'passage_flutter_models/passkey.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageFlutter {
   late final PassagePasskey passkey;
+  late final PassageSocial social;
   late final PassageOneTimePasscode oneTimePasscode;
   late final PassageMagliclink magliclink;
   PassageFlutter([String? appId]) {
@@ -18,6 +19,7 @@ class PassageFlutter {
       PassageFlutterPlatform.instance.initWithAppId(appId);
     }
     passkey = PassagePasskey();
+    social = PassageSocial();
     oneTimePasscode = PassageOneTimePasscode();
     magliclink = PassageMagliclink();
   }
@@ -25,19 +27,6 @@ class PassageFlutter {
   Future<void> overrideBasePath(String path) async {
     return await PassageFlutterPlatform.instance
         .overrideBasePath(path);
-  }
-
-  // SOCIAL AUTH METHODS
-  Future<void> authorizeWith(PassageSocialConnection connection) {
-    return PassageFlutterPlatform.instance.authorizeWith(connection);
-  }
-
-  Future<AuthResult> finishSocialAuthentication(String code) {
-    return PassageFlutterPlatform.instance.finishSocialAuthentication(code);
-  }
-
-  Future<AuthResult> authorizeIOSWith(PassageSocialConnection connection) {
-    return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
   }
 
   // TOKEN METHODS

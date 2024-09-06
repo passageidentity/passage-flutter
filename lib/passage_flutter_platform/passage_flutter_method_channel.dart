@@ -144,11 +144,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // SOCIAL AUTH METHODS
 
   @override
-  Future<void> authorizeWith(PassageSocialConnection connection) async {
+  Future<void> authorizeWith(SocialConnection connection) async {
     if (Platform.isIOS) {
       throw PassageError(
           code: PassageErrorCode.socialAuthError,
-          message: 'Not supported on iOS. Use authorizeIOSWith instead.');
+          message: 'Not supported on iOS. Use authorizeIOS instead.');
     }
     try {
       return await methodChannel.invokeMethod<void>(
@@ -163,7 +163,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     if (Platform.isIOS) {
       throw PassageError(
           code: PassageErrorCode.socialAuthError,
-          message: 'Not supported on iOS. Use authorizeIOSWith instead.');
+          message: 'Not supported on iOS. Use authorizeIOS instead.');
     }
     try {
       final jsonString = await methodChannel
@@ -175,8 +175,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<AuthResult> authorizeIOSWith(
-      PassageSocialConnection connection) async {
+  Future<AuthResult> authorizeIOSWith(SocialConnection connection) async {
     if (!Platform.isIOS) {
       throw PassageError(
           code: PassageErrorCode.socialAuthError,
