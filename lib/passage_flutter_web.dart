@@ -8,6 +8,7 @@ import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 import 'package:flutter/foundation.dart' as flutter;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+import 'package:passage_flutter/models/magic_link.dart';
 
 import '/helpers/data_conversion_web.dart';
 import '/passage_flutter_models/auth_result.dart';
@@ -291,11 +292,11 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<PassageUser?> identifierExists(String identifier) async {
+  Future<CurrentUser?> identifierExists(String identifier) async {
     try {
       final resultPromise = passage.identifierExists(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject != null ? PassageUser.fromJson(jsObject) : null;
+      return jsObject != null ? CurrentUser.fromJson(jsObject) : null;
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.identifierExistsError);
@@ -305,15 +306,13 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // USER METHODS
 
   @override
-  Future<PassageUser?> getCurrentUser() async {
+  Future<CurrentUser> getCurrentUser() async {
     try {
       final resultPromise = passage.getCurrentUser().userInfo();
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return PassageUser.fromJson(jsObject);
+      return CurrentUser.fromJson(jsObject);
     } catch (e) {
-      var error = PassageError.fromObject(object: e);
-      flutter.debugPrint(error.toString());
-      return null;
+      throw PassageError.fromObject(object: e);
     }
   }
 
@@ -367,11 +366,11 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> changeEmail(String newEmail) async {
+  Future<MagicLink> changeEmail(String newEmail) async {
     try {
       final resultPromise = passage.getCurrentUser().changeEmail(newEmail);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject.id;
+      return MagicLink(jsObject.id);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.changeEmailError);
@@ -379,11 +378,11 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> changePhone(String newPhone) async {
+  Future<MagicLink> changePhone(String newPhone) async {
     try {
       final resultPromise = passage.getCurrentUser().changePhone(newPhone);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject.id;
+      return MagicLink(jsObject.id);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.changeEmailError);
