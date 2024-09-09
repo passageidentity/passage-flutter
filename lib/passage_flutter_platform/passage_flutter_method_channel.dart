@@ -2,6 +2,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:passage_flutter/models/magic_link.dart';
+import 'package:passage_flutter/passage_flutter_models/public_user_info.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
 import '../passage_flutter_models/passage_social_connection.dart';
 import '/passage_flutter_models/auth_result.dart';
@@ -238,7 +239,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // APP METHODS
 
   @override
-  Future<PassageAppInfo?> getAppInfo() async {
+  Future<PassageAppInfo> getAppInfo() async {
     try {
       final jsonString = await methodChannel.invokeMethod<String>('getAppInfo');
       return PassageAppInfo.fromJson(jsonString!);
@@ -248,11 +249,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<CurrentUser?> identifierExists(String identifier) async {
+  Future<PublicUserInfo> identifierExists(String identifier) async {
     try {
       final jsonString = await methodChannel
           .invokeMethod<String>('identifierExists', {'identifier': identifier});
-      return jsonString == null ? null : CurrentUser.fromJson(jsonString);
+      return PublicUserInfo.fromJson(jsonString);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }

@@ -3,8 +3,6 @@ import 'package:passage_flutter/passage_otp.dart';
 import 'package:passage_flutter/passage_magliclink.dart';
 import 'package:passage_flutter/passage_passkey.dart';
 import 'package:passage_flutter/passage_social.dart';
-import 'passage_flutter_models/passage_app_info.dart';
-import 'passage_flutter_models/passage_user.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageFlutter {
@@ -63,23 +61,6 @@ class PassageFlutter {
   /// Sign out a user by deleting their auth token and refresh token from device, and revoking their refresh token.
   Future<void> signOut() {
     return PassageFlutterPlatform.instance.signOut();
-  }
-
-  // APP METHODS
-
-  /// Gets information about an app.
-  ///
-  /// Returns:
-  ///  A `Future<PassageAppInfo>` object containing app information, authentication policy, etc.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<PassageAppInfo?> getAppInfo() {
-    return PassageFlutterPlatform.instance.getAppInfo();
-  }
-
-  Future<CurrentUser?> identifierExists(String identifier) {
-    return PassageFlutterPlatform.instance.identifierExists(identifier);
   }
 
 }

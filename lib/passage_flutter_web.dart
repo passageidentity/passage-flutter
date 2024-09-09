@@ -19,6 +19,7 @@ import './passage_flutter_models/passage_error_code.dart';
 import '/passage_flutter_models/passage_user.dart';
 import '/passage_flutter_models/passkey.dart';
 import 'passage_flutter_models/passage_social_connection.dart';
+import 'passage_flutter_models/public_user_info.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 import 'passage_flutter_platform/passage_js.dart';
 
@@ -280,11 +281,11 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // APP METHODS
 
   @override
-  Future<PassageAppInfo?> getAppInfo() async {
+  Future<PassageAppInfo> getAppInfo() async {
     try {
       final resultPromise = passage.appInfo();
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject == null ? null : PassageAppInfo.fromJson(jsObject);
+      return PassageAppInfo.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.appInfoError);
@@ -292,11 +293,11 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<CurrentUser?> identifierExists(String identifier) async {
+  Future<PublicUserInfo> identifierExists(String identifier) async {
     try {
       final resultPromise = passage.identifierExists(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return jsObject != null ? CurrentUser.fromJson(jsObject) : null;
+      return PublicUserInfo.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.identifierExistsError);
