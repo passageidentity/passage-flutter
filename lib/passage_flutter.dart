@@ -1,3 +1,4 @@
+import 'package:passage_flutter/passage_app.dart';
 import 'package:passage_flutter/passage_hosted.dart';
 import 'package:passage_flutter/passage_otp.dart';
 import 'package:passage_flutter/passage_magliclink.dart';
@@ -11,6 +12,7 @@ class PassageFlutter {
   late final PassageOneTimePasscode oneTimePasscode;
   late final PassageMagliclink magliclink;
   late final PassageHosted hosted;
+  late final PassageApp app;
   PassageFlutter([String? appId]) {
     if (appId != null) {
       PassageFlutterPlatform.instance.initWithAppId(appId);
@@ -20,6 +22,7 @@ class PassageFlutter {
     oneTimePasscode = PassageOneTimePasscode();
     magliclink = PassageMagliclink();
     hosted = PassageHosted();
+    app =PassageApp();
   }
 
   Future<void> overrideBasePath(String path) async {
