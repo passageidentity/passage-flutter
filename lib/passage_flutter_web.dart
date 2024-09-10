@@ -216,16 +216,14 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // TOKEN METHODS
 
   @override
-  Future<String?> getAuthToken() async {
+  Future<String> getAuthToken() async {
     try {
       final resultPromise = passage.getCurrentSession().getAuthToken();
-      final String? authToken = await js_util.promiseToFuture(resultPromise);
+      final String authToken = await js_util.promiseToFuture(resultPromise);
       return authToken;
     } catch (e) {
-      var error = PassageError.fromObject(
+      throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.tokenError);
-      flutter.debugPrint(error.toString());
-      return null;
     }
   }
 
@@ -255,12 +253,12 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> refreshAuthToken() async {
+  Future<AuthResult> refreshAuthToken() async {
     try {
       final resultPromise = passage.getCurrentSession().refresh();
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final authResult = AuthResult.fromJson(jsObject);
-      return authResult.authToken;
+      return authResult;
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.tokenError);

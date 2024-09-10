@@ -108,7 +108,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // TOKEN METHODS
 
-  Future<String?> getAuthToken() {
+  Future<String> getAuthToken() {
     throw UnimplementedError('getAuthToken() has not been implemented.');
   }
 
@@ -116,7 +116,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('isAuthTokenValid() has not been implemented.');
   }
 
-  Future<String> refreshAuthToken() {
+  Future<AuthResult> refreshAuthToken() {
     throw UnimplementedError('refreshAuthToken() has not been implemented.');
   }
 
