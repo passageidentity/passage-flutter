@@ -194,11 +194,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // TOKEN METHODS
 
   @override
-  Future<String?> getAuthToken() async {
+  Future<String> getAuthToken() async {
     try {
       final authToken =
-          await methodChannel.invokeMethod<String?>('getAuthToken');
-      return authToken;
+          await methodChannel.invokeMethod<String>('getAuthToken');
+      return authToken!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
@@ -216,11 +216,11 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> refreshAuthToken() async {
+  Future<AuthResult> refreshAuthToken() async {
     try {
       final newAuthToken =
           await methodChannel.invokeMethod<String>('refreshAuthToken');
-      return newAuthToken!;
+      return AuthResult.fromJson(newAuthToken!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
