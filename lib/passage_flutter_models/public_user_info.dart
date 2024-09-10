@@ -17,17 +17,17 @@ class PublicUserInfo implements PassageFlutterModel {
 
   PublicUserInfo.fromMap(Map<String, dynamic> map)
       : email = map['email'],
-        emailVerified = map['emailVerified'] ?? map['email_verified'],
+        emailVerified = map['emailVerified'],
         id = map['id'],
         phone = map['phone'],
-        phoneVerified = map['phoneVerified'] ?? map['phone_verified'],
+        phoneVerified = map['phoneVerified'],
         status = UserStatus.values.firstWhere(
             (e) => e.value == (map['status'] ?? ''),
             orElse: () => UserStatus.statusUnavailable),
-        userMetadata = map['userMetadata'] ?? map['user_metadata'],
+        userMetadata = map['userMetadata'],
         webauthn = map['webauthn'],
-        webauthnTypes = (map['webauthnTypes'] ?? map['webauthn_types']) != null
-            ? List<WebAuthnType>.from((map['webauthnTypes'] ?? map['webauthn_types'])
+        webauthnTypes = (map['webauthnTypes']) != null
+            ? List<WebAuthnType>.from((map['webauthnTypes'])
                 .map((type) => WebAuthnType.values.firstWhere(
                     (e) => e.value == type,
                     orElse: () => WebAuthnType.passkey)))
