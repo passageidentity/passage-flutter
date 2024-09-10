@@ -1,3 +1,4 @@
+import 'package:passage_flutter/passage_app.dart';
 import 'package:passage_flutter/passage_hosted.dart';
 import 'package:passage_flutter/passage_otp.dart';
 import 'package:passage_flutter/passage_magliclink.dart';
@@ -14,6 +15,7 @@ class PassageFlutter {
   late final PassageOneTimePasscode oneTimePasscode;
   late final PassageMagliclink magliclink;
   late final PassageHosted hosted;
+  late final PassageApp app;
   late final PassageTokenStore tokenStore;
   PassageFlutter([String? appId]) {
     if (appId != null) {
@@ -24,29 +26,13 @@ class PassageFlutter {
     oneTimePasscode = PassageOneTimePasscode();
     magliclink = PassageMagliclink();
     hosted = PassageHosted();
+    app =PassageApp();
     tokenStore = PassageTokenStore();
   }
 
   Future<void> overrideBasePath(String path) async {
     return await PassageFlutterPlatform.instance
         .overrideBasePath(path);
-  }
-
-  // APP METHODS
-
-  /// Gets information about an app.
-  ///
-  /// Returns:
-  ///  A `Future<PassageAppInfo>` object containing app information, authentication policy, etc.
-  ///
-  /// Throws:
-  ///  `PassageError`
-  Future<PassageAppInfo?> getAppInfo() {
-    return PassageFlutterPlatform.instance.getAppInfo();
-  }
-
-  Future<CurrentUser?> identifierExists(String identifier) {
-    return PassageFlutterPlatform.instance.identifierExists(identifier);
   }
 
 }

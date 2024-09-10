@@ -1,3 +1,4 @@
+import 'package:passage_flutter/passage_flutter_models/public_user_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import '../models/magic_link.dart';
@@ -125,11 +126,11 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // APP METHODS
 
-  Future<PassageAppInfo?> getAppInfo() {
+  Future<PassageAppInfo> getAppInfo() {
     throw UnimplementedError('getAppInfo() has not been implemented.');
   }
 
-  Future<CurrentUser?> identifierExists(String identifier) {
+  Future<PublicUserInfo> identifierExists(String identifier) {
     throw UnimplementedError('identifierExists() has not been implemented.');
   }
 
