@@ -1,13 +1,13 @@
 import 'package:passage_flutter/models/magic_link.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_social_connection.dart';
 import 'package:passage_flutter/passage_flutter_models/passkey.dart';
-import 'models/meta_data.dart';
+import 'passage_flutter_models/meta_data.dart';
 import 'passage_flutter_models/authenticator_attachment.dart';
 import 'passage_flutter_models/passage_user.dart';
+import 'passage_flutter_models/passage_user_social_connections.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
 class PassageCurrentUser {
-
   /// Returns the user information for the currently authenticated user.
   ///
   /// Returns:
@@ -43,7 +43,7 @@ class PassageCurrentUser {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<MagicLink> changePhone(String newPhone,String? language) {
+  Future<MagicLink> changePhone(String newPhone, String? language) {
     return PassageFlutterPlatform.instance.changePhone(newPhone);
   }
 
@@ -93,28 +93,23 @@ class PassageCurrentUser {
   }
 
   Future<List<Passkey>>? passkeys() {
-    // TODO: implement passkeys - After updating the code with new Android, JS, and iOS code 
-    return null;
+    return PassageFlutterPlatform.instance.passkeys();
   }
 
-  Future<List<SocialConnection>>? socialConnections() {
-    // TODO: implement socialConnections - After updating the code with new Android, JS, and iOS code 
-    return null;
+  Future<UserSocialConnections?> socialConnections() {
+    return PassageFlutterPlatform.instance.socialConnections();
   }
 
   Future<void>? deleteSocialConnection(SocialConnection socialConnectionType) {
-    // TODO: implement deleteSocialConnection - After updating the code with new Android, JS, and iOS code 
-    return null;
+    return PassageFlutterPlatform.instance
+        .deleteSocialConnection(socialConnectionType);
   }
 
   Future<Metadata>? metadata() {
-    // TODO: implement metadata - After updating the code with new Android, JS, and iOS code 
-    return null;
+    return PassageFlutterPlatform.instance.metaData();
   }
 
   Future<CurrentUser>? updateMetadata(Metadata metaData) {
-    // TODO: implement updateMetadata - After updating the code with new Android, JS, and iOS code 
-    return null;
+    return PassageFlutterPlatform.instance.updateMetaData(metaData);
   }
-
 }

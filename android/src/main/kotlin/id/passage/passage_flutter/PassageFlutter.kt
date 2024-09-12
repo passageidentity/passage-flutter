@@ -2,33 +2,41 @@ package id.passage.passage_flutter
 
 import android.app.Activity
 import android.os.Build
+import com.google.gson.FieldNamingPolicy
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
 import id.passage.android.Passage
-import id.passage.android.PassageSocialConnection
-import id.passage.android.PassageToken
-import id.passage.android.PasskeyCreationOptions
 import id.passage.android.exceptions.AppInfoException
+import id.passage.android.exceptions.GetMetadataAppNotFoundException
+import id.passage.android.exceptions.GetMetadataForbiddenException
+import id.passage.android.exceptions.GetMetadataInvalidException
 import id.passage.android.exceptions.LoginWithPasskeyCancellationException
 import id.passage.android.exceptions.OneTimePasscodeActivateExceededAttemptsException
+import id.passage.android.exceptions.PassageUserInactiveUserException
+import id.passage.android.exceptions.PassageUserNotFoundException
+import id.passage.android.exceptions.PassageUserRequestException
 import id.passage.android.exceptions.PassageUserUnauthorizedException
 import id.passage.android.exceptions.RegisterWithPasskeyCancellationException
 import id.passage.android.model.AuthenticatorAttachment
+import id.passage.android.utils.Metadata
+import id.passage.android.utils.Passkey
+import id.passage.android.utils.PasskeyCreationOptions
+import id.passage.android.utils.SocialConnection
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-internal class PassageFlutter(private val activity: Activity, appId: String? = null) {
+internal class PassageFlutter(private val activity: Activity, appId: String) {
 
     private val passage: Passage = Passage(activity, appId)
 
     internal companion object {
         internal fun invalidArgumentError(result: MethodChannel.Result) {
             result.error(
-                PassageFlutterError.INVALID_ARGUMENT.name,
-                "Invalid or missing argument",
-                null
+                PassageFlutterError.INVALID_ARGUMENT.name, "Invalid or missing argument", null
             )
         }
     }
@@ -36,19 +44,19 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     // region PASSKEY METHODS
 
     internal fun registerWithPasskey(call: MethodCall, result: MethodChannel.Result) {
-        val identifier = call.argument<String>("identifier")
-            ?: return invalidArgumentError(result)
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 var options: PasskeyCreationOptions? = null
                 call.argument<Map<String, String>>("options")?.let { map ->
                     map["authenticatorAttachment"]?.let { authAttachmentString ->
-                        AuthenticatorAttachment.decode(authAttachmentString)?.let { authenticatorAttachment ->
-                            options = PasskeyCreationOptions(authenticatorAttachment)
-                        }
+                        AuthenticatorAttachment.decode(authAttachmentString)
+                            ?.let { authenticatorAttachment ->
+                                options = PasskeyCreationOptions(authenticatorAttachment)
+                            }
                     }
                 }
-                val authResult = passage.registerWithPasskey(identifier, options)
+                val authResult = passage.passkey.register(identifier, options)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -56,6 +64,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                     is RegisterWithPasskeyCancellationException -> {
                         PassageFlutterError.USER_CANCELLED
                     }
+
                     else -> PassageFlutterError.PASSKEY_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -67,7 +76,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         val identifier = call.argument<String>("identifier")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.loginWithPasskey(identifier)
+                val authResult = passage.passkey.login(identifier)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -75,6 +84,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                     is LoginWithPasskeyCancellationException -> {
                         PassageFlutterError.USER_CANCELLED
                     }
+
                     else -> PassageFlutterError.PASSKEY_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -85,18 +95,17 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun deviceSupportsPasskeys(result: MethodChannel.Result) {
         val supportsPasskeys = Build.VERSION.SDK_INT > 27
         result.success(supportsPasskeys)
-      }
+    }
 
     // endregion
 
     // region OTP METHODS
 
     fun newRegisterOneTimePasscode(call: MethodCall, result: MethodChannel.Result) {
-        val identifier = call.argument<String>("identifier")
-            ?: return invalidArgumentError(result)
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val otpId = passage.newRegisterOneTimePasscode(identifier).otpId
+                val otpId = passage.oneTimePasscode.register(identifier).otpId
                 result.success(otpId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.OTP_ERROR.name, e.message, e.toString())
@@ -105,11 +114,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun newLoginOneTimePasscode(call: MethodCall, result: MethodChannel.Result) {
-        val identifier = call.argument<String>("identifier")
-            ?: return invalidArgumentError(result)
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val otpId = passage.newLoginOneTimePasscode(identifier).otpId
+                val otpId = passage.oneTimePasscode.login(identifier).otpId
                 result.success(otpId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.OTP_ERROR.name, e.message, e.toString())
@@ -118,13 +126,11 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun oneTimePasscodeActivate(call: MethodCall, result: MethodChannel.Result) {
-        val otp = call.argument<String>("otp")
-            ?: return invalidArgumentError(result)
-        val otpId = call.argument<String>("otpId")
-            ?: return invalidArgumentError(result)
+        val otp = call.argument<String>("otp") ?: return invalidArgumentError(result)
+        val otpId = call.argument<String>("otpId") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.oneTimePasscodeActivate(otp, otpId)
+                val authResult = passage.oneTimePasscode.activate(otp, otpId)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: OneTimePasscodeActivateExceededAttemptsException) {
@@ -144,11 +150,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     // region MAGIC LINK METHODS
 
     fun newRegisterMagicLink(call: MethodCall, result: MethodChannel.Result) {
-        val identifier = call.argument<String>("identifier")
-            ?: return invalidArgumentError(result)
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val magicLinkId = passage.newRegisterMagicLink(identifier).id
+                val magicLinkId = passage.magicLink.register(identifier).id
                 result.success(magicLinkId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.MAGIC_LINK_ERROR.name, e.message, e.toString())
@@ -157,11 +162,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun newLoginMagicLink(call: MethodCall, result: MethodChannel.Result) {
-        val identifier = call.argument<String>("identifier")
-            ?: return invalidArgumentError(result)
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val magicLinkId = passage.newLoginMagicLink(identifier).id
+                val magicLinkId = passage.magicLink.login(identifier).id
                 result.success(magicLinkId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.MAGIC_LINK_ERROR.name, e.message, e.toString())
@@ -170,11 +174,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun magicLinkActivate(call: MethodCall, result: MethodChannel.Result) {
-        val magicLink = call.argument<String>("magicLink")
-            ?: return invalidArgumentError(result)
+        val magicLink = call.argument<String>("magicLink") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.magicLinkActivate(magicLink)
+                val authResult = passage.magicLink.activate(magicLink)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -184,11 +187,11 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun getMagicLinkStatus(call: MethodCall, result: MethodChannel.Result) {
-        val magicLinkId = call.argument<String>("magicLinkId")
-            ?: return invalidArgumentError(result)
+        val magicLinkId =
+            call.argument<String>("magicLinkId") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.getMagicLinkStatus(magicLinkId)
+                val authResult = passage.magicLink.status(magicLinkId)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -201,20 +204,20 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
 
     // region SOCIAL METHODS
     fun authorizeWith(call: MethodCall, result: MethodChannel.Result) {
-        val connection = call.argument<String>("connection")
-            ?: return invalidArgumentError(result)
-        val validConnection = PassageSocialConnection.values().firstOrNull { it.value == connection }
-            ?: return result.error(PassageFlutterError.SOCIAL_AUTH_ERROR.name, "Invalid connection type", null)
-        passage.authorizeWith(validConnection)
+        val connection = call.argument<String>("connection") ?: return invalidArgumentError(result)
+        val validConnection =
+            SocialConnection.values().firstOrNull { it.value == connection } ?: return result.error(
+                PassageFlutterError.SOCIAL_AUTH_ERROR.name, "Invalid connection type", null
+            )
+        passage.social.authorize(validConnection)
         result.success(null)
     }
 
     fun finishSocialAuthentication(call: MethodCall, result: MethodChannel.Result) {
-        val authCode = call.argument<String>("code")
-            ?: return invalidArgumentError(result)
+        val authCode = call.argument<String>("code") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResult = passage.finishSocialAuthentication(authCode)
+                val authResult = passage.social.finish(authCode)
                 val jsonString = Gson().toJson(authResult)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -232,9 +235,8 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun isAuthTokenValid(call: MethodCall, result: MethodChannel.Result) {
-        val authToken = call.argument<String>("authToken")
-            ?: return invalidArgumentError(result)
-        val isValid = PassageToken.isAuthTokenValid(authToken)
+        val authToken = call.argument<String>("authToken") ?: return invalidArgumentError(result)
+        val isValid = passage.tokenStore.isAuthTokenValid(authToken)
         result.success(isValid)
     }
 
@@ -255,7 +257,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun getAppInfo(result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val appInfo = passage.appInfo() ?: throw AppInfoException("Error getting app info")
+                val appInfo = passage.app.info() ?: throw AppInfoException("Error getting app info")
                 val jsonString = Gson().toJson(appInfo)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -265,15 +267,16 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun identifierExists(call: MethodCall, result: MethodChannel.Result) {
-        val identifier = call.argument<String>("identifier")
-            ?: return invalidArgumentError(result)
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.identifierExists(identifier)
-                val jsonString = if (user== null) null else Gson().toJson(user)
+                val user = passage.app.userExists(identifier)
+                val jsonString = if (user == null) null else Gson().toJson(user)
                 result.success(jsonString)
             } catch (e: Exception) {
-                result.error(PassageFlutterError.IDENTIFIER_EXISTS_ERROR.name, e.message, e.toString())
+                result.error(
+                    PassageFlutterError.IDENTIFIER_EXISTS_ERROR.name, e.message, e.toString()
+                )
             }
         }
     }
@@ -285,7 +288,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun getCurrentUser(result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser()
+                val user = passage.currentUser.userInfo()
                 if (user == null) {
                     result.success(null)
                 } else {
@@ -301,7 +304,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun signOut(result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                passage.signOutCurrentUser()
+                passage.currentUser.logout()
                 result.success(null)
             } catch (e: Exception) {
                 result.success(null)
@@ -312,17 +315,19 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun addPasskey(call: MethodCall, result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser()
-                    ?: throw PassageUserUnauthorizedException("User is not authorized.")
+                val user = passage.currentUser.userInfo() ?: throw PassageUserUnauthorizedException(
+                    "User is not authorized."
+                )
                 var options: PasskeyCreationOptions? = null
                 call.argument<Map<String, String>>("options")?.let { map ->
                     map["authenticatorAttachment"]?.let { authAttachmentString ->
-                        AuthenticatorAttachment.decode(authAttachmentString)?.let { authenticatorAttachment ->
-                            options = PasskeyCreationOptions(authenticatorAttachment)
-                        }
+                        AuthenticatorAttachment.decode(authAttachmentString)
+                            ?.let { authenticatorAttachment ->
+                                options = PasskeyCreationOptions(authenticatorAttachment)
+                            }
                     }
                 }
-                val credential = user.addDevicePasskey(activity, options)
+                val credential = passage.currentUser.addPasskey(options)
                 val jsonString = Gson().toJson(credential)
                 result.success(jsonString)
             } catch (e: Exception) {
@@ -330,9 +335,11 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
                     is RegisterWithPasskeyCancellationException -> {
                         PassageFlutterError.USER_CANCELLED
                     }
+
                     is PassageUserUnauthorizedException -> {
                         PassageFlutterError.USER_UNAUTHORIZED
                     }
+
                     else -> PassageFlutterError.PASSKEY_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -341,18 +348,20 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun deletePasskey(call: MethodCall, result: MethodChannel.Result) {
-        val passkeyId = call.argument<String>("passkeyId")
-            ?: return invalidArgumentError(result)
+        val passkeyId = call.argument<String>("passkeyId") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-                user.deleteDevicePasskey(passkeyId)
+                val user = passage.currentUser.userInfo() ?: throw PassageUserUnauthorizedException(
+                    "User is not authorized."
+                )
+                passage.currentUser.deletePasskey(passkeyId)
                 result.success(null)
             } catch (e: Exception) {
                 val error = when (e) {
                     is PassageUserUnauthorizedException -> {
                         PassageFlutterError.USER_UNAUTHORIZED
                     }
+
                     else -> PassageFlutterError.PASSKEY_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -361,20 +370,22 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun editPasskeyName(call: MethodCall, result: MethodChannel.Result) {
-        val passkeyId = call.argument<String>("passkeyId")
-            ?: return invalidArgumentError(result)
-        val newPasskeyName = call.argument<String>("newPasskeyName")
-            ?: return invalidArgumentError(result)
+        val passkeyId = call.argument<String>("passkeyId") ?: return invalidArgumentError(result)
+        val newPasskeyName =
+            call.argument<String>("newPasskeyName") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-                val credential = user.editDevicePasskeyName(passkeyId, newPasskeyName)
+                val user = passage.currentUser.userInfo() ?: throw PassageUserUnauthorizedException(
+                    "User is not authorized."
+                )
+                val credential = passage.currentUser.editPasskey(passkeyId, newPasskeyName)
                 result.success(credential)
             } catch (e: Exception) {
                 val error = when (e) {
                     is PassageUserUnauthorizedException -> {
                         PassageFlutterError.USER_UNAUTHORIZED
                     }
+
                     else -> PassageFlutterError.PASSKEY_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -383,18 +394,20 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun changeEmail(call: MethodCall, result: MethodChannel.Result) {
-        val newEmail = call.argument<String>("newEmail")
-            ?: return invalidArgumentError(result)
+        val newEmail = call.argument<String>("newEmail") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-                val magicLinkId = user.changeEmail(newEmail)?.id
+                val user = passage.currentUser.userInfo() ?: throw PassageUserUnauthorizedException(
+                    "User is not authorized."
+                )
+                val magicLinkId = passage.currentUser.changeEmail(newEmail)?.id
                 result.success(magicLinkId)
             } catch (e: Exception) {
                 val error = when (e) {
                     is PassageUserUnauthorizedException -> {
                         PassageFlutterError.USER_UNAUTHORIZED
                     }
+
                     else -> PassageFlutterError.CHANGE_EMAIL_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -403,18 +416,18 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     }
 
     fun changePhone(call: MethodCall, result: MethodChannel.Result) {
-        val newPhone = call.argument<String>("newPhone")
-            ?: return invalidArgumentError(result)
+        val newPhone = call.argument<String>("newPhone") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val user = passage.getCurrentUser() ?: throw PassageUserUnauthorizedException("User is not authorized.")
-                val magicLinkId = user.changePhone(newPhone)?.id
+                val user = passage.currentUser.userInfo()
+                val magicLinkId = passage.currentUser.changePhone(newPhone)?.id
                 result.success(magicLinkId)
             } catch (e: Exception) {
                 val error = when (e) {
                     is PassageUserUnauthorizedException -> {
                         PassageFlutterError.USER_UNAUTHORIZED
                     }
+
                     else -> PassageFlutterError.CHANGE_PHONE_ERROR
                 }
                 result.error(error.name, e.message, e.toString())
@@ -422,9 +435,188 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
         }
     }
 
+    fun passkeys(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val passkeys = passage.currentUser.passkeys()
+                val gson =
+                    GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                        .create()
+
+                val passkeyListType = object : TypeToken<List<Passkey>>() {}.type
+                val passkeysJson = gson.toJson(passkeys, passkeyListType)
+
+                result.success(passkeysJson) // Pass the serialized list to Flutter
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+
+                    is PassageUserNotFoundException -> {
+                        PassageFlutterError.USER_NOT_FOUND
+                    }
+
+                    is PassageUserInactiveUserException -> {
+                        PassageFlutterError.USER_INACTIVE
+                    }
+
+                    is PassageUserRequestException -> {
+                        PassageFlutterError.USER_REQUEST
+                    }
+
+                    else -> PassageFlutterError.USER_SERVER_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+    fun socialConnections(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val socialConnections =
+                    passage.currentUser.socialConnections() // Retrieve the social connections
+
+                // Convert the UserSocialConnections object to JSON
+                val gson = Gson()
+                val socialConnectionsJson = gson.toJson(socialConnections) // Returns JSON string
+
+                result.success(socialConnectionsJson) // Pass the serialized JSON string to Flutter
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+
+                    is PassageUserNotFoundException -> {
+                        PassageFlutterError.USER_NOT_FOUND
+                    }
+
+                    is PassageUserInactiveUserException -> {
+                        PassageFlutterError.USER_INACTIVE
+                    }
+
+                    is PassageUserRequestException -> {
+                        PassageFlutterError.USER_REQUEST
+                    }
+
+                    else -> PassageFlutterError.USER_SERVER_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+
+            }
+        }
+    }
+
+
+    fun deleteSocialConnection(call: MethodCall, result: MethodChannel.Result) {
+        val socialConnectionTypeString =
+            call.argument<String>("socialConnectionType") ?: return invalidArgumentError(result)
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val socialConnectionType =
+                    SocialConnection.values().firstOrNull { it.value == socialConnectionTypeString }
+                        ?: throw IllegalArgumentException("Unknown social connection type")
+
+                passage.currentUser.deleteSocialConnection(socialConnectionType)
+
+                result.success(null)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is PassageUserUnauthorizedException -> {
+                        PassageFlutterError.USER_UNAUTHORIZED
+                    }
+
+                    is PassageUserNotFoundException -> {
+                        PassageFlutterError.USER_NOT_FOUND
+                    }
+
+                    is PassageUserInactiveUserException -> {
+                        PassageFlutterError.USER_INACTIVE
+                    }
+
+                    is PassageUserRequestException -> {
+                        PassageFlutterError.USER_REQUEST
+                    }
+
+                    else -> PassageFlutterError.USER_SERVER_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+
+            }
+        }
+    }
+
+    fun metaData(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val metaData = passage.currentUser.metadata()
+                val jsonString = Gson().toJson(metaData)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is GetMetadataAppNotFoundException -> {
+                        PassageFlutterError.METADATA_APP_NOT_FOUND
+                    }
+
+                    is GetMetadataInvalidException -> {
+                        PassageFlutterError.METADATA_INVALID
+                    }
+
+                    is GetMetadataForbiddenException -> {
+                        PassageFlutterError.METADATA_FORBIDDEN
+                    }
+
+                    else -> PassageFlutterError.METADATA_SERVER_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+
+            }
+        }
+    }
+
+    fun updateMetaData(call: MethodCall, result: MethodChannel.Result) {
+        val metaDataMap = call.argument<Map<String, Any>>("userMetadata") ?: return invalidArgumentError(result)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                if (metaDataMap == null) {
+                    result.error("ERROR", "Metadata is null", null)
+                    return@launch
+                }
+
+                val metaData = Metadata(userMetadata = metaDataMap)
+
+                val updatedMetaData = passage.currentUser.updateMetadata(metaData)
+
+                val jsonString = Gson().toJson(updatedMetaData)
+
+                result.success(jsonString)
+            } catch (e: Exception) {
+                val error = when (e) {
+                    is GetMetadataAppNotFoundException -> {
+                        PassageFlutterError.METADATA_APP_NOT_FOUND
+                    }
+
+                    is GetMetadataInvalidException -> {
+                        PassageFlutterError.METADATA_INVALID
+                    }
+
+                    is GetMetadataForbiddenException -> {
+                        PassageFlutterError.METADATA_FORBIDDEN
+                    }
+
+                    else -> PassageFlutterError.METADATA_SERVER_ERROR
+                }
+                result.error(error.name, e.message, e.toString())
+            }
+        }
+    }
+
+
     fun overrideBasePath(call: MethodCall, result: MethodChannel.Result) {
-        val path = call.argument<String>("path")
-            ?: return invalidArgumentError(result)
+        val path = call.argument<String>("path") ?: return invalidArgumentError(result)
         passage.overrideBasePath(path)
         result.success(null)
     }
@@ -437,7 +629,7 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
     fun hostedAuthStart(result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                passage.hostedAuthStart()
+                passage.hosted.start()
                 result.success(null)
             } catch (e: Exception) {
                 val error = PassageFlutterError.START_HOSTED_AUTH_ERROR
@@ -448,33 +640,18 @@ internal class PassageFlutter(private val activity: Activity, appId: String? = n
 
 
     fun hostedAuthFinish(call: MethodCall, result: MethodChannel.Result) {
-        val code = call.argument<String>("code")
-            ?: return invalidArgumentError(result)
-        val state = call.argument<String>("state")
-            ?: return invalidArgumentError(result)
+        val code = call.argument<String>("code") ?: return invalidArgumentError(result)
+        val state = call.argument<String>("state") ?: return invalidArgumentError(result)
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val authResultWithIdToken = passage.hostedAuthFinish(code, state) 
+                val authResultWithIdToken = passage.hosted.finish(code, state)
                 val jsonString = Gson().toJson(authResultWithIdToken.first)
                 val map = mapOf(
-                    "authResult" to jsonString,
-                    "idToken" to authResultWithIdToken.second
+                    "authResult" to jsonString, "idToken" to authResultWithIdToken.second
                 )
                 result.success(map)
             } catch (e: Exception) {
                 val error = PassageFlutterError.FINISH_HOSTED_AUTH_ERROR
-                result.error(error.name, e.message, e.toString())
-            }
-        }
-    }
-
-    fun hostedLogout(result: MethodChannel.Result) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                passage.hostedLogout()
-                result.success(null)
-            } catch (e: Exception) {
-                val error = PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR
                 result.error(error.name, e.message, e.toString())
             }
         }

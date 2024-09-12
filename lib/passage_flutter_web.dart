@@ -6,7 +6,6 @@
 import 'dart:convert';
 import 'dart:js' as js;
 import 'dart:js_util' as js_util;
-import 'package:flutter/foundation.dart' as flutter;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:passage_flutter/models/magic_link.dart';
 
@@ -42,7 +41,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<void> initWithAppId(String appId) async {
+  Future<void> initialize(String appId) async {
     _passageAppId = appId;
   }
 

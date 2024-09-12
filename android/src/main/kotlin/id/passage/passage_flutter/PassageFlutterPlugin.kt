@@ -34,16 +34,14 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
       if (passageFlutter == null) {
-          passageFlutter = if (call.method == "initWithAppId") {
+          if (call.method == "initialize") {
               val appId = call.argument<String>("appId") ?: return invalidArgumentError(result)
-              PassageFlutter(activity, appId)
-          } else {
-              PassageFlutter(activity)
+              passageFlutter =  PassageFlutter(activity, appId)
           }
       }
 
       when (call.method) {
-          "initWithAppId" -> {}
+          "initialize" -> {}
           "overrideBasePath" -> {
             passageFlutter?.overrideBasePath(call, result)
           }
@@ -73,7 +71,11 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "changePhone" -> passageFlutter?.changePhone(call, result)
           "hostedAuthStart" -> passageFlutter?.hostedAuthStart(result)
           "hostedAuthFinish" -> passageFlutter?.hostedAuthFinish(call, result)
-          "hostedLogout" -> passageFlutter?.hostedLogout(result)
+          "passkeys" -> passageFlutter?.passkeys(result);
+          "socialConnections" -> passageFlutter?.socialConnections(result)
+          "deleteSocialConnection" -> passageFlutter?.deleteSocialConnection(call, result)
+          "metaData" -> passageFlutter?.metaData(result);
+          "updateMetaData" -> passageFlutter?.updateMetaData(call, result)
           else -> {
               result.notImplemented()
           }
