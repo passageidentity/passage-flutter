@@ -1,7 +1,8 @@
 import 'package:passage_flutter/passage_flutter_models/public_user_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
 import '../models/magic_link.dart';
+import '../passage_flutter_models/meta_data.dart';
+import '../passage_flutter_models/passage_user_social_connections.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
@@ -31,8 +32,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> initWithAppId(String appId) async {
-    throw UnimplementedError('initWithAppId() has not been implemented.');
+  Future<void> initialize(String appId) async {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
 
   Future<void> overrideBasePath(String path) async {
@@ -174,6 +175,26 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   Future<void> hostedLogout() {
     throw UnimplementedError('hostedLogout() has not been implemented.');
+  }
+
+  Future<List<Passkey>> passkeys() {
+    throw UnimplementedError('passkeys() has not been implemented.');
+  }
+
+  Future<UserSocialConnections?> socialConnections() {
+    throw UnimplementedError('socialConnections() has not been implemented.');
+  }
+
+  Future<void> deleteSocialConnection(SocialConnection socialConnectionType) {
+    throw UnimplementedError('deleteSocialConnection() has not been implemented.');
+  }
+
+  Future<Metadata> metaData() {
+    throw UnimplementedError('metaData() has not been implemented.');
+  }
+
+  Future<CurrentUser> updateMetaData(Metadata metedata) {
+    throw UnimplementedError('passkeys() has not been implemented.');
   }
 
 }

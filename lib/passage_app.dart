@@ -1,4 +1,4 @@
-import 'models/meta_data.dart';
+import 'passage_flutter_models/meta_data.dart';
 import 'passage_flutter_models/public_user_info.dart';
 import 'passage_flutter_models/passage_app_info.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';

@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:passage_flutter/models/magic_link.dart';
+import 'package:passage_flutter/passage_flutter_models/meta_data.dart';
 import 'package:passage_flutter/passage_flutter_models/public_user_info.dart';
 import 'package:passage_flutter/passage_flutter_models/passage_error_code.dart';
 import '../passage_flutter_models/passage_social_connection.dart';
+import '../passage_flutter_models/passage_user_social_connections.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
@@ -20,8 +23,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   final methodChannel = const MethodChannel('passage_flutter');
 
   @override
-  Future<void> initWithAppId(String appId) async {
-    await methodChannel.invokeMethod('initWithAppId', {'appId': appId});
+  Future<void> initialize(String appId) async {
+    await methodChannel.invokeMethod('initialize', {'appId': appId});
   }
 
   @override
@@ -350,8 +353,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           message: 'Only supported on iOS. Use hostedAuthStart instead.');
     }
     try {
-      final authResultWithIdToken = await methodChannel
-          .invokeMethod<String>('hostedAuth');
+      final authResultWithIdToken =
+          await methodChannel.invokeMethod<String>('hostedAuth');
       return AuthResult.fromJson(authResultWithIdToken!);
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -359,33 +362,107 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-Future<AuthResult> hostedAuthFinish(String code, String state) async {
-  if (Platform.isIOS) {
-    throw PassageError(
-        code: PassageErrorCode.hostedAuthFinish,
-        message: 'Not supported on iOS. Use hostedAuthIOS instead.');
-  }
-  try {
-    final Map<Object?, Object?>? result = await methodChannel.invokeMethod<Map<Object?, Object?>>(
-      'hostedAuthFinish',
-      {'code': code, 'state': state},
-    );
-    final authResult = AuthResult.fromJson(result!['authResult']);
-    return authResult;
-  } catch (e) {
-    throw PassageError.fromObject(object: e);
-  }
-}
-
-
-  @override
-  Future<void> hostedLogout() async {
+  Future<AuthResult> hostedAuthFinish(String code, String state) async {
+    if (Platform.isIOS) {
+      throw PassageError(
+          code: PassageErrorCode.hostedAuthFinish,
+          message: 'Not supported on iOS. Use hostedAuthIOS instead.');
+    }
     try {
-      return await methodChannel
-          .invokeMethod<void>('hostedLogout');
+      final Map<Object?, Object?>? result =
+          await methodChannel.invokeMethod<Map<Object?, Object?>>(
+        'hostedAuthFinish',
+        {'code': code, 'state': state},
+      );
+      final authResult = AuthResult.fromJson(result!['authResult']);
+      return authResult;
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
   }
 
+  @override
+  Future<void> hostedLogout() async {
+    try {
+      return await methodChannel.invokeMethod<void>('hostedLogout');
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<List<Passkey>> passkeys() async {
+    try {
+      final String? passkeysJson =
+          await methodChannel.invokeMethod<String>('passkeys');
+
+      if (passkeysJson == null) {
+        return [];
+      }
+
+      final List<dynamic> passkeyList =
+          jsonDecode(passkeysJson) as List<dynamic>;
+      return passkeyList
+          .map((passkeyMap) =>
+              Passkey.fromMap(passkeyMap as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<UserSocialConnections?> socialConnections() async {
+    try {
+      final String? socialConnectionsJson =
+          await methodChannel.invokeMethod<String>('socialConnections');
+      if (socialConnectionsJson == null) {
+        return null;
+      }
+      return UserSocialConnections.fromJson(socialConnectionsJson);
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<void> deleteSocialConnection(
+      SocialConnection socialConnectionType) async {
+    try {
+      await methodChannel.invokeMethod<void>('deleteSocialConnection', {
+        'socialConnectionType': socialConnectionType
+            .value,
+      });
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<Metadata> metaData() async {
+    try {
+      final String? metaDataJson =
+          await methodChannel.invokeMethod<String>('metaData');
+      return Metadata.fromJson(jsonDecode(metaDataJson!));
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
+  @override
+  Future<CurrentUser> updateMetaData(Metadata metadata) async {
+    try {
+      Map<String, dynamic> metadataMap = metadata.toMap();
+      final String? currentUserJson = await methodChannel.invokeMethod<String>(
+        'updateMetaData',
+        {
+          'userMetadata':
+              metadataMap,
+        },
+      );
+      return CurrentUser.fromJson(currentUserJson!);
+    } catch (e) {
+      throw PassageError.fromObject(object: e);
+    }
+  }
 }
