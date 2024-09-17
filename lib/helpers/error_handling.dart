@@ -6,7 +6,7 @@ String getErrorCode(dynamic error) {
   if (error is PlatformException) {
     return error.code;
   }
-  return PassageErrorCode.unknkown;
+  return PassageErrorCode.unknown;
 }
 
 @override

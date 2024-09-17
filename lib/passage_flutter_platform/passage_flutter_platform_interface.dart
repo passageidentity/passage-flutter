@@ -193,7 +193,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('metaData() has not been implemented.');
   }
 
-  Future<CurrentUser> updateMetaData(Metadata metedata) {
+  Future<CurrentUser> updateMetaData(Metadata metadata) {
     throw UnimplementedError('passkeys() has not been implemented.');
   }
 
