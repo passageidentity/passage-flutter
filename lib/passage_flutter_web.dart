@@ -417,11 +417,7 @@ Future<UserSocialConnections> socialConnections() async {
   try {
     final resultPromise = passage.currentUser.listSocialConnections();
     final jsObject = await js_util.promiseToFuture(resultPromise);
-
-    // Convert the JavaScript object to a Dart Map
     final dartObject = js_util.dartify(jsObject);
-
-    // Cast the Map<Object?, Object?> to Map<String, dynamic>
     final Map<String, dynamic> dartMap =
         Map<String, dynamic>.from(dartObject as Map);
 
