@@ -8,7 +8,6 @@ import 'dart:js' as js;
 import 'dart:js_util' as js_util;
 import 'package:flutter_web_plugins/flutter_web_plugins.dart';
 import 'package:passage_flutter/models/magic_link.dart';
-
 import '/helpers/data_conversion_web.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
@@ -16,11 +15,14 @@ import '/passage_flutter_models/passage_app_info.dart';
 import '/passage_flutter_models/passage_error.dart';
 import './passage_flutter_models/passage_error_code.dart';
 import '/passage_flutter_models/passage_user.dart';
-import '/passage_flutter_models/passkey.dart';
+import '/passage_flutter_models/passkey.dart' as model;
+import 'passage_flutter_models/meta_data.dart';
 import 'passage_flutter_models/passage_social_connection.dart';
+import 'passage_flutter_models/passage_user_social_connections.dart';
 import 'passage_flutter_models/public_user_info.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 import 'passage_flutter_platform/passage_js.dart';
+import 'package:passage_flutter/passage_flutter_platform/passage_js.dart' as js_model;
 
 /// A web implementation of the PassageFlutterPlatform of the PassageFlutter plugin.
 class PassageFlutterWeb extends PassageFlutterPlatform {
@@ -48,6 +50,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // PASSKEY AUTH METHODS
 
   @override
+  @override
   Future<AuthResult> registerWithPasskey(
       String identifier, PasskeyCreationOptions? options) async {
     final passkeysSupported = await deviceSupportsPasskeys();
@@ -56,7 +59,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
     }
     try {
       final jsOptions = js_util.jsify(options?.toJson());
-      final resultPromise = passage.register(identifier, jsOptions);
+      final resultPromise = passage.passkey.register(identifier, jsOptions);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -72,7 +75,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
-      final resultPromise = passage.login(identifier ?? '');
+      final resultPromise = passage.passkey.login(identifier ?? '');
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -84,7 +87,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<bool> deviceSupportsPasskeys() async {
     try {
-      final resultPromise = passage.getCredentialAvailable();
+      final resultPromise = passage.passkey.getCredentialAvailable();
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return jsObject.platform == true;
     } catch (e) {
@@ -97,7 +100,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<String> newRegisterOneTimePasscode(String identifier) async {
     try {
-      final resultPromise = passage.newRegisterOneTimePasscode(identifier);
+      final resultPromise = passage.oneTimePasscode.register(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
       return resultMap['otp_id'];
@@ -110,10 +113,10 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<String> newLoginOneTimePasscode(String identifier) async {
     try {
-      final resultPromise = passage.newLoginOneTimePasscode(identifier);
+      final resultPromise = passage.oneTimePasscode.login(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
-      return resultMap['otp_id'];
+      return resultMap['otpId'];
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.otpError);
@@ -123,7 +126,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<AuthResult> oneTimePasscodeActivate(String otp, String otpId) async {
     try {
-      final resultPromise = passage.oneTimePasscodeActivate(otp, otpId);
+      final resultPromise = passage.oneTimePasscode.activate(otp, otpId);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -139,7 +142,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<String> newRegisterMagicLink(String identifier) async {
     try {
-      final resultPromise = passage.newRegisterMagicLink(identifier);
+      final resultPromise = passage.magicLink.register(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
       return resultMap['id'];
@@ -152,7 +155,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<String> newLoginMagicLink(String identifier) async {
     try {
-      final resultPromise = passage.newLoginMagicLink(identifier);
+      final resultPromise = passage.magicLink.login(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
       return resultMap['id'];
@@ -165,7 +168,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<AuthResult> magicLinkActivate(String magicLink) async {
     try {
-      final resultPromise = passage.magicLinkActivate(magicLink);
+      final resultPromise = passage.magicLink.activate(magicLink);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -177,7 +180,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<AuthResult> getMagicLinkStatus(String magicLinkId) async {
     try {
-      final resultPromise = passage.getMagicLinkStatus(magicLinkId);
+      final resultPromise = passage.magicLink.status(magicLinkId);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -191,7 +194,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<void> authorizeWith(SocialConnection connection) async {
     try {
-      final resultPromise = passage.authorizeWith(connection.value);
+      final resultPromise = passage.social.authorize(connection.value);
       await js_util.promiseToFuture(resultPromise);
       return;
     } catch (e) {
@@ -203,7 +206,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<AuthResult> finishSocialAuthentication(String code) async {
     try {
-      final resultPromise = passage.finishSocialAuthentication(code);
+      final resultPromise = passage.social.finish(code);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return AuthResult.fromJson(jsObject);
     } catch (e) {
@@ -217,7 +220,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<String> getAuthToken() async {
     try {
-      final resultPromise = passage.getCurrentSession().getAuthToken();
+      final resultPromise = passage.session.getAuthToken();
       final String authToken = await js_util.promiseToFuture(resultPromise);
       return authToken;
     } catch (e) {
@@ -254,7 +257,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<AuthResult> refreshAuthToken() async {
     try {
-      final resultPromise = passage.getCurrentSession().refresh();
+      final resultPromise = passage.session.refresh();
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final authResult = AuthResult.fromJson(jsObject);
       return authResult;
@@ -267,7 +270,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<void> signOut() async {
     try {
-      final resultPromise = passage.getCurrentSession().signOut();
+      final resultPromise = passage.session.signOut();
       await js_util.promiseToFuture(resultPromise);
       return;
     } catch (e) {
@@ -280,7 +283,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<PassageAppInfo> getAppInfo() async {
     try {
-      final resultPromise = passage.appInfo();
+      final resultPromise = passage.app.info();
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return PassageAppInfo.fromJson(jsObject);
     } catch (e) {
@@ -292,7 +295,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<PublicUserInfo> identifierExists(String identifier) async {
     try {
-      final resultPromise = passage.identifierExists(identifier);
+      final resultPromise = passage.app.userExists(identifier);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return PublicUserInfo.fromJson(jsObject);
     } catch (e) {
@@ -306,7 +309,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<CurrentUser> getCurrentUser() async {
     try {
-      final resultPromise = passage.getCurrentUser().userInfo();
+      final resultPromise = passage.currentUser.userInfo();
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return CurrentUser.fromJson(jsObject);
     } catch (e) {
@@ -315,16 +318,16 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<Passkey> addPasskey(PasskeyCreationOptions? options) async {
+  Future<model.Passkey> addPasskey(PasskeyCreationOptions? options) async {
     final passkeysSupported = await deviceSupportsPasskeys();
     if (!passkeysSupported) {
       throw PassageError(code: PassageErrorCode.passkeysNotSupported);
     }
     try {
       final jsOptions = js_util.jsify(options?.toJson());
-      final resultPromise = passage.getCurrentUser().addDevice(jsOptions);
+      final resultPromise = passage.currentUser.addPasskey(jsOptions);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return Passkey.fromJson(jsObject);
+      return model.Passkey.fromJson(jsObject);
     } catch (e) {
       final error = PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.passkeyError);
@@ -339,24 +342,29 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<void> deletePasskey(String passkeyId) async {
     try {
-      final resultPromise = passage.getCurrentUser().deleteDevice(passkeyId);
+      // Create a Passkey object with the given passkeyId
+      final passkey = js_model.Passkey(id: passkeyId);
+
+      // Call the deletePasskey method with the Passkey object
+      final resultPromise = passage.currentUser.deletePasskey(passkey);
       await js_util.promiseToFuture(resultPromise);
-      return;
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.passkeyError);
+        object: e,
+        overrideCode: PassageErrorCode.passkeyError,
+      );
     }
   }
 
   @override
-  Future<Passkey> editPasskeyName(
+  Future<model.Passkey> editPasskeyName(
       String passkeyId, String newPasskeyName) async {
     try {
       final objFromMap = js_util.jsify({'friendly_name': newPasskeyName});
       final resultPromise =
-          passage.getCurrentUser().editDevice(passkeyId, objFromMap);
+          passage.currentUser.editPasskey(passkeyId, objFromMap);
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return Passkey.fromJson(jsObject);
+      return model.Passkey.fromJson(jsObject);
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.passkeyError);
@@ -366,7 +374,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<MagicLink> changeEmail(String newEmail) async {
     try {
-      final resultPromise = passage.getCurrentUser().changeEmail(newEmail);
+      final resultPromise = passage.currentUser.changeEmail(newEmail);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return MagicLink(jsObject.id);
     } catch (e) {
@@ -378,12 +386,95 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   @override
   Future<MagicLink> changePhone(String newPhone) async {
     try {
-      final resultPromise = passage.getCurrentUser().changePhone(newPhone);
+      final resultPromise = passage.currentUser.changePhone(newPhone);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return MagicLink(jsObject.id);
     } catch (e) {
       throw PassageError.fromObject(
-          object: e, overrideCode: PassageErrorCode.changeEmailError);
+          object: e, overrideCode: PassageErrorCode.changePhoneError);
+    }
+  }
+
+  @override
+  Future<List<model.Passkey>> passkeys() async {
+    try {
+      final resultPromise = passage.currentUser.passkeys();
+      final jsArray = await js_util.promiseToFuture(resultPromise);
+      final List<dynamic> jsList = jsArray as List<dynamic>;
+      return jsList
+          .map((jsObject) => model.Passkey.fromJson(jsObject))
+          .toList();
+    } catch (e) {
+      throw PassageError.fromObject(
+        object: e,
+        overrideCode: PassageErrorCode.gettingPasskeysError,
+      );
+    }
+  }
+
+  @override
+Future<UserSocialConnections> socialConnections() async {
+  try {
+    final resultPromise = passage.currentUser.listSocialConnections();
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+
+    // Convert the JavaScript object to a Dart Map
+    final dartObject = js_util.dartify(jsObject);
+
+    // Cast the Map<Object?, Object?> to Map<String, dynamic>
+    final Map<String, dynamic> dartMap =
+        Map<String, dynamic>.from(dartObject as Map);
+
+    return UserSocialConnections.fromMap(dartMap);
+  } catch (e) {
+    throw PassageError.fromObject(
+      object: e,
+      overrideCode: PassageErrorCode.socialConnectionError,
+    );
+  }
+}
+
+  @override
+  Future<bool> deleteSocialConnection(SocialConnection socialConnectionType) async {
+    try {
+      final resultPromise =
+          passage.currentUser.deleteSocialConnection(socialConnectionType);
+      final result = await js_util.promiseToFuture(resultPromise);
+      return result as bool;
+    } catch (e) {
+      throw PassageError.fromObject(
+        object: e,
+        overrideCode: PassageErrorCode.socialConnectionError,
+      );
+    }
+  }
+
+  @override
+  Future<Metadata> metaData() async {
+    try {
+      final resultPromise = passage.currentUser.metadata();
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return Metadata.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+        object: e,
+        overrideCode: PassageErrorCode.metadataError,
+      );
+    }
+  }
+
+  @override
+  Future<CurrentUser> updateMetaData(Metadata metadata) async {
+    try {
+      final jsMetadata = js_util.jsify(metadata.toJson());
+      final resultPromise = passage.currentUser.updateMetadata(jsMetadata);
+      final jsObject = await js_util.promiseToFuture(resultPromise);
+      return CurrentUser.fromJson(jsObject);
+    } catch (e) {
+      throw PassageError.fromObject(
+        object: e,
+        overrideCode: PassageErrorCode.metadataError,
+      );
     }
   }
 }

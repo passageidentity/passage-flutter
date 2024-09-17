@@ -17,5 +17,8 @@ class PassageErrorCode {
   static const identifierExistsError = 'IDENTIFIER_EXISTS_ERROR';
   static const otpActivationExceededAttempts =
       'OTP_ACTIVATION_EXCEEDED_ATTEMPTS';
-  static const unknkown = 'UNKNOWN';
+  static const socialConnectionError = 'SOCIAL_CONNECTION_ERROR';
+  static const metadataError = 'METADATA_ERROR';
+  static const gettingPasskeysError = 'GETTING_PASSKEYS_ERROR';
+  static const unknown = 'UNKNOWN';
 }
