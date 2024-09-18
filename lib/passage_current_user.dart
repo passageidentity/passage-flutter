@@ -28,7 +28,7 @@ class PassageCurrentUser {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<MagicLink> changeEmail(String newEmail, String? language) {
+  Future<MagicLink> changeEmail(String newEmail, {String? language}) {
     return PassageFlutterPlatform.instance.changeEmail(newEmail);
   }
 
@@ -43,7 +43,7 @@ class PassageCurrentUser {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<MagicLink> changePhone(String newPhone, String? language) {
+  Future<MagicLink> changePhone(String newPhone, {String? language}) {
     return PassageFlutterPlatform.instance.changePhone(newPhone);
   }
 
@@ -92,24 +92,76 @@ class PassageCurrentUser {
         .editPasskeyName(passkeyId, friendlyName);
   }
 
-  Future<List<Passkey>>? passkeys() {
-    return PassageFlutterPlatform.instance.passkeys();
-  }
+  /// Retrieves a list of WebAuthn passkeys associated with the authenticated user.
+/// 
+/// Returns:
+///  A `Future<List<Passkey>>` containing all WebAuthn passkeys for the current user.
+/// 
+/// Throws:
+///  `PassageError` if an error occurs during the retrieval process.
+Future<List<Passkey>>? passkeys() {
+  return PassageFlutterPlatform.instance.passkeys();
+}
 
-  Future<UserSocialConnections?> socialConnections() {
-    return PassageFlutterPlatform.instance.socialConnections();
-  }
+/// Retrieves the social connections for the authenticated user.
+/// 
+/// Returns:
+///  A `Future<UserSocialConnections?>` containing the social connections of the user.
+/// 
+/// Throws:
+///  `PassageError` if an error occurs during the retrieval process.
+Future<UserSocialConnections?> socialConnections() {
+  return PassageFlutterPlatform.instance.socialConnections();
+}
 
-  Future<void>? deleteSocialConnection(SocialConnection socialConnectionType) {
-    return PassageFlutterPlatform.instance
-        .deleteSocialConnection(socialConnectionType);
-  }
+/// Deletes a social connection for the authenticated user.
+/// 
+/// Parameters:
+///  - `socialConnectionType`: The type of social connection to delete.
+/// 
+/// Returns:
+///  A `Future<void>` that resolves when the social connection is deleted.
+/// 
+/// Throws:
+///  `PassageError` if an error occurs during the deletion process.
+Future<void>? deleteSocialConnection(SocialConnection socialConnectionType) {
+  return PassageFlutterPlatform.instance.deleteSocialConnection(socialConnectionType);
+}
 
-  Future<Metadata>? metadata() {
-    return PassageFlutterPlatform.instance.metaData();
-  }
+/// Fetches the metadata associated with the authenticated user.
+/// 
+/// Returns:
+///  A `Future<Metadata>` containing the metadata for the user.
+/// 
+/// Throws:
+///  `PassageError` if an error occurs during the retrieval process.
+Future<Metadata>? metadata() {
+  return PassageFlutterPlatform.instance.metaData();
+}
 
-  Future<CurrentUser>? updateMetadata(Metadata metaData) {
-    return PassageFlutterPlatform.instance.updateMetaData(metaData);
-  }
+/// Updates the metadata associated with the authenticated user.
+/// 
+/// Parameters:
+///  - `metaData`: The new metadata to update for the user.
+/// 
+/// Returns:
+///  A `Future<CurrentUser>` containing the updated information of the user.
+/// 
+/// Throws:
+///  `PassageError` if an error occurs during the update process.
+Future<CurrentUser>? updateMetadata(Metadata metaData) {
+  return PassageFlutterPlatform.instance.updateMetaData(metaData);
+}
+
+/// Signs out the current user, clearing local tokens and logging out of the system.
+/// 
+/// Returns:
+///  A `Future<void>` that resolves when the user is successfully signed out.
+/// 
+/// Throws:
+///  `PassageError` if an error occurs during the sign-out process.
+Future<void>? logout() {
+  return PassageFlutterPlatform.instance.signOut();
+}
+
 }

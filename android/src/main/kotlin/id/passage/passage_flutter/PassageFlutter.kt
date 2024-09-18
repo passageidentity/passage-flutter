@@ -281,6 +281,22 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
         }
     }
 
+    fun createUser(call: MethodCall, result: MethodChannel.Result) {
+        val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
+        val userMetadata = call.argument<String?>("userMetadata")
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val user = passage.app.createUser(identifier, userMetadata)
+                val jsonString = if (user == null) null else Gson().toJson(user)
+                result.success(jsonString)
+            } catch (e: Exception) {
+                result.error(
+                    PassageFlutterError.IDENTIFIER_EXISTS_ERROR.name, e.message, e.toString()
+                )
+            }
+        }
+    }
+
     // endregion
 
     // region USER METHODS

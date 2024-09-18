@@ -16,7 +16,7 @@ class PassageOneTimePasscode {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<OneTimePasscode> register(String identifier, String? language) async {
+  Future<OneTimePasscode> register(String identifier, {String? language}) async {
     String oneTimePasscodeId =  await PassageFlutterPlatform.instance
         .newRegisterOneTimePasscode(identifier);
     return OneTimePasscode(oneTimePasscodeId);
@@ -36,7 +36,7 @@ class PassageOneTimePasscode {
   /// Throws:
   ///  `PassageError`
 
-  Future<OneTimePasscode> login(String identifier, String? language) async {
+  Future<OneTimePasscode> login(String identifier, {String? language}) async {
     String oneTimePasscodeId =  await  PassageFlutterPlatform.instance.newLoginOneTimePasscode(identifier);
     return OneTimePasscode(oneTimePasscodeId);
   }

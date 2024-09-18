@@ -135,6 +135,10 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('identifierExists() has not been implemented.');
   }
 
+  Future<PublicUserInfo> createUser(String identifier, {Metadata? userMetadata}) {
+    throw UnimplementedError('createUser() has not been implemented.');
+  }
+
   // USER METHODS
 
   Future<CurrentUser> getCurrentUser() {

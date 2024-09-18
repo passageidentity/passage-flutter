@@ -41,8 +41,7 @@ class PassageApp {
   /// Parameters:
   /// - `identifier`: The identifier for the new user (e.g., email or phone number).
   /// - `userMetadata`: Optional metadata associated with the user.
-  Future<PublicUserInfo>? createUser(String identifier, Metadata? userMetadata) {
-    // TODO: implement updateMetadata - After updating the code with new Android, JS, and iOS code 
-    return null;
+  Future<PublicUserInfo> createUser(String identifier, {Metadata? userMetadata}) {
+    return PassageFlutterPlatform.instance.createUser(identifier, userMetadata: userMetadata);
   }
 }

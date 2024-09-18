@@ -262,6 +262,18 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     }
   }
 
+  @override
+  Future<PublicUserInfo> createUser(String identifier, {Metadata? userMetadata}) async {
+    try {
+      final jsonString = await methodChannel
+          .invokeMethod<String>('createUser', {'identifier': identifier, 'userMetadata': userMetadata?.toJson()});
+      return PublicUserInfo.fromJson(jsonString);
+    } catch (e) {
+      print(e.toString());
+      throw PassageError.fromObject(object: e);
+    }
+  }
+
   // USER METHODS
 
   @override

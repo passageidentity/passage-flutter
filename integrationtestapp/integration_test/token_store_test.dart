@@ -19,7 +19,7 @@ void main() {
 
   tearDown(() async {
     try {
-      await passage.signOut();
+      await passage.currentUser.logout();
     } catch (e) {
       // an error happened during sign out
     }
@@ -28,14 +28,14 @@ void main() {
   Future<void> loginWithMagicLink() async {
     try {
       await passage
-          .newLoginMagicLink(IntegrationTestConfig.existingUserEmailMagicLink);
+          .magliclink.login(IntegrationTestConfig.existingUserEmailMagicLink);
       await Future.delayed(const Duration(
           milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
       final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
       if (magicLinkStr.isEmpty) {
         fail('Test failed: Magic link is empty');
       }
-      await passage.magicLinkActivate(magicLinkStr);
+      await passage.magliclink.activate(magicLinkStr);
     } catch (e) {
       fail('Expected to activate login magic link, but got an exception: $e');
     }
@@ -45,7 +45,7 @@ void main() {
     test('testCurrentUser_isNotNull', () async {
       try {
         await loginWithMagicLink();
-        final currentUser = await passage.getCurrentUser();
+        final currentUser = await passage.currentUser.userInfo();
         expect(currentUser, isNotNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
@@ -54,8 +54,8 @@ void main() {
 
     test('testCurrentUserAfterSignOut_isNull', () async {
       try {
-        await passage.signOut();
-        final signedOutUser = await passage.getCurrentUser();
+        await passage.currentUser.logout();
+        final signedOutUser = await passage.currentUser.userInfo();
         expect(signedOutUser, isNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
@@ -65,7 +65,7 @@ void main() {
     test('authToken_isNotNull', () async {
       try {
         await loginWithMagicLink();
-        final authToken = await passage.getAuthToken();
+        final authToken = await passage.tokenStore.getValidAuthToken();
         expect(authToken, isNotNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
@@ -74,8 +74,8 @@ void main() {
 
     test('authTokenAfterSignOut_isNull', () async {
       try {
-        await passage.signOut();
-        final authToken = await passage.getAuthToken();
+        await passage.currentUser.logout();
+        final authToken = await passage.tokenStore.getValidAuthToken();
         expect(authToken, isNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
