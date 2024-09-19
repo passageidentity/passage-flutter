@@ -16,7 +16,7 @@ class PassageMagliclink {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<MagicLink> register(String identifier, String? language) async {
+  Future<MagicLink> register(String identifier, {String? language}) async {
     String magicLinkId = await PassageFlutterPlatform.instance.newRegisterMagicLink(identifier);
     return MagicLink(magicLinkId);
   }
@@ -34,7 +34,7 @@ class PassageMagliclink {
   ///
   /// Throws:
   ///  `PassageError`
-  Future<MagicLink> login(String identifier, String? language) async {
+  Future<MagicLink> login(String identifier, {String? language}) async {
     String magicLinkId = await PassageFlutterPlatform.instance.newLoginMagicLink(identifier);
     return MagicLink(magicLinkId);
   }

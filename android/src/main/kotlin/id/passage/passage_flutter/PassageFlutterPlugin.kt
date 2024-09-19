@@ -76,6 +76,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "deleteSocialConnection" -> passageFlutter?.deleteSocialConnection(call, result)
           "metaData" -> passageFlutter?.metaData(result);
           "updateMetaData" -> passageFlutter?.updateMetaData(call, result)
+          "createUser" -> passageFlutter?.createUser(call, result)
           else -> {
               result.notImplemented()
           }
