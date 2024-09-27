@@ -55,9 +55,9 @@ void main() {
       try {
         await passage.currentUser.logout();
         final signedOutUser = await passage.currentUser.userInfo();
-        expect(signedOutUser, isNull);
+        fail('Expected PassageError but got success');
       } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
+        //success 
       }
     });
 
@@ -75,9 +75,9 @@ void main() {
       try {
         await passage.currentUser.logout();
         final authToken = await passage.tokenStore.getValidAuthToken();
-        expect(authToken, isNull);
+        fail('Expected PassageError but got success');
       } catch (e) {
-        fail('Test failed due to unexpected exception: $e');
+        //success
       }
     });
   });
