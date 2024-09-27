@@ -108,31 +108,30 @@ void main() {
       }
     });
 
-    // [TODO] uncomment these two tests after making userMetadata nullable
-    // test('testMetadata', () async {
-    //   try {
-    //     await loginWithMagicLink();
-    //     final metadata = await passage.currentUser.metadata();
-    //     expect(metadata, isNotNull);
-    //     expect(metadata, isA<Metadata>());
-    //   } catch (e) {
-    //     print(e.toString());
-    //     fail('Test failed due to unexpected exception: $e');
-    //   }
-    // });
+    test('testMetadata', () async {
+      try {
+        await loginWithMagicLink();
+        final metadata = await passage.currentUser.metadata();
+        expect(metadata, isNotNull);
+        expect(metadata, isA<Metadata>());
+      } catch (e) {
+        print(e.toString());
+        fail('Test failed due to unexpected exception: $e');
+      }
+    });
 
-    // test('testUpdateMetadata', () async {
-    //   try {
-    //     await loginWithMagicLink();
+    test('testUpdateMetadata', () async {
+      try {
+        await loginWithMagicLink();
 
-    //     Metadata newMetadata = Metadata(userMetadata: {'testKey': 'testValue'});
-    //     await passage.currentUser.updateMetadata(newMetadata);
-    //     final updatedMetadata = await passage.currentUser.metadata();
-    //     expect(updatedMetadata, isNotNull);
-    //   } catch (e) {
-    //     print(e.toString());
-    //     fail('Test failed due to unexpected exception: $e');
-    //   }
-    // });
+        Metadata newMetadata = Metadata(userMetadata: {'testkey': 'testValue'});
+        await passage.currentUser.updateMetadata(newMetadata);
+        final updatedMetadata = await passage.currentUser.metadata();
+        expect(updatedMetadata, isNotNull);
+      } catch (e) {
+        print(e.toString());
+        fail('Test failed due to unexpected exception: $e');
+      }
+    });
   });
 }

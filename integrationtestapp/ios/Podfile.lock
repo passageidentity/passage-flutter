@@ -5,8 +5,8 @@ PODS:
     - Flutter
   - passage_flutter (0.8.2):
     - Flutter
-    - PassageSwift (= 1.0.0)
-  - PassageSwift (1.0.0):
+    - PassageSwift (= 1.0.1)
+  - PassageSwift (1.0.1):
     - AnyCodable-FlightSchool (= 0.6.1)
 
 DEPENDENCIES:
@@ -31,8 +31,8 @@ SPEC CHECKSUMS:
   AnyCodable-FlightSchool: 9d48ed579c898378e189bb0a89faebf9eb8a46a7
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
-  passage_flutter: c6cab8ef7a071978f6f4716bd2661199a80732d9
-  PassageSwift: c92cba57d6d3c41e531e1e73207899a674112d93
+  passage_flutter: 4208c76615e223e8509e9c641ed56b14dce09ef0
+  PassageSwift: 56391a2ef6d78cbaf55c2d2e39eeba1ce2b7fa87
 
 PODFILE CHECKSUM: 6a26cacf19c7fcde87d9c59e8f24986138e82f3b
 
