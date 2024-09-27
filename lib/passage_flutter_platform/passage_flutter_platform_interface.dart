@@ -189,7 +189,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('deleteSocialConnection() has not been implemented.');
   }
 
-  Future<Metadata> metaData() {
+  Future<Metadata?> metaData() {
     throw UnimplementedError('metaData() has not been implemented.');
   }
 

@@ -4,7 +4,6 @@ library passage;
 import 'package:js/js.dart';
 import '../passage_flutter_models/authenticator_attachment.dart';
 import '../passage_flutter_models/meta_data.dart';
-import '../passage_flutter_models/passage_social_connection.dart';
 
 /// Main Passage class corresponding to the updated PassageJS interface.
 @JS('Passage')

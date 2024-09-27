@@ -446,7 +446,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<Metadata> metaData() async {
+  Future<Metadata?> metaData() async {
     try {
       final String? metaDataJson =
           await methodChannel.invokeMethod<String>('metaData');
