@@ -418,9 +418,7 @@ Future<UserSocialConnections> socialConnections() async {
     final resultPromise = passage.currentUser.listSocialConnections();
     final jsObject = await js_util.promiseToFuture(resultPromise);
     final dartObject = js_util.dartify(jsObject);
-    final Map<String, dynamic> dartMap =
-        Map<String, dynamic>.from(dartObject as Map);
-
+    final Map<String, dynamic> dartMap = _convertToMapStringDynamic(dartObject as Map);
     return UserSocialConnections.fromMap(dartMap);
   } catch (e) {
     throw PassageError.fromObject(
@@ -430,12 +428,27 @@ Future<UserSocialConnections> socialConnections() async {
   }
 }
 
+// Helper function to convert LinkedMap<dynamic, dynamic> to Map<String, dynamic>
+Map<String, dynamic> _convertToMapStringDynamic(Map<dynamic, dynamic> map) {
+  return map.map((key, value) {
+    if (value is Map) {
+      return MapEntry(key.toString(), _convertToMapStringDynamic(value)); 
+    } else if (value is DateTime) {
+      return MapEntry(key.toString(), value.toIso8601String());
+    } else {
+      return MapEntry(key.toString(), value);
+    }
+  });
+}
+
   @override
   Future<bool> deleteSocialConnection(SocialConnection socialConnectionType) async {
     try {
+      final connectionTypeString = socialConnectionType.value;
       final resultPromise =
-          passage.currentUser.deleteSocialConnection(socialConnectionType);
+          passage.currentUser.deleteSocialConnection(connectionTypeString);
       final result = await js_util.promiseToFuture(resultPromise);
+
       return result as bool;
     } catch (e) {
       throw PassageError.fromObject(
@@ -450,7 +463,8 @@ Future<UserSocialConnections> socialConnections() async {
     try {
       final resultPromise = passage.currentUser.metadata();
       final jsObject = await js_util.promiseToFuture(resultPromise);
-      return Metadata.fromJson(jsObject);
+      final dartObject = js_util.dartify(jsObject);
+      return Metadata(userMetadata: dartObject);
     } catch (e) {
       throw PassageError.fromObject(
         object: e,
@@ -459,18 +473,29 @@ Future<UserSocialConnections> socialConnections() async {
     }
   }
 
-  @override
-  Future<CurrentUser> updateMetaData(Metadata metadata) async {
-    try {
-      final jsMetadata = js_util.jsify(metadata.toJson());
-      final resultPromise = passage.currentUser.updateMetadata(jsMetadata);
-      final jsObject = await js_util.promiseToFuture(resultPromise);
-      return CurrentUser.fromJson(jsObject);
-    } catch (e) {
-      throw PassageError.fromObject(
-        object: e,
-        overrideCode: PassageErrorCode.metadataError,
-      );
-    }
+
+@override
+Future<CurrentUser> updateMetaData(Metadata metadata) async {
+  try {
+    final userMetadata = metadata.userMetadata as Map<String, dynamic>;
+    final sanitizedMetadata = userMetadata.map((key, value) {
+      if (value is bool || value is String || value is num) {
+        return MapEntry(key, value);
+      } else {
+        throw ArgumentError("Invalid value type for key $key: ${value.runtimeType}");
+      }
+    });
+    final jsUserMetadata = js_util.jsify(sanitizedMetadata);
+    final resultPromise = passage.currentUser.updateMetadata(jsUserMetadata);
+    final jsObject = await js_util.promiseToFuture(resultPromise);
+    return CurrentUser.fromJson(jsObject);
+
+  } catch (e) {
+    throw PassageError.fromObject(
+      object: e,
+      overrideCode: PassageErrorCode.metadataError,
+    );
   }
+}
+
 }

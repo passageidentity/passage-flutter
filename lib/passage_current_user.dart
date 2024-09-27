@@ -135,7 +135,7 @@ Future<void>? deleteSocialConnection(SocialConnection socialConnectionType) {
 /// 
 /// Throws:
 ///  `PassageError` if an error occurs during the retrieval process.
-Future<Metadata>? metadata() {
+Future<Metadata?> metadata() {
   return PassageFlutterPlatform.instance.metaData();
 }
 

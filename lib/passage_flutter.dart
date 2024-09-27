@@ -31,9 +31,4 @@ class PassageFlutter {
     currentUser = PassageCurrentUser();
   }
 
-  Future<void> overrideBasePath(String path) async {
-    return await PassageFlutterPlatform.instance
-        .overrideBasePath(path);
-  }
-
 }

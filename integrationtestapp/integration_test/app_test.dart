@@ -11,7 +11,6 @@ void main() {
   setUp(() async {
     if (!kIsWeb) {
       String basePath = IntegrationTestConfig.apiBaseUrl;
-      await passage.overrideBasePath(basePath);
     }
   });
 

@@ -1,5 +1,5 @@
 import Flutter
-import PassageSwift
+import Passage
 import AnyCodable
 
 internal class PassageFlutter {
@@ -28,7 +28,7 @@ internal class PassageFlutter {
                    let authenticatorAttachmentString = optionsDictionary["authenticatorAttachment"],
                    let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
                 {
-                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment, isConditionalMediation: nil)
+                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
                 }
                 let authResult = try await passage.passkey.register(identifier: identifier, options: passkeyCreationOptions)
                 result(convertToJsonString(codable: authResult))
@@ -549,8 +549,8 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let metaData = Metadata(userMetadata)
-                let updatedMetaData = try await passage.currentUser.updateMetadata(newMetaData: metaData)
+                let anyCodableMetadata = AnyCodable(userMetadata)
+                let updatedMetaData = try await passage.currentUser.updateMetadata(newMetaData: anyCodableMetadata)
                 result(convertToJsonString(codable: updatedMetaData))
             } catch let error as CurrentUserError {
                 result(handleCurrentUserError(error))

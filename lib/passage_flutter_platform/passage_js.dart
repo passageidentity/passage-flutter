@@ -4,7 +4,6 @@ library passage;
 import 'package:js/js.dart';
 import '../passage_flutter_models/authenticator_attachment.dart';
 import '../passage_flutter_models/meta_data.dart';
-import '../passage_flutter_models/passage_social_connection.dart';
 
 /// Main Passage class corresponding to the updated PassageJS interface.
 @JS('Passage')
@@ -89,9 +88,9 @@ class PassageCurrentUser {
   external dynamic deletePasskey(Passkey passkey); // Returns Promise<bool>
   external dynamic passkeys(); // Returns Promise<List<Passkey>>
   external dynamic listSocialConnections(); // Returns Promise<UserSocialConnections>
-  external dynamic deleteSocialConnection(SocialConnection socialConnectionType); // Returns Promise<bool>
+  external dynamic deleteSocialConnection(String socialConnectionType); // Returns Promise<bool>
   external dynamic metadata(); // Returns Promise<Metadata>
-  external dynamic updateMetadata(Metadata metadata); // Returns Promise<CurrentUser>
+  external dynamic updateMetadata(dynamic metadata); // Returns Promise<CurrentUser>
 }
 
 /// PassageSession class for session management methods.

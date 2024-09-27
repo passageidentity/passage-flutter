@@ -35,10 +35,6 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
   Future<void> initialize(String appId) async {
     throw UnimplementedError('initialize() has not been implemented.');
   }
-
-  Future<void> overrideBasePath(String path) async {
-    throw UnimplementedError('overrideBasePath() has not been implemented.');
-  }
   
   // PASSKEY AUTH METHODS
 
@@ -193,7 +189,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('deleteSocialConnection() has not been implemented.');
   }
 
-  Future<Metadata> metaData() {
+  Future<Metadata?> metaData() {
     throw UnimplementedError('metaData() has not been implemented.');
   }
 
