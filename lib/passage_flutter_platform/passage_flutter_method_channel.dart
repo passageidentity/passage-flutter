@@ -264,7 +264,6 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
           .invokeMethod<String>('createUser', {'identifier': identifier, 'userMetadata': userMetadata?.toJson()});
       return PublicUserInfo.fromJson(jsonString);
     } catch (e) {
-      print(e.toString());
       throw PassageError.fromObject(object: e);
     }
   }
