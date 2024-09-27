@@ -89,9 +89,9 @@ class PassageCurrentUser {
   external dynamic deletePasskey(Passkey passkey); // Returns Promise<bool>
   external dynamic passkeys(); // Returns Promise<List<Passkey>>
   external dynamic listSocialConnections(); // Returns Promise<UserSocialConnections>
-  external dynamic deleteSocialConnection(SocialConnection socialConnectionType); // Returns Promise<bool>
+  external dynamic deleteSocialConnection(String socialConnectionType); // Returns Promise<bool>
   external dynamic metadata(); // Returns Promise<Metadata>
-  external dynamic updateMetadata(Metadata metadata); // Returns Promise<CurrentUser>
+  external dynamic updateMetadata(dynamic metadata); // Returns Promise<CurrentUser>
 }
 
 /// PassageSession class for session management methods.

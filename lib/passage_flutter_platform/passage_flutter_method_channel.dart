@@ -27,11 +27,6 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     await methodChannel.invokeMethod('initialize', {'appId': appId});
   }
 
-  @override
-  Future<void> overrideBasePath(String path) async {
-    await methodChannel.invokeMethod('overrideBasePath', {'path': path});
-  }
-
   // PASSKEY AUTH METHODS
 
   @override
@@ -455,7 +450,8 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
     try {
       final String? metaDataJson =
           await methodChannel.invokeMethod<String>('metaData');
-      return Metadata.fromJson(jsonDecode(metaDataJson!));
+      final Map<String, dynamic> metaDataMap = jsonDecode(metaDataJson!);
+      return Metadata.fromMap(metaDataMap);
     } catch (e) {
       throw PassageError.fromObject(object: e);
     }
@@ -469,7 +465,7 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
         'updateMetaData',
         {
           'userMetadata':
-              metadataMap,
+              metadataMap.values.first
         },
       );
       return CurrentUser.fromJson(currentUserJson!);

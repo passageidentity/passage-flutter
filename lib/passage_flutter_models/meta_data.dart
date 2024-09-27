@@ -6,9 +6,15 @@ class Metadata implements PassageFlutterModel {
 
   Metadata({required this.userMetadata});
 
-  factory Metadata.fromJson(String jsonString) {
-    final decodedJson = jsonDecode(jsonString);
-    return Metadata.fromMap(decodedJson);
+  factory Metadata.fromJson(dynamic jsonInput) {
+    if (jsonInput is String) {
+      final decodedJson = jsonDecode(jsonInput);
+      return Metadata.fromMap(decodedJson);
+    } else if (jsonInput is Map<String, dynamic>) {
+      return Metadata.fromMap(jsonInput);
+    } else {
+      throw ArgumentError('Invalid input type for Metadata.fromJson');
+    }
   }
 
   Metadata.fromMap(Map<String, dynamic> map)
