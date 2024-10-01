@@ -16,23 +16,23 @@ class PublicUserInfo implements PassageFlutterModel {
   final List<WebAuthnType>? webauthnTypes;
 
   PublicUserInfo.fromMap(Map<String, dynamic> map)
-      : email = map['email'],
-        emailVerified = map['emailVerified'],
-        id = map['id'],
-        phone = map['phone'],
-        phoneVerified = map['phoneVerified'],
+      : email = map['email'] ?? map['email'],
+        emailVerified = map['emailVerified'] ?? map['email_verified'],
+        id = map['id'] ?? map['id'],
+        phone = map['phone'] ?? map['phone'],
+        phoneVerified = map['phoneVerified'] ?? map['phone_verified'],
         status = UserStatus.values.firstWhere(
-            (e) => e.value == (map['status'] ?? ''),
+            (e) => e.value == (map['status'] ?? map['status']),
             orElse: () => UserStatus.statusUnavailable),
-        userMetadata = map['userMetadata'],
-        webauthn = map['webauthn'],
-        webauthnTypes = (map['webauthnTypes']) != null
-            ? List<WebAuthnType>.from((map['webauthnTypes'])
+        userMetadata = map['userMetadata'] ?? map['user_metadata'],
+        webauthn = map['webauthn'] ?? map['webauthn'],
+        webauthnTypes = (map['webauthnTypes'] ?? map['webauthn_types']) != null
+            ? List<WebAuthnType>.from((map['webauthnTypes'] ?? map['webauthn_types'])
                 .map((type) => WebAuthnType.values.firstWhere(
                     (e) => e.value == type,
                     orElse: () => WebAuthnType.passkey)))
             : null;
-
+            
   factory PublicUserInfo.fromJson(jsonString) {
     return fromJson(jsonString, PublicUserInfo.fromMap);
   }
