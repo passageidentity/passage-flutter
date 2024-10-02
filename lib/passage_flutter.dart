@@ -17,10 +17,8 @@ class PassageFlutter {
   late final PassageApp app;
   late final PassageTokenStore tokenStore;
   late final PassageCurrentUser currentUser;
-  PassageFlutter([String? appId]) {
-    if (appId != null) {
-      PassageFlutterPlatform.instance.initialize(appId);
-    }
+  PassageFlutter(String appId) {
+    PassageFlutterPlatform.instance.initialize(appId);
     passkey = PassagePasskey();
     social = PassageSocial();
     oneTimePasscode = PassageOneTimePasscode();
