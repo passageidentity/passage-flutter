@@ -1,16 +1,13 @@
 import Flutter
 import Passage
+import AnyCodable
 
 internal class PassageFlutter {
     
-    private let passage: PassageAuth
-    
-    internal init() {
-        passage = PassageAuth()
-    }
+    private let passage: Passage
     
     internal init(appId: String) {
-        passage = PassageAuth(appId: appId)
+        passage = Passage(appId: appId)
     }
     
     internal func registerWithPasskey(arguments: Any?, result: @escaping FlutterResult) {
@@ -33,9 +30,9 @@ internal class PassageFlutter {
                 {
                     passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
                 }
-                let authResult = try await passage.registerWithPasskey(identifier: identifier, options: passkeyCreationOptions)
+                let authResult = try await passage.passkey.register(identifier: identifier, options: passkeyCreationOptions)
                 result(convertToJsonString(codable: authResult))
-            } catch RegisterWithPasskeyError.canceled {
+            } catch PassagePasskeyError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
             } catch {
@@ -58,9 +55,9 @@ internal class PassageFlutter {
         let (identifier, _) = getIdentifier(from: arguments)
         Task {
             do {
-                let authResult = try await passage.loginWithPasskey(identifier: identifier)
+                let authResult = try await passage.passkey.login(identifier: identifier)
                 result(convertToJsonString(codable: authResult))
-            } catch LoginWithPasskeyError.canceled {
+            } catch PassagePasskeyError.canceled {
                 let error = PassageFlutterError.USER_CANCELLED.defaultFlutterError
                 result(error)
             } catch {
@@ -90,8 +87,8 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let otp = try await PassageAuth.newRegisterOneTimePasscode(identifier: identifier)
-                result(otp.id)
+                let otp = try await passage.oneTimePasscode.register(identifier: identifier)
+                result(otp.otpId)
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.OTP_ERROR.rawValue,
@@ -111,8 +108,8 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let otp = try await PassageAuth.newLoginOneTimePasscode(identifier: identifier)
-                result(otp.id)
+                let otp = try await passage.oneTimePasscode.login(identifier: identifier)
+                result(otp.otpId)
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.OTP_ERROR.rawValue,
@@ -134,11 +131,11 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await passage.oneTimePasscodeActivate(otp: otp, otpId: otpId)
+                let authResult = try await passage.oneTimePasscode.activate(otp: otp, id: otpId)
                 result(convertToJsonString(codable: authResult))
             } catch {
                 var errorCode = PassageFlutterError.OTP_ERROR.rawValue
-                if case OneTimePasscodeActivateError.exceededAttempts = error {
+                if case OneTimePasscodeError.exceededAttempts = error {
                     errorCode = PassageFlutterError.OTP_ACTIVATION_EXCEEDED_ATTEMPTS.rawValue
                 }
                 let error = FlutterError(
@@ -159,7 +156,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let ml = try await PassageAuth.newRegisterMagicLink(identifier: identifier)
+                let ml = try await passage.magicLink.register(identifier: identifier)
                 result(ml.id)
             } catch {
                 let error = FlutterError(
@@ -180,7 +177,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let ml = try await PassageAuth.newLoginMagicLink(identifier: identifier)
+                let ml = try await passage.magicLink.login(identifier: identifier)
                 result(ml.id)
             } catch {
                 let error = FlutterError(
@@ -192,32 +189,6 @@ internal class PassageFlutter {
             }
         }
     }
-
-    internal func overrideBasePath(arguments: Any?, result: @escaping FlutterResult) {
-        guard let args = arguments as? [String: Any], let basePath = args["path"] as? String else {
-            let error = FlutterError(
-                code: "INVALID_ARGUMENT",
-                message: "Invalid arguments provided",
-                details: nil
-            )
-            result(error)
-            return
-        }
-
-        Task {
-            do {
-                try await passage.overrideApiUrl(with: basePath)
-                result(nil)  // Successfully overridden the base path
-            } catch {
-                let error = FlutterError(
-                    code: "OVERRIDE_BASE_PATH_ERROR",
-                    message: error.localizedDescription,
-                    details: nil
-                )
-                result(error)
-            }
-        }
-}
     
     internal func magicLinkActivate(arguments: Any?, result: @escaping FlutterResult) {
         guard let userMagicLink = (arguments as? [String: String])?["magicLink"] else {
@@ -227,7 +198,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await passage.magicLinkActivate(userMagicLink: userMagicLink)
+                let authResult = try await passage.magicLink.activate(magicLink: userMagicLink)
                 result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
@@ -248,7 +219,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let authResult = try await passage.getMagicLinkStatus(id: magicLinkId)
+                let authResult = try await passage.magicLink.status(id: magicLinkId)
                 result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
@@ -288,8 +259,7 @@ internal class PassageFlutter {
                     result(error)
                     return
                 }
-                let authResult = try await passage.authorize(with: safeConnection, in: window)
-                result(convertToJsonString(codable: authResult))
+                let authResult = try await passage.social.authorize(connection: safeConnection)
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.SOCIAL_AUTH_ERROR.rawValue,
@@ -314,14 +284,14 @@ internal class PassageFlutter {
             result(error)
             return
         }
-        let isValid = !PassageTokenUtils.isTokenExpired(token: authToken)
+        let isValid = passage.tokenStore.isAuthTokenValid()
         result(isValid)
     }
     
     internal func refreshAuthToken(result: @escaping FlutterResult) {
         Task {
             do {
-                let authResult = try await passage.refresh()
+                let authResult = try await passage.tokenStore.refreshTokens()
                 result(authResult.authToken)
             } catch {
                 let error = FlutterError(
@@ -339,7 +309,7 @@ internal class PassageFlutter {
     internal func getAppInfo(result: @escaping FlutterResult) {
         Task {
             do {
-                let appInfo = try await passage.appInfo()
+                let appInfo = try await passage.app.info()
                 result(convertToJsonString(codable: appInfo))
             } catch {
                 let error = FlutterError(
@@ -357,7 +327,7 @@ internal class PassageFlutter {
     internal func getCurrentUser(result: @escaping FlutterResult) {
         Task {
             do {
-                let user = try await passage.getCurrentUser()
+                let user = try await passage.currentUser.userInfo()
                 result(convertToJsonString(codable: user))
             } catch {
                 result(nil)
@@ -367,7 +337,7 @@ internal class PassageFlutter {
     
     internal func signOut(result: @escaping FlutterResult) {
         Task {
-            try? await passage.signOut()
+            try? await passage.currentUser.logOut()
             result(nil)
         }
     }
@@ -380,14 +350,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                var passkeyCreationOptions: PasskeyCreationOptions? = nil
-                if let optionsDictionary = (arguments as? [String: Any])?["options"] as? [String: String],
-                   let authenticatorAttachmentString = optionsDictionary["authenticatorAttachment"],
-                   let authenticatorAttachment = AuthenticatorAttachment(rawValue: authenticatorAttachmentString)
-                {
-                    passkeyCreationOptions = PasskeyCreationOptions(authenticatorAttachment: authenticatorAttachment)
-                }
-                let device = try await passage.addDevice(options: passkeyCreationOptions)
+                let device = try await passage.currentUser.addPasskey()
                 result(convertToJsonString(codable: device))
             } catch {
                 let error = FlutterError(
@@ -408,7 +371,7 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                try await passage.revokeDevice(deviceId: deviceId)
+                try await passage.currentUser.deletePasskey(passkeyId: deviceId)
                 result(nil)
             } catch {
                 let error = FlutterError(
@@ -432,17 +395,8 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                guard let deviceInfo = try await passage
-                    .editDevice(deviceId: passkeyId, friendlyName: newPasskeyName)
-                else {
-                    let error = FlutterError(
-                        code: PassageFlutterError.PASSKEY_ERROR.rawValue,
-                        message: "Error editing passkey name.",
-                        details: nil
-                    )
-                    result(error)
-                    return
-                }
+                let deviceInfo = try await passage
+                    .currentUser.editPasskey(passkeyId: passkeyId, newFriendlyName: newPasskeyName)
                 result(convertToJsonString(codable: deviceInfo))
             } catch {
                 let error = FlutterError(
@@ -463,22 +417,17 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let magicLink = try await passage.changeEmail(newEmail: newEmail)
-                result(magicLink?.id)
-            } catch PassageAPIError.unauthorized(let unauthorizedError) {
-                let error = FlutterError(
-                    code: PassageFlutterError.USER_UNAUTHORIZED.rawValue,
-                    message: "\(unauthorizedError)",
-                    details: nil
-                )
-                result(error)
+                let magicLink = try await passage.currentUser.changeEmail(newEmail: newEmail)
+                result(magicLink.id)
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
             } catch {
-                let error = FlutterError(
-                    code: PassageFlutterError.CHANGE_EMAIL_ERROR.rawValue,
+                let flutterError = FlutterError(
+                    code: "UNKNOWN_ERROR",
                     message: error.localizedDescription,
                     details: nil
                 )
-                result(error)
+                result(flutterError)
             }
         }
     }
@@ -491,22 +440,17 @@ internal class PassageFlutter {
         }
         Task {
             do {
-                let magicLink = try await passage.changePhone(newPhone: newPhone)
-                result(magicLink?.id)
-            } catch PassageAPIError.unauthorized(let unauthorizedError) {
-                let error = FlutterError(
-                    code: PassageFlutterError.USER_UNAUTHORIZED.rawValue,
-                    message: "\(unauthorizedError)",
-                    details: nil
-                )
-                result(error)
+                let magicLink = try await passage.currentUser.changePhone(newPhone: newPhone)
+                result(magicLink.id)
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
             } catch {
-                let error = FlutterError(
-                    code: PassageFlutterError.CHANGE_PHONE_ERROR.rawValue,
+                let flutterError = FlutterError(
+                    code: "UNKNOWN_ERROR",
                     message: error.localizedDescription,
                     details: nil
                 )
-                result(error)
+                result(flutterError)
             }
         }
     }
@@ -518,7 +462,7 @@ internal class PassageFlutter {
             return
         }
         Task {
-            let user = try? await PassageAuth.getUser(identifier: identifier)
+            let user = try? await passage.app.userExists(identifier: identifier)
             result(convertToJsonString(codable: user))
         }
     }
@@ -526,7 +470,7 @@ internal class PassageFlutter {
     internal func hostedAuth(result: @escaping FlutterResult) {
         Task {
             do {
-                let authResult = try await passage.hostedAuth()
+                let authResult = try await passage.hosted.authorize()
                 result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
@@ -538,20 +482,119 @@ internal class PassageFlutter {
             }
         }
     }
-
-    internal func hostedLogout(result: @escaping FlutterResult) {
+    
+    internal func passkeys(result: @escaping FlutterResult) {
         Task {
             do {
-                try await passage.hostedLogout()
-                result(nil)
+                let passkeys = try await passage.currentUser.passkeys()
+                result(convertToJsonString(codable: passkeys))
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
             } catch {
-                let error = FlutterError(
-                    code: PassageFlutterError.LOGOUT_HOSTED_AUTH_ERROR.rawValue,
-                    message: error.localizedDescription,
-                    details: nil
-                )
-                result(error)
+                result(PassageFlutterError.PASSKEYS_ERROR.defaultFlutterError)
             }
+        }
+    }
+
+    internal func socialConnections(result: @escaping FlutterResult) {
+        Task {
+            do {
+                let socialConnections = try await passage.currentUser.socialConnections()
+                result(convertToJsonString(codable: socialConnections))
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
+            } catch {
+                result(PassageFlutterError.SOCIAL_CONNECTIONS_ERROR.defaultFlutterError)
+            }
+        }
+    }
+
+    internal func deleteSocialConnection(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let socialConnectionTypeString = args["socialConnectionType"] as? String,
+              let socialConnectionType = SocialConnection(rawValue: socialConnectionTypeString) else {
+            result(PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError)
+            return
+        }
+        Task {
+            do {
+                try await passage.currentUser.deleteSocialConnection(socialConnectionType: socialConnectionType)
+                result(nil)
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
+            } catch {
+                result(PassageFlutterError.DELETE_SOCIAL_CONNECTION_ERROR.defaultFlutterError)
+            }
+        }
+    }
+
+    internal func metaData(result: @escaping FlutterResult) {
+        Task {
+            do {
+                let metaData = try await passage.currentUser.metadata()
+                result(convertToJsonString(codable: metaData))
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
+            } catch {
+                result(PassageFlutterError.METADATA_ERROR.defaultFlutterError)
+            }
+        }
+    }
+
+    internal func updateMetaData(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let userMetadata = args["userMetadata"] as? [String: Any] else {
+            result(PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError)
+            return
+        }
+        Task {
+            do {
+                let anyCodableMetadata = AnyCodable(userMetadata)
+                let updatedMetaData = try await passage.currentUser.updateMetadata(newMetaData: anyCodableMetadata)
+                result(convertToJsonString(codable: updatedMetaData))
+            } catch let error as CurrentUserError {
+                result(handleCurrentUserError(error))
+            } catch {
+                result(PassageFlutterError.METADATA_UPDATE_ERROR.defaultFlutterError)
+            }
+        }
+    }
+
+    internal func createUser(arguments: Any?, result: @escaping FlutterResult) {
+        guard let args = arguments as? [String: Any],
+              let identifier = args["identifier"] as? String else {
+            result(PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError)
+            return
+        }
+        let userMetadata = args["userMetadata"] as? [String: Any]
+        Task {
+            do {
+                let user = try await passage.app.createUser(identifier: identifier, userMetadata: userMetadata.map { AnyCodable($0) })
+                result(convertToJsonString(codable: user))
+            } catch {
+                result(PassageFlutterError.CREATE_USER_ERROR.defaultFlutterError)
+            }
+        }
+    }
+
+    func handleCurrentUserError(_ error: CurrentUserError) -> FlutterError {
+        switch error {
+        case .authorizationFailed(let message):
+            return PassageFlutterError.USER_UNAUTHORIZED.defaultFlutterError
+        case .canceled(let message):
+            return PassageFlutterError.USER_CANCELLED.defaultFlutterError
+        case .invalidRequest(let message):
+            return PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
+        case .unauthorized(let message):
+            return PassageFlutterError.USER_UNAUTHORIZED.defaultFlutterError
+        case .unspecified(let message):
+            return PassageFlutterError.PASSKEY_ERROR.defaultFlutterError
+        case .userNotActive(let message):
+            return PassageFlutterError.USER_INACTIVE.defaultFlutterError
+        case .userNotFound(let message):
+            return PassageFlutterError.USER_NOT_FOUND.defaultFlutterError
+        default:
+            return PassageFlutterError.PASSKEY_ERROR.defaultFlutterError
         }
     }
     

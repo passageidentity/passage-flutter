@@ -1,5 +1,8 @@
+import 'package:passage_flutter/passage_flutter_models/public_user_info.dart';
 import 'package:plugin_platform_interface/plugin_platform_interface.dart';
-
+import '../models/magic_link.dart';
+import '../passage_flutter_models/meta_data.dart';
+import '../passage_flutter_models/passage_user_social_connections.dart';
 import '/passage_flutter_models/auth_result.dart';
 import '/passage_flutter_models/authenticator_attachment.dart';
 import '/passage_flutter_models/passage_app_info.dart';
@@ -29,12 +32,8 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     _instance = instance;
   }
 
-  Future<void> initWithAppId(String appId) async {
-    throw UnimplementedError('initWithAppId() has not been implemented.');
-  }
-
-  Future<void> overrideBasePath(String path) async {
-    throw UnimplementedError('overrideBasePath() has not been implemented.');
+  Future<void> initialize(String appId) async {
+    throw UnimplementedError('initialize() has not been implemented.');
   }
   
   // PASSKEY AUTH METHODS
@@ -85,13 +84,13 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('magicLinkActivate() has not been implemented.');
   }
 
-  Future<AuthResult?> getMagicLinkStatus(String magicLinkId) {
+  Future<AuthResult> getMagicLinkStatus(String magicLinkId) {
     throw UnimplementedError('getMagicLinkStatus() has not been implemented.');
   }
 
   // SOCIAL AUTH METHODS
 
-  Future<void> authorizeWith(PassageSocialConnection connection) {
+  Future<void> authorizeWith(SocialConnection connection) {
     throw UnimplementedError('authorizeWith() has not been implemented.');
   }
 
@@ -100,13 +99,13 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
         'finishSocialAuthentication() has not been implemented.');
   }
 
-  Future<AuthResult> authorizeIOSWith(PassageSocialConnection connection) {
-    throw UnimplementedError('authorizeIOSWith() has not been implemented.');
+  Future<AuthResult> authorizeIOSWith(SocialConnection connection) {
+    return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
   }
 
   // TOKEN METHODS
 
-  Future<String?> getAuthToken() {
+  Future<String> getAuthToken() {
     throw UnimplementedError('getAuthToken() has not been implemented.');
   }
 
@@ -114,7 +113,7 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('isAuthTokenValid() has not been implemented.');
   }
 
-  Future<String> refreshAuthToken() {
+  Future<AuthResult> refreshAuthToken() {
     throw UnimplementedError('refreshAuthToken() has not been implemented.');
   }
 
@@ -124,17 +123,21 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // APP METHODS
 
-  Future<PassageAppInfo?> getAppInfo() {
+  Future<PassageAppInfo> getAppInfo() {
     throw UnimplementedError('getAppInfo() has not been implemented.');
   }
 
-  Future<PassageUser?> identifierExists(String identifier) {
+  Future<PublicUserInfo> identifierExists(String identifier) {
     throw UnimplementedError('identifierExists() has not been implemented.');
+  }
+
+  Future<PublicUserInfo> createUser(String identifier, {Metadata? userMetadata}) {
+    throw UnimplementedError('createUser() has not been implemented.');
   }
 
   // USER METHODS
 
-  Future<PassageUser?> getCurrentUser() {
+  Future<CurrentUser> getCurrentUser() {
     throw UnimplementedError('getCurrentUser() has not been implemented.');
   }
 
@@ -150,11 +153,11 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('editPasskeyName() has not been implemented.');
   }
 
-  Future<String> changeEmail(String newEmail) {
+  Future<MagicLink> changeEmail(String newEmail) {
     throw UnimplementedError('changeEmail() has not been implemented.');
   }
 
-  Future<String> changePhone(String newPhone) {
+  Future<MagicLink> changePhone(String newPhone) {
     throw UnimplementedError('changePhone() has not been implemented.');
   }
 
@@ -172,6 +175,26 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   Future<void> hostedLogout() {
     throw UnimplementedError('hostedLogout() has not been implemented.');
+  }
+
+  Future<List<Passkey>> passkeys() {
+    throw UnimplementedError('passkeys() has not been implemented.');
+  }
+
+  Future<UserSocialConnections?> socialConnections() {
+    throw UnimplementedError('socialConnections() has not been implemented.');
+  }
+
+  Future<void> deleteSocialConnection(SocialConnection socialConnectionType) {
+    throw UnimplementedError('deleteSocialConnection() has not been implemented.');
+  }
+
+  Future<Metadata?> metaData() {
+    throw UnimplementedError('metaData() has not been implemented.');
+  }
+
+  Future<CurrentUser> updateMetaData(Metadata metadata) {
+    throw UnimplementedError('passkeys() has not been implemented.');
   }
 
 }

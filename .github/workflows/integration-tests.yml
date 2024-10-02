@@ -32,7 +32,7 @@ jobs:
       - name: Set up Google Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 127
+          chrome-version: 129
           install-chromedriver: true
           install-dependencies: true
 
@@ -135,12 +135,13 @@ jobs:
         working-directory: ./integrationtestapp
 
       - name: Install simulator
+        id: install-simulator
         uses: futureware-tech/simulator-action@v3
         with:
           model: 'iPhone 14'
 
       - name: Run iOS tests
-        run: flutter test integration_test/*.dart -d 2CBBC7F8-8C98-4142-8292-D5833BB30F8F --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
+        run: flutter test integration_test/*.dart -d ${{ steps.install-simulator.outputs.udid }} --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
         working-directory: ./integrationtestapp
         env:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}

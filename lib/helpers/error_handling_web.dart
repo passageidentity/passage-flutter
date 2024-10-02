@@ -7,7 +7,7 @@ String getErrorCode(dynamic error) {
   if (error is JsObject) {
     code = error["code"]?.toString();
   }
-  return code ?? PassageErrorCode.unknkown;
+  return code ?? PassageErrorCode.unknown;
 }
 
 String getErrorMessage(dynamic error) {

@@ -1,15 +1,13 @@
 PODS:
-  - AnyCodable-FlightSchool (0.6.7)
+  - AnyCodable-FlightSchool (0.6.1)
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - Passage (1.8.1):
-    - AnyCodable-FlightSchool
-    - SwiftKeychainWrapper
-  - passage_flutter (0.7.3):
+  - passage_flutter (0.8.2):
     - Flutter
-    - Passage (= 1.8.1)
-  - SwiftKeychainWrapper (4.0.1)
+    - PassageSwift (= 1.0.1)
+  - PassageSwift (1.0.1):
+    - AnyCodable-FlightSchool (= 0.6.1)
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
@@ -19,8 +17,7 @@ DEPENDENCIES:
 SPEC REPOS:
   trunk:
     - AnyCodable-FlightSchool
-    - Passage
-    - SwiftKeychainWrapper
+    - PassageSwift
 
 EXTERNAL SOURCES:
   Flutter:
@@ -31,12 +28,11 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/passage_flutter/ios"
 
 SPEC CHECKSUMS:
-  AnyCodable-FlightSchool: 261cbe76757802b17d471b9059b21e6fa5edf57b
+  AnyCodable-FlightSchool: 9d48ed579c898378e189bb0a89faebf9eb8a46a7
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
-  Passage: d6a41db58c3256e85a73ba993e515e7d1995b04f
-  passage_flutter: 8539d3e5e33da9b00454de4e371f9d3371a4de00
-  SwiftKeychainWrapper: 807ba1d63c33a7d0613288512399cd1eda1e470c
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  passage_flutter: 4208c76615e223e8509e9c641ed56b14dce09ef0
+  PassageSwift: 56391a2ef6d78cbaf55c2d2e39eeba1ce2b7fa87
 
 PODFILE CHECKSUM: 6a26cacf19c7fcde87d9c59e8f24986138e82f3b
 
