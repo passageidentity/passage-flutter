@@ -25,10 +25,10 @@ import 'package:passage_flutter/passage_flutter.dart';
 final passage = PassageFlutter('YOUR_PASSAGE_APP_ID');
 
 // Register a new user with a passkey
-await passage.registerWithPasskey('name@email.com');
+await passage.passkey.register('name@email.com');
 
 // Get authenticated user info
-final user = await passage.getCurrentUser();
+final user = await passage.currentUser.userInfo();
 ```
 
 To see a full example, check out our [Flutter Example App](https://github.com/passageidentity/example-flutter).
