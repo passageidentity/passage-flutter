@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'passage_flutter'
-  s.version          = '0.8.2'
+  s.version          = '1.0.0'
   s.summary          = 'Passkey authentication for your Flutter app'
   s.description      = <<-DESC
   Passkey authentication for your Flutter app
