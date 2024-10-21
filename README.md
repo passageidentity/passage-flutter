@@ -1,6 +1,6 @@
-![passage-node](https://storage.googleapis.com/passage-docs/github-md-assets/passage-flutter.png)
+![passage-flutter](https://storage.googleapis.com/passage-docs/github-md-assets/passage-flutter.png)
 
-[![Pub](https://img.shields.io/pub/v/passage_flutter.svg)](https://pub.dartlang.org/packages/passage_flutter) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-node) [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=fff)](#) [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](#) ![Static Badge](https://img.shields.io/badge/Built_by_1Password-grey?logo=1password)
+[![Pub](https://img.shields.io/pub/v/passage_flutter.svg)](https://pub.dartlang.org/packages/passage_flutter) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-flutter) [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=fff)](#) [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](#) ![Static Badge](https://img.shields.io/badge/Built_by_1Password-grey?logo=1password)
 
 ## About
 
