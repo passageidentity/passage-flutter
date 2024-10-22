@@ -1,13 +1,13 @@
 Pod::Spec.new do |s|
   s.name             = 'passage_flutter'
   s.version          = '1.0.0'
-  s.summary          = 'Passkey authentication for your Flutter app'
+  s.summary          = 'Passkey Complete for Flutter - Go completely passwordless with a standalone auth solution in your Flutter app with Passage by 1Password'
   s.description      = <<-DESC
-  Passkey authentication for your Flutter app
+Passkey Complete for Flutter - Go completely passwordless with a standalone auth solution in your Flutter app with Passage by 1Password
                        DESC
-  s.homepage         = 'http://passage.id'
+  s.homepage         = 'https://docs.passage.id/complete'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'Passage' => 'hello@passage.id' }
+  s.author           = { 'Passage by 1Password' => 'support@passage.id' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.dependency 'Flutter'
