@@ -1,11 +1,11 @@
 name: passage_flutter
-description: Native passkey authentication for your Flutter app
+description: Passkey Complete for Flutter - Go completely passwordless with a standalone auth solution in your Flutter app with Passage by 1Password
 version: 1.0.0
-homepage: https://github.com/passageidentity/passage-flutter
+homepage: https://docs.passage.id/complete
 
 environment:
   sdk: '>=3.0.3 <4.0.0'
-  flutter: ">=3.3.0"
+  flutter: '>=3.3.0'
 
 dependencies:
   flutter:
