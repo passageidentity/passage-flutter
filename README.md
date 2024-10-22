@@ -14,11 +14,11 @@ Use [Passkey Ready](https://docs.passage.id/passkey-ready) to determine if your 
 
 ### In passage-flutter
 
-Use passage-flutter to implement Passkey Complete into your Flutter backend to authenticate requests and manage users.
+Use passage-flutter to implement Passkey Complete in your Flutter application to authenticate requests and manage users.
 
 | Product                                                                                                                                  | Compatible                                                                                                                                                                                                                |
 | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✖️ For Passkey Flex, check out the [Passkey Flex APIs](https://docs.passage.id/flex/apis)                                                                                                                                 |
+| ![Passkey Flex](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-flex-icon.png) Passkey **Flex**             | ✖️ For Passkey Flex, check out the [Passkey Flex for Android](https://github.com/passageidentity/passage-android/tree/main/passageflex) and [Passkey Flex for iOS](https://github.com/passageidentity/passage-flex-ios)   |
 | ![Passkey Complete](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-complete-icon.png) Passkey **Complete** | ✅                                                                                                                                                                                                                        |
 | ![Passkey Ready](https://storage.googleapis.com/passage-docs/github-md-assets/passage-passkey-ready-icon.png) Passkey **Ready**          | ✖️ For Passkey Ready, check out [Authentikit for Android](https://github.com/passageidentity/passage-android/tree/main/authentikit) and [Authentikit for iOS](https://github.com/passageidentity/passage-authentikit-ios) |
 
