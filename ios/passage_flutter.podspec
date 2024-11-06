@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'passage_flutter'
-  s.version          = '1.0.0'
+  s.version          = '1.0.1'
   s.summary          = 'Passkey Complete for Flutter - Go completely passwordless with a standalone auth solution in your Flutter app with Passage by 1Password'
   s.description      = <<-DESC
 Passkey Complete for Flutter - Go completely passwordless with a standalone auth solution in your Flutter app with Passage by 1Password
