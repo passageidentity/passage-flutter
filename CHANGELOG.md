@@ -1,3 +1,7 @@
+## 1.0.1
+
+* Merge pull request #83 from passageidentity/PSG-5241
+
 ## 1.0.0
 
 * Merge pull request #78 from passageidentity/PSG-4888
