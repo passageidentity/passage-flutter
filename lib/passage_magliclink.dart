@@ -2,7 +2,7 @@ import 'package:passage_flutter/models/magic_link.dart';
 import 'passage_flutter_models/auth_result.dart';
 import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 
-class PassageMagliclink {
+class PassageMagiclink {
 
   /// Creates and sends a new magic link for registration.
   ///

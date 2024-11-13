@@ -31,7 +31,7 @@ void main() {
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier =
             'authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net';
-        await passage.magliclink.register(identifier);
+        await passage.magiclink.register(identifier);
       } catch (e) {
         fail(
             'Expected to send a register magic link, but got an exception: $e');
@@ -40,7 +40,7 @@ void main() {
 
     test('testRegisterExistingUserMagicLink', () async {
       try {
-        await passage.magliclink.register(
+        await passage.magiclink.register(
             IntegrationTestConfig.existingUserEmailMagicLink);
         fail('Expected PassageError but got success');
       } catch (e) {
@@ -54,7 +54,7 @@ void main() {
 
     test('testRegisterInvalidEmailAddressFormatMagicLink', () async {
       try {
-        await passage.magliclink.register('invalid');
+        await passage.magiclink.register('invalid');
         fail('Expected PassageError but got success');
       } catch (e) {
         if (e is PassageError) {
@@ -68,7 +68,7 @@ void main() {
     test('testSendLoginMagicLink', () async {
       try {
         const identifier = IntegrationTestConfig.existingUserEmailMagicLink;
-        await passage.magliclink.login(identifier);
+        await passage.magiclink.login(identifier);
       } catch (e) {
         fail('Expected to send a login magic link, but got an exception: $e');
       }
@@ -76,7 +76,7 @@ void main() {
 
     test('testInvalidLoginMagicLink', () async {
       try {
-        await passage.magliclink.login('Invalid@invalid.com');
+        await passage.magiclink.login('Invalid@invalid.com');
         fail('Expected PassageError but got success');
       } catch (e) {
         if (e is PassageError) {
@@ -92,14 +92,14 @@ void main() {
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier =
             'authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net';
-        await passage.magliclink.register(identifier);
+        await passage.magiclink.register(identifier);
         await Future.delayed(const Duration(
             milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
         final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
         if (magicLinkStr.isEmpty) {
           fail('Test failed: Magic link is empty');
         }
-        await passage.magliclink.activate(magicLinkStr);
+        await passage.magiclink.activate(magicLinkStr);
       } catch (e) {
         fail(
             'Expected to activate register magic link, but got an exception: $e');
@@ -108,7 +108,7 @@ void main() {
 
     test('testActivateLoginMagicLink', () async {
       try {
-        await passage.magliclink.login(
+        await passage.magiclink.login(
             IntegrationTestConfig.existingUserEmailMagicLink);
         await Future.delayed(const Duration(
             milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
@@ -116,7 +116,7 @@ void main() {
         if (magicLinkStr.isEmpty) {
           fail('Test failed: Magic link is empty');
         }
-        await passage.magliclink.activate(magicLinkStr);
+        await passage.magiclink.activate(magicLinkStr);
       } catch (e) {
         fail('Expected to activate login magic link, but got an exception: $e');
       }
@@ -124,9 +124,9 @@ void main() {
 
     test('testActivateInvalidMagicLink', () async {
       try {
-        await passage.magliclink.register(
+        await passage.magiclink.register(
             'authentigator+invalid@${MailosaurAPIClient.serverId}.mailosaur.net');
-        await passage.magliclink.activate('Invalid');
+        await passage.magiclink.activate('Invalid');
         fail('Expected PassageError but got success');
       } catch (e) {
         if (e is PassageError) {
@@ -139,7 +139,7 @@ void main() {
 
     test('testActivateDeactivatedUserMagicLink', () async {
       try {
-        await passage.magliclink.login(
+        await passage.magiclink.login(
             IntegrationTestConfig.deactivatedUserEmailMagicLink);
         await Future.delayed(const Duration(
             milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
@@ -147,7 +147,7 @@ void main() {
         if (magicLinkStr.isEmpty) {
           fail('Test failed: Magic link is empty');
         }
-        await passage.magliclink.activate(magicLinkStr);
+        await passage.magiclink.activate(magicLinkStr);
         fail('Expected PassageError but got success');
       } catch (e) {
         if (e is PassageError) {

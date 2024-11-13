@@ -138,7 +138,7 @@ jobs:
         id: install-simulator
         uses: futureware-tech/simulator-action@v3
         with:
-          model: 'iPhone 14'
+          model: 'iPhone 15'
 
       - name: Run iOS tests
         run: flutter test integration_test/*.dart -d ${{ steps.install-simulator.outputs.udid }} --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
