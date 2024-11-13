@@ -35,7 +35,7 @@ void main() {
       if (magicLinkStr.isEmpty) {
         fail('Test failed: Magic link is empty');
       }
-      await passage.Future.activate(magicLinkStr);
+      await passage.magiclink.activate(magicLinkStr);
     } catch (e) {
       fail('Expected to activate login magic link, but got an exception: $e');
     }
