@@ -31,7 +31,7 @@ void main() {
   Future<void> loginWithMagicLink() async {
     try {
       await passage
-          .magliclink
+          .magiclink
           .login(IntegrationTestConfig.existingUserEmailMagicLink);
       await Future.delayed(
           const Duration(milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
@@ -39,7 +39,7 @@ void main() {
       if (magicLinkStr.isEmpty) {
         fail('Test failed: Magic link is empty');
       }
-      await passage.magliclink.activate(magicLinkStr);
+      await passage.magiclink.activate(magicLinkStr);
     } catch (e) {
       fail('Expected to activate login magic link, but got an exception: $e');
     }

@@ -12,7 +12,7 @@ class PassageFlutter {
   late final PassagePasskey passkey;
   late final PassageSocial social;
   late final PassageOneTimePasscode oneTimePasscode;
-  late final PassageMagliclink magliclink;
+  late final PassageMagiclink magiclink;
   late final PassageHosted hosted;
   late final PassageApp app;
   late final PassageTokenStore tokenStore;
@@ -22,7 +22,7 @@ class PassageFlutter {
     passkey = PassagePasskey();
     social = PassageSocial();
     oneTimePasscode = PassageOneTimePasscode();
-    magliclink = PassageMagliclink();
+    magiclink = PassageMagiclink();
     hosted = PassageHosted();
     app =PassageApp();
     tokenStore = PassageTokenStore();
