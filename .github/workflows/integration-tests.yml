@@ -29,6 +29,21 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Install Android Command Line Tools
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+            echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Accept SDK Licenses and Install Tools
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-35" "system-images;android-35;google_apis;x86_64"
+
       - name: Install dependencies
         run: flutter pub get
         working-directory: ./integrationtestapp
@@ -38,14 +53,6 @@ jobs:
           MAILOSAUR_API_KEY: ${{ secrets.MAILOSAUR_API_KEY }}
         run: |
           echo "export MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}" >> $GITHUB_ENV
-
-      - name: Install Android SDK
-        run: |
-          yes | sdkmanager --licenses > /dev/null
-          sdkmanager "platform-tools" "platforms;android-35" "system-images;android-35;google_apis;x86_64"
-
-      - name: Add adb to PATH
-        run: echo "$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
 
       - name: Start emulator and run tests
         uses: reactivecircus/android-emulator-runner@v2
