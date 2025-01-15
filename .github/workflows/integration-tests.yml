@@ -29,22 +29,35 @@ jobs:
           flutter pub get
         working-directory: ./integrationtestapp
 
+      - name: Set up Chrome Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            libglib2.0-0 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 \
+            libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2t64 \
+            xvfb fonts-liberation libu2f-udev xdg-utils
+          wget http://mirrors.kernel.org/ubuntu/pool/universe/g/gconf/libgconf-2-4_3.2.6-6ubuntu1_amd64.deb
+          sudo dpkg -i libgconf-2-4_3.2.6-6ubuntu1_amd64.deb || true
+          sudo apt-get install -f -y
+
       - name: Set up Google Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v1
         with:
           chrome-version: 131
           install-chromedriver: true
-          install-dependencies: true
+          install-dependencies: false
 
       - name: Start Xvfb
         run: |
           sudo apt-get install -y xvfb
           export DISPLAY=:99
           sudo Xvfb -ac :99 -screen 0 1280x1024x24 > /dev/null 2>&1 &
+
       - name: Start ChromeDriver
         run: |
           nohup chromedriver --port=4444 &
           sleep 5
+
       - name: Start Proxy Server
         run: |
           nohup node integrationtestapp/proxy-server/proxy_server.js &
