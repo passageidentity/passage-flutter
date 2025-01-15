@@ -114,7 +114,6 @@ jobs:
         with:
           api-level: ${{ matrix.api-level }}
           target:  ${{ matrix.target }}
-          build-tools: 34.0.0
           arch: x86_64
           profile: Nexus 6
           working-directory: ./integrationtestapp
