@@ -112,10 +112,12 @@ jobs:
       - name: Start emulator and run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: ${{ matrix.api-level }}
+          api-level: 35
           target:  ${{ matrix.target }}
           arch: x86_64
           profile: Nexus 6
+          force-avd-creation: true
+          emulator-boot-timeout: 600
           working-directory: ./integrationtestapp
           script: flutter test integration_test/*.dart -d emulator-5554 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
 
