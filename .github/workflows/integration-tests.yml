@@ -29,12 +29,23 @@ jobs:
           flutter pub get
         working-directory: ./integrationtestapp
 
+      - name: Set up Chrome Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            libglib2.0-0 libatk1.0-0 libatk-bridge2.0-0 libgdk-pixbuf2.0-0 \
+            libgtk-3-0 libgbm-dev libnss3-dev libxss-dev libasound2t64 \
+            xvfb fonts-liberation libu2f-udev xdg-utils
+          wget http://mirrors.kernel.org/ubuntu/pool/universe/g/gconf/libgconf-2-4_3.2.6-6ubuntu1_amd64.deb
+          sudo dpkg -i libgconf-2-4_3.2.6-6ubuntu1_amd64.deb || true
+          sudo apt-get install -f -y
+
       - name: Set up Google Chrome and ChromeDriver
         uses: browser-actions/setup-chrome@v1
         with:
-          chrome-version: 129
+          chrome-version: 131
           install-chromedriver: true
-          install-dependencies: true
+          install-dependencies: false
 
       - name: Start Xvfb
         run: |
@@ -75,7 +86,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'zulu'
-          java-version: '11'
+          java-version: '17'
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -87,6 +98,21 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
+
+      - name: Install Android Command Line Tools
+        run: |
+          mkdir -p $HOME/android-sdk/cmdline-tools
+          curl -o commandlinetools.zip https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip
+          unzip commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/latest
+          echo "export ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+          echo "export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH" >> $GITHUB_ENV
+            echo "export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools" >> $GITHUB_PATH
+
+      - name: Accept SDK Licenses and Install Tools
+        run: |
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-35" "system-images;android-35;google_apis;x86_64"
 
       - name: Install dependencies
         run: flutter pub get
@@ -101,11 +127,12 @@ jobs:
       - name: Start emulator and run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
+          api-level: 35
           target: google_apis
-          build-tools: 34.0.0
           arch: x86_64
           profile: Nexus 6
+          force-avd-creation: true
+          emulator-boot-timeout: 600
           working-directory: ./integrationtestapp
           script: flutter test integration_test/*.dart -d emulator-5554 --dart-define=MAILOSAUR_API_KEY=${{ secrets.MAILOSAUR_API_KEY }}
 
