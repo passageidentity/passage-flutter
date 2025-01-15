@@ -112,8 +112,8 @@ jobs:
       - name: Start emulator and run tests
         uses: reactivecircus/android-emulator-runner@v2
         with:
-          api-level: 34
-          target: google_apis
+          api-level: ${{ matrix.api-level }}
+          target:  ${{ matrix.target }}
           build-tools: 34.0.0
           arch: x86_64
           profile: Nexus 6
