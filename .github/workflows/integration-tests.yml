@@ -5,10 +5,8 @@ on:
     branches: [ "main" ]
 
 jobs:
-
   android-tests:
     runs-on: ubuntu-latest
-    needs: web-tests
 
     steps:
       - name: Checkout
