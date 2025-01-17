@@ -218,7 +218,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // TOKEN METHODS
 
   @override
-  Future<String> getAuthToken() async {
+  Future<String> getValidAuthToken() async {
     try {
       final resultPromise = passage.session.getAuthToken();
       final String authToken = await js_util.promiseToFuture(resultPromise);

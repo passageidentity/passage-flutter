@@ -54,7 +54,7 @@ class PassageFlutterPlugin: FlutterPlugin, MethodCallHandler, ActivityAware {
           "getMagicLinkStatus" -> passageFlutter?.getMagicLinkStatus(call, result)
           "authorizeWith" -> passageFlutter?.authorizeWith(call, result)
           "finishSocialAuthentication" -> passageFlutter?.finishSocialAuthentication(call, result)
-          "getAuthToken" -> passageFlutter?.getAuthToken(result)
+          "getValidAuthToken" -> passageFlutter?.getValidAuthToken(result)
           "isAuthTokenValid" -> passageFlutter?.isAuthTokenValid(call, result)
           "refreshAuthToken" -> passageFlutter?.refreshAuthToken(result)
           "getAppInfo" -> passageFlutter?.getAppInfo(result)
