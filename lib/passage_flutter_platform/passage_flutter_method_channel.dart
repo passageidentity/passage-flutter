@@ -193,10 +193,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // TOKEN METHODS
 
   @override
-  Future<String> getAuthToken() async {
+  Future<String> getValidAuthToken() async {
     try {
       final authToken =
-          await methodChannel.invokeMethod<String>('getAuthToken');
+          await methodChannel.invokeMethod<String>('getValidAuthToken');
       return authToken!;
     } catch (e) {
       throw PassageError.fromObject(object: e);

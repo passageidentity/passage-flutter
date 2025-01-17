@@ -10,7 +10,7 @@ class PassageTokenStore {
   ///  A `Future<String?>` representing the current Passage user's auth token,
   ///  or `null` if no token has been stored.
   Future<String> getValidAuthToken() {
-    return PassageFlutterPlatform.instance.getAuthToken();
+    return PassageFlutterPlatform.instance.getValidAuthToken();
   }
 
   /// Checks if the auth token for the currently authenticated user is valid.

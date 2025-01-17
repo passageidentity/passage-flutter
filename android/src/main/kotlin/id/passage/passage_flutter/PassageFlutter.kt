@@ -229,9 +229,15 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
     // endregion
 
     // region TOKEN METHODS
-    fun getAuthToken(result: MethodChannel.Result) {
-        val token = passage.tokenStore.authToken
-        result.success(token)
+    fun getValidAuthToken(result: MethodChannel.Result) {
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                val newToken = passage.tokenStore.getValidAuthToken()
+                result.success(newToken)
+            } catch (e: Exception) {
+                result.error(PassageFlutterError.TOKEN_ERROR.name, e.message, e.toString())
+            }
+        }
     }
 
     fun isAuthTokenValid(call: MethodCall, result: MethodChannel.Result) {
@@ -243,8 +249,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
     fun refreshAuthToken(result: MethodChannel.Result) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val newToken = passage.tokenStore.getValidAuthToken()
-                result.success(newToken)
+                val refreshToken = passage.tokenStore.refreshToken ?: ""
+                val authResult = passage.tokenStore.refreshAuthToken(refreshToken)
+                val jsonString = Gson().toJson(authResult)
+                result.success(jsonString)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.TOKEN_ERROR.name, e.message, e.toString())
             }

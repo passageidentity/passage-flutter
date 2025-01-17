@@ -273,9 +273,20 @@ internal class PassageFlutter {
     
     // MARK: - Token Methods
         
-    internal func getAuthToken(result: @escaping FlutterResult) {
-        let token = passage.tokenStore.authToken
-        result(token)
+    internal func getValidAuthToken(result: @escaping FlutterResult) {
+        Task {
+            do {
+                let token = try await passage.tokenStore.getValidAuthToken()
+                result(token)
+            } catch {
+                let error = FlutterError(
+                    code: PassageFlutterError.TOKEN_ERROR.rawValue,
+                    message: error.localizedDescription,
+                    details: nil
+                )
+                result(error)
+            }
+        }
     }
     
     internal func isAuthTokenValid(arguments: Any?, result: @escaping FlutterResult) {
@@ -292,7 +303,7 @@ internal class PassageFlutter {
         Task {
             do {
                 let authResult = try await passage.tokenStore.refreshTokens()
-                result(authResult.authToken)
+                result(convertToJsonString(codable: authResult))
             } catch {
                 let error = FlutterError(
                     code: PassageFlutterError.TOKEN_ERROR.rawValue,
