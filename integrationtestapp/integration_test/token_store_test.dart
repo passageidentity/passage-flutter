@@ -80,5 +80,35 @@ void main() {
         //success
       }
     });
+  test('isAuthTokenValid_returnsTrueForValidToken', () async {
+    await loginWithMagicLink();
+    final validToken = await passage.tokenStore.getValidAuthToken();
+    final isValid = await passage.tokenStore.isAuthTokenValid(validToken);
+    expect(isValid, isTrue);
+  });
+
+  test('isAuthTokenValid_returnsFalseForInvalidToken', () async {
+    const invalidToken = 'invalidToken';
+    final isValid = await passage.tokenStore.isAuthTokenValid(invalidToken);
+    expect(isValid, isFalse);
+  });
+
+  test('refreshAuthToken_returnsNewAuthToken', () async {
+    await loginWithMagicLink();
+    final authResult = await passage.tokenStore.refreshAuthToken();
+    expect(authResult, isNotNull);
+    expect(authResult.authToken, isNotNull);
+    expect(authResult.refreshToken, isNotNull);
+  });
+
+  test('refreshAuthToken_throwsPassageError', () async {
+    try {
+      final authResult = await passage.tokenStore.refreshAuthToken();
+      fail('Expected PassageError but got success');
+    } catch (e) {
+      // success
+    }
+  });
+
   });
 }
