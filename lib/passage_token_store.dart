@@ -5,10 +5,12 @@ import 'passage_flutter_platform/passage_flutter_platform_interface.dart';
 class PassageTokenStore {
 
   /// Returns the auth token for the currently authenticated user.
+  /// If the stored auth token is invalid, this method will use the refresh token to get and save a new auth token.
   ///
   /// Returns:
-  ///  A `Future<String?>` representing the current Passage user's auth token,
-  ///  or `null` if no token has been stored.
+  ///  A `Future<String?>` representing the user's auth token,
+  /// Throws:
+  ///  `PassageError`
   Future<String> getValidAuthToken() {
     return PassageFlutterPlatform.instance.getValidAuthToken();
   }
