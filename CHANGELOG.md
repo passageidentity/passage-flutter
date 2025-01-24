@@ -1,3 +1,11 @@
+## 1.1.1
+
+* PSG-5785: TokenStore class updates (#92)
+
+## 1.1.0
+
+* Merge pull request #89 from passageidentity/PSG-5785
+
 ## 1.0.2
 
 * Merge pull request #85 from passageidentity/PSG-5279
