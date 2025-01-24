@@ -85,9 +85,10 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let otp = try await passage.oneTimePasscode.register(identifier: identifier)
+                let otp = try await passage.oneTimePasscode.register(identifier: identifier, language: language)
                 result(otp.otpId)
             } catch {
                 let error = FlutterError(
@@ -106,9 +107,10 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let otp = try await passage.oneTimePasscode.login(identifier: identifier)
+                let otp = try await passage.oneTimePasscode.login(identifier: identifier, language: language)
                 result(otp.otpId)
             } catch {
                 let error = FlutterError(
@@ -154,9 +156,10 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let ml = try await passage.magicLink.register(identifier: identifier)
+                let ml = try await passage.magicLink.register(identifier: identifier, language: language)
                 result(ml.id)
             } catch {
                 let error = FlutterError(
@@ -175,9 +178,10 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let ml = try await passage.magicLink.login(identifier: identifier)
+                let ml = try await passage.magicLink.login(identifier: identifier, language: language)
                 result(ml.id)
             } catch {
                 let error = FlutterError(
@@ -421,14 +425,15 @@ internal class PassageFlutter {
     }
     
     internal func changeEmail(arguments: Any?, result: @escaping FlutterResult) {
-        guard let newEmail = (arguments as? [String: String])?["newEmail"] else {
+        guard let newEmail = (arguments as? [String: Any])?["newEmail"] as? String else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let magicLink = try await passage.currentUser.changeEmail(newEmail: newEmail)
+                let magicLink = try await passage.currentUser.changeEmail(newEmail: newEmail, language: language)
                 result(magicLink.id)
             } catch let error as CurrentUserError {
                 result(handleCurrentUserError(error))
@@ -444,14 +449,15 @@ internal class PassageFlutter {
     }
     
     internal func changePhone(arguments: Any?, result: @escaping FlutterResult) {
-        guard let newPhone = (arguments as? [String: String])?["newPhone"] else {
+         guard let newPhone = (arguments as? [String: Any])?["newPhone"] as? String else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let magicLink = try await passage.currentUser.changePhone(newPhone: newPhone)
+                let magicLink = try await passage.currentUser.changePhone(newPhone: newPhone, language: language)
                 result(magicLink.id)
             } catch let error as CurrentUserError {
                 result(handleCurrentUserError(error))

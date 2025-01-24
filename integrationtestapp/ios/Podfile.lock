@@ -3,7 +3,7 @@ PODS:
   - Flutter (1.0.0)
   - integration_test (0.0.1):
     - Flutter
-  - passage_flutter (1.0.0):
+  - passage_flutter (1.1.1):
     - Flutter
     - PassageSwift (= 1.0.2)
   - PassageSwift (1.0.2):
@@ -30,8 +30,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AnyCodable-FlightSchool: 9d48ed579c898378e189bb0a89faebf9eb8a46a7
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
-  integration_test: ce0a3ffa1de96d1a89ca0ac26fca7ea18a749ef4
-  passage_flutter: 60c06e8730750f0516d86fc14c4fb25087b827db
+  integration_test: 252f60fa39af5e17c3aa9899d35d908a0721b573
+  passage_flutter: 46098def9413ab67515fd61d485a878ea1550dda
   PassageSwift: 0874d7abdd8e57e92c1ae6ead0d59c6024f8867b
 
 PODFILE CHECKSUM: 6a26cacf19c7fcde87d9c59e8f24986138e82f3b

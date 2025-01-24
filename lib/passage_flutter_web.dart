@@ -98,12 +98,12 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // OTP METHODS
 
   @override
-  Future<String> newRegisterOneTimePasscode(String identifier) async {
+  Future<String> newRegisterOneTimePasscode(String identifier,  String? language) async {
     try {
-      final resultPromise = passage.oneTimePasscode.register(identifier);
+      final resultPromise = passage.oneTimePasscode.register(identifier, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
-      return resultMap['otp_id'];
+      return resultMap['otpId'];
     } catch (e) {
       throw PassageError.fromObject(
           object: e, overrideCode: PassageErrorCode.otpError);
@@ -111,9 +111,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> newLoginOneTimePasscode(String identifier) async {
+  Future<String> newLoginOneTimePasscode(String identifier, String? language) async {
     try {
-      final resultPromise = passage.oneTimePasscode.login(identifier);
+      final resultPromise = passage.oneTimePasscode.login(identifier, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
       return resultMap['otpId'];
@@ -140,9 +140,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   // MAGIC LINK METHODS
 
   @override
-  Future<String> newRegisterMagicLink(String identifier) async {
+  Future<String> newRegisterMagicLink(String identifier, String? language) async {
     try {
-      final resultPromise = passage.magicLink.register(identifier);
+      final resultPromise = passage.magicLink.register(identifier, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
       return resultMap['id'];
@@ -153,9 +153,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> newLoginMagicLink(String identifier) async {
+  Future<String> newLoginMagicLink(String identifier, String? language) async {
     try {
-      final resultPromise = passage.magicLink.login(identifier);
+      final resultPromise = passage.magicLink.login(identifier, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       final resultMap = jsObjectToMap(jsObject);
       return resultMap['id'];
@@ -372,9 +372,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<MagicLink> changeEmail(String newEmail) async {
+  Future<MagicLink> changeEmail(String newEmail, String? language) async {
     try {
-      final resultPromise = passage.currentUser.changeEmail(newEmail);
+      final resultPromise = passage.currentUser.changeEmail(newEmail, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return MagicLink(jsObject.id);
     } catch (e) {
@@ -384,9 +384,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<MagicLink> changePhone(String newPhone) async {
+  Future<MagicLink> changePhone(String newPhone, String? language) async {
     try {
-      final resultPromise = passage.currentUser.changePhone(newPhone);
+      final resultPromise = passage.currentUser.changePhone(newPhone, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return MagicLink(jsObject.id);
     } catch (e) {

@@ -54,12 +54,12 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // OTP METHODS
 
-  Future<String> newRegisterOneTimePasscode(String identifier) {
+  Future<String> newRegisterOneTimePasscode(String identifier, String? language) {
     throw UnimplementedError(
         'newRegisterOneTimePasscode() has not been implemented.');
   }
 
-  Future<String> newLoginOneTimePasscode(String identifier) {
+  Future<String> newLoginOneTimePasscode(String identifier, String? language) {
     throw UnimplementedError(
         'newLoginOneTimePasscode() has not been implemented.');
   }
@@ -71,12 +71,12 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
 
   // MAGIC LINK METHODS
 
-  Future<String> newRegisterMagicLink(String identifier) {
+  Future<String> newRegisterMagicLink(String identifier, String? language) {
     throw UnimplementedError(
         'newRegisterMagicLink() has not been implemented.');
   }
 
-  Future<String> newLoginMagicLink(String identifier) {
+  Future<String> newLoginMagicLink(String identifier, String? language) {
     throw UnimplementedError('newLoginMagicLink() has not been implemented.');
   }
 
@@ -153,11 +153,11 @@ abstract class PassageFlutterPlatform extends PlatformInterface {
     throw UnimplementedError('editPasskeyName() has not been implemented.');
   }
 
-  Future<MagicLink> changeEmail(String newEmail) {
+  Future<MagicLink> changeEmail(String newEmail, String? language) {
     throw UnimplementedError('changeEmail() has not been implemented.');
   }
 
-  Future<MagicLink> changePhone(String newPhone) {
+  Future<MagicLink> changePhone(String newPhone, String? language) {
     throw UnimplementedError('changePhone() has not been implemented.');
   }
 

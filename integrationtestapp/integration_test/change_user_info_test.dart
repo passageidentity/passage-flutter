@@ -47,7 +47,7 @@ void main() {
         await loginWithMagicLink();
         final date = DateTime.now().millisecondsSinceEpoch;
         final identifier = 'authentigator+$date@passage.id';
-        final response = await passage.currentUser.changeEmail(identifier);
+        final response = await passage.currentUser.changeEmail(identifier, language: "es");
         expect(response, isNotNull);
       } catch (e) {
         fail('Test failed due to unexpected exception: $e');
