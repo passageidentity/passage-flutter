@@ -103,9 +103,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
 
     fun newRegisterOneTimePasscode(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
+        val language = call.argument<String>("language")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val otpId = passage.oneTimePasscode.register(identifier).otpId
+                val otpId = passage.oneTimePasscode.register(identifier, language).otpId
                 result.success(otpId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.OTP_ERROR.name, e.message, e.toString())
@@ -115,9 +116,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
 
     fun newLoginOneTimePasscode(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
+        val language = call.argument<String>("language")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val otpId = passage.oneTimePasscode.login(identifier).otpId
+                val otpId = passage.oneTimePasscode.login(identifier, language).otpId
                 result.success(otpId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.OTP_ERROR.name, e.message, e.toString())
@@ -151,9 +153,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
 
     fun newRegisterMagicLink(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
+        val language = call.argument<String>("language")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val magicLinkId = passage.magicLink.register(identifier).id
+                val magicLinkId = passage.magicLink.register(identifier, language).id
                 result.success(magicLinkId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.MAGIC_LINK_ERROR.name, e.message, e.toString())
@@ -163,9 +166,10 @@ internal class PassageFlutter(private val activity: Activity, appId: String) {
 
     fun newLoginMagicLink(call: MethodCall, result: MethodChannel.Result) {
         val identifier = call.argument<String>("identifier") ?: return invalidArgumentError(result)
+        val language = call.argument<String?>("language")
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                val magicLinkId = passage.magicLink.login(identifier).id
+                val magicLinkId = passage.magicLink.login(identifier, language).id
                 result.success(magicLinkId)
             } catch (e: Exception) {
                 result.error(PassageFlutterError.MAGIC_LINK_ERROR.name, e.message, e.toString())

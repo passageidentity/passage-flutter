@@ -71,7 +71,7 @@ void main() {
         final identifier =
             "authentigator+$date@${MailosaurAPIClient.serverId}.mailosaur.net";
         try {
-          final oneTimePasscode = (await passage.oneTimePasscode.register(identifier));
+          final oneTimePasscode = (await passage.oneTimePasscode.register(identifier, language: 'es'));
           await Future.delayed(const Duration(
               milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
           final otp = await MailosaurAPIClient.getMostRecentOneTimePasscode();

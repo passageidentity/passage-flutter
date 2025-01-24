@@ -85,9 +85,14 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        var language: String? = nil
+        if let args = arguments as? [String: Any],
+        let lang = args["language"] as? String {
+            language = lang
+        }
         Task {
             do {
-                let otp = try await passage.oneTimePasscode.register(identifier: identifier)
+                let otp = try await passage.oneTimePasscode.register(identifier: identifier, language: language)
                 result(otp.otpId)
             } catch {
                 let error = FlutterError(
@@ -106,9 +111,14 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        var language: String? = nil
+        if let args = arguments as? [String: Any],
+        let lang = args["language"] as? String {
+            language = lang
+        }
         Task {
             do {
-                let otp = try await passage.oneTimePasscode.login(identifier: identifier)
+                let otp = try await passage.oneTimePasscode.login(identifier: identifier, language: language)
                 result(otp.otpId)
             } catch {
                 let error = FlutterError(
@@ -154,9 +164,14 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        var language: String? = nil
+        if let args = arguments as? [String: Any],
+        let lang = args["language"] as? String {
+            language = lang
+        }
         Task {
             do {
-                let ml = try await passage.magicLink.register(identifier: identifier)
+                let ml = try await passage.magicLink.register(identifier: identifier, language: language)
                 result(ml.id)
             } catch {
                 let error = FlutterError(
@@ -175,9 +190,14 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        var language: String? = nil
+        if let args = arguments as? [String: Any],
+        let lang = args["language"] as? String {
+            language = lang
+        }
         Task {
             do {
-                let ml = try await passage.magicLink.login(identifier: identifier)
+                let ml = try await passage.magicLink.login(identifier: identifier, language: language)
                 result(ml.id)
             } catch {
                 let error = FlutterError(

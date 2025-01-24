@@ -63,10 +63,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // OTP METHODS
 
   @override
-  Future<String> newRegisterOneTimePasscode(String identifier) async {
+  Future<String> newRegisterOneTimePasscode(String identifier, String? language) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
-          'newRegisterOneTimePasscode', {'identifier': identifier});
+          'newRegisterOneTimePasscode', {'identifier': identifier, 'language': language});
       return result!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -74,10 +74,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> newLoginOneTimePasscode(String identifier) async {
+  Future<String> newLoginOneTimePasscode(String identifier, String? language) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
-          'newLoginOneTimePasscode', {'identifier': identifier});
+          'newLoginOneTimePasscode', {'identifier': identifier, 'language': language});
       return result!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -98,10 +98,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   // MAGIC LINK METHODS
 
   @override
-  Future<String> newRegisterMagicLink(String identifier) async {
+  Future<String> newRegisterMagicLink(String identifier, String? language) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
-          'newRegisterMagicLink', {'identifier': identifier});
+          'newRegisterMagicLink', {'identifier': identifier, 'language': language});
       return result!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
@@ -109,10 +109,10 @@ class MethodChannelPassageFlutter extends PassageFlutterPlatform {
   }
 
   @override
-  Future<String> newLoginMagicLink(String identifier) async {
+  Future<String> newLoginMagicLink(String identifier, String? language) async {
     try {
       final result = await methodChannel.invokeMethod<String>(
-          'newLoginMagicLink', {'identifier': identifier});
+          'newLoginMagicLink', {'identifier': identifier, 'language': language});
       return result!;
     } catch (e) {
       throw PassageError.fromObject(object: e);
