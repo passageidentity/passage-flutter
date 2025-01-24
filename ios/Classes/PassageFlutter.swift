@@ -425,7 +425,7 @@ internal class PassageFlutter {
     }
     
     internal func changeEmail(arguments: Any?, result: @escaping FlutterResult) {
-        guard let newEmail = (arguments as? [String: String])?["newEmail"] else {
+        guard let newEmail = (arguments as? [String: Any])?["newEmail"] as? String else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
@@ -449,7 +449,7 @@ internal class PassageFlutter {
     }
     
     internal func changePhone(arguments: Any?, result: @escaping FlutterResult) {
-        guard let newPhone = (arguments as? [String: String])?["newPhone"] else {
+         guard let newPhone = (arguments as? [String: Any])?["newPhone"] as? String else {
             let error = PassageFlutterError.INVALID_ARGUMENT.defaultFlutterError
             result(error)
             return
