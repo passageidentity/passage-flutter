@@ -430,9 +430,10 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let magicLink = try await passage.currentUser.changeEmail(newEmail: newEmail)
+                let magicLink = try await passage.currentUser.changeEmail(newEmail: newEmail, language: language)
                 result(magicLink.id)
             } catch let error as CurrentUserError {
                 result(handleCurrentUserError(error))
@@ -453,9 +454,10 @@ internal class PassageFlutter {
             result(error)
             return
         }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
-                let magicLink = try await passage.currentUser.changePhone(newPhone: newPhone)
+                let magicLink = try await passage.currentUser.changePhone(newPhone: newPhone, language: language)
                 result(magicLink.id)
             } catch let error as CurrentUserError {
                 result(handleCurrentUserError(error))

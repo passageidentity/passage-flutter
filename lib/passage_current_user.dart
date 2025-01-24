@@ -22,6 +22,7 @@ class PassageCurrentUser {
   ///
   /// Parameters:
   ///  - `newEmail`: The user's new email.
+  /// - `language`: The language code for the email change.
   ///
   /// Returns:
   ///  A `Future<MagicLink>` representing the magic link
@@ -29,7 +30,7 @@ class PassageCurrentUser {
   /// Throws:
   ///  `PassageError`
   Future<MagicLink> changeEmail(String newEmail, {String? language}) {
-    return PassageFlutterPlatform.instance.changeEmail(newEmail);
+    return PassageFlutterPlatform.instance.changeEmail(newEmail, language);
   }
 
   /// Initiates a phone number change for the authenticated user. A phone change requires verification,
@@ -37,6 +38,7 @@ class PassageCurrentUser {
   ///
   /// Parameters:
   ///  - `newPhone`: The user's new phone number.
+  ///  - The language code for the phone change.
   ///
   /// Returns:
   ///  A `Future<MagicLink>` representing the magic link
@@ -44,7 +46,7 @@ class PassageCurrentUser {
   /// Throws:
   ///  `PassageError`
   Future<MagicLink> changePhone(String newPhone, {String? language}) {
-    return PassageFlutterPlatform.instance.changePhone(newPhone);
+    return PassageFlutterPlatform.instance.changePhone(newPhone, language);
   }
 
   /// Attempts to create and register a new passkey for the authenticated user.

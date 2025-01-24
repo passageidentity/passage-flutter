@@ -372,9 +372,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<MagicLink> changeEmail(String newEmail) async {
+  Future<MagicLink> changeEmail(String newEmail, String? language) async {
     try {
-      final resultPromise = passage.currentUser.changeEmail(newEmail);
+      final resultPromise = passage.currentUser.changeEmail(newEmail, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return MagicLink(jsObject.id);
     } catch (e) {
@@ -384,9 +384,9 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   }
 
   @override
-  Future<MagicLink> changePhone(String newPhone) async {
+  Future<MagicLink> changePhone(String newPhone, String? language) async {
     try {
-      final resultPromise = passage.currentUser.changePhone(newPhone);
+      final resultPromise = passage.currentUser.changePhone(newPhone, language);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return MagicLink(jsObject.id);
     } catch (e) {
