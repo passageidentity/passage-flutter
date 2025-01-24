@@ -85,11 +85,7 @@ internal class PassageFlutter {
             result(error)
             return
         }
-        var language: String? = nil
-        if let args = arguments as? [String: Any],
-        let lang = args["language"] as? String {
-            language = lang
-        }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
                 let otp = try await passage.oneTimePasscode.register(identifier: identifier, language: language)
@@ -111,11 +107,7 @@ internal class PassageFlutter {
             result(error)
             return
         }
-        var language: String? = nil
-        if let args = arguments as? [String: Any],
-        let lang = args["language"] as? String {
-            language = lang
-        }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
                 let otp = try await passage.oneTimePasscode.login(identifier: identifier, language: language)
@@ -164,11 +156,7 @@ internal class PassageFlutter {
             result(error)
             return
         }
-        var language: String? = nil
-        if let args = arguments as? [String: Any],
-        let lang = args["language"] as? String {
-            language = lang
-        }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
                 let ml = try await passage.magicLink.register(identifier: identifier, language: language)
@@ -190,11 +178,7 @@ internal class PassageFlutter {
             result(error)
             return
         }
-        var language: String? = nil
-        if let args = arguments as? [String: Any],
-        let lang = args["language"] as? String {
-            language = lang
-        }
+        let language = (arguments as? [String: Any])?["language"] as? String
         Task {
             do {
                 let ml = try await passage.magicLink.login(identifier: identifier, language: language)
