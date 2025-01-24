@@ -109,7 +109,7 @@ void main() {
     test('testActivateLoginMagicLink', () async {
       try {
         await passage.magiclink.login(
-            "s.seylani.77@gmail.com", language:"es");
+            IntegrationTestConfig.existingUserEmailMagicLink, language:"es");
         await Future.delayed(const Duration(
             milliseconds: IntegrationTestConfig.waitTimeMilliseconds));
         final magicLinkStr = await MailosaurAPIClient.getMostRecentMagicLink();
