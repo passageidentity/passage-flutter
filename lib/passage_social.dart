@@ -11,6 +11,8 @@ class PassageSocial {
   /// - [connection]: The social connection to use for login (e.g., Google, Apple).
   /// 
   /// Returns a `Future<void>` that completes when the authorization process is initiated.
+  /// Throws:
+  ///  `PassageError`
   Future<void> authorize(SocialConnection connection) {
     return PassageFlutterPlatform.instance.authorizeWith(connection);
   }
@@ -23,6 +25,8 @@ class PassageSocial {
   /// - [code]: The authorization code received from the social provider.
   /// 
   /// Returns a `Future<AuthResult>` containing the authentication result.
+  /// Throws:
+  ///  `PassageError`
   Future<AuthResult> finish(String code) {
     return PassageFlutterPlatform.instance.finishSocialAuthentication(code);
   }
@@ -35,6 +39,8 @@ class PassageSocial {
   /// - [connection]: The social connection to use for login (e.g., Google, Apple).
   /// 
   /// Returns a `Future<AuthResult>` containing the authentication result.
+  /// Throws:
+  ///  `PassageError`
   Future<AuthResult> authorizeIOS(SocialConnection connection) {
     return PassageFlutterPlatform.instance.authorizeIOSWith(connection);
   }
