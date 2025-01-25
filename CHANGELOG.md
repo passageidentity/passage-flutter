@@ -1,3 +1,7 @@
+## 1.1.2
+
+* PSG-5810 (#95)
+
 ## 1.1.1
 
 * PSG-5785: TokenStore class updates (#92)
