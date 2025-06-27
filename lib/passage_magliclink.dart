@@ -11,7 +11,7 @@ class PassageMagiclink {
   ///  - `language`: The language code for the magic link.
   ///
   /// Returns:
-  ///  A `Future<String>` that returns a magic link ID used to check the status
+  ///  A `Future<MagicLink>` that returns a magic link ID used to check the status
   ///  of the magic link with `getMagicLinkStatus`.
   ///
   /// Throws:
@@ -62,7 +62,7 @@ class PassageMagiclink {
   ///  - `id`: The magic link ID.
   ///
   /// Returns:
-  ///  A `Future<AuthResult?>` object that includes a redirect URL and saves the
+  ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
   ///  authorization token and (optional) refresh token securely to the device, or `null` if
   ///  the magic link has not been verified.
   ///

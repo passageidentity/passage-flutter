@@ -97,7 +97,7 @@ class PassageCurrentUser {
   /// Retrieves a list of WebAuthn passkeys associated with the authenticated user.
 /// 
 /// Returns:
-///  A `Future<List<Passkey>>` containing all WebAuthn passkeys for the current user.
+///  A `Future<List<Passkey>>?` containing all WebAuthn passkeys for the current user.
 /// 
 /// Throws:
 ///  `PassageError` if an error occurs during the retrieval process.
@@ -122,7 +122,7 @@ Future<UserSocialConnections?> socialConnections() {
 ///  - `socialConnectionType`: The type of social connection to delete.
 /// 
 /// Returns:
-///  A `Future<void>` that resolves when the social connection is deleted.
+///  A `Future<void>?` that resolves when the social connection is deleted.
 /// 
 /// Throws:
 ///  `PassageError` if an error occurs during the deletion process.
@@ -133,7 +133,7 @@ Future<void>? deleteSocialConnection(SocialConnection socialConnectionType) {
 /// Fetches the metadata associated with the authenticated user.
 /// 
 /// Returns:
-///  A `Future<Metadata>` containing the metadata for the user.
+///  A `Future<Metadata?>` containing the metadata for the user.
 /// 
 /// Throws:
 ///  `PassageError` if an error occurs during the retrieval process.
@@ -147,7 +147,7 @@ Future<Metadata?> metadata() {
 ///  - `metaData`: The new metadata to update for the user.
 /// 
 /// Returns:
-///  A `Future<CurrentUser>` containing the updated information of the user.
+///  A `Future<CurrentUser>?` containing the updated information of the user.
 /// 
 /// Throws:
 ///  `PassageError` if an error occurs during the update process.
@@ -158,7 +158,7 @@ Future<CurrentUser>? updateMetadata(Metadata metaData) {
 /// Signs out the current user, clearing local tokens and logging out of the system.
 /// 
 /// Returns:
-///  A `Future<void>` that resolves when the user is successfully signed out.
+///  A `Future<void>?` that resolves when the user is successfully signed out.
 /// 
 /// Throws:
 ///  `PassageError` if an error occurs during the sign-out process.
