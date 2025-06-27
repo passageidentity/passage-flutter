@@ -11,7 +11,7 @@ class PassageOneTimePasscode {
   ///  - `language`: The language code for the one time passcode.
   ///
   /// Returns:
-  ///  A `Future<String>` that returns a one-time passcode ID used to activate
+  ///  A `Future<OneTimePasscode>` that returns a one-time passcode ID used to activate
   ///  the passcode in `oneTimePasscodeActivate`.
   ///
   /// Throws:
@@ -30,7 +30,7 @@ class PassageOneTimePasscode {
   ///  - `language`: The language code for the one time passcode.
   ///
   /// Returns:
-  ///  A `Future<String>` that returns a one-time passcode ID used to activate
+  ///  A `Future<OneTimePasscode>` that returns a one-time passcode ID used to activate
   ///  the passcode in `oneTimePasscodeActivate`.
   ///
   /// Throws:

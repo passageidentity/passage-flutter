@@ -360,9 +360,7 @@ class PassageFlutterWeb extends PassageFlutterPlatform {
   Future<model.Passkey> editPasskeyName(
       String passkeyId, String newPasskeyName) async {
     try {
-      final objFromMap = js_util.jsify({'friendly_name': newPasskeyName});
-      final resultPromise =
-          passage.currentUser.editPasskey(passkeyId, objFromMap);
+      final resultPromise = passage.currentUser.editPasskey(passkeyId, newPasskeyName);
       final jsObject = await js_util.promiseToFuture(resultPromise);
       return model.Passkey.fromJson(jsObject);
     } catch (e) {

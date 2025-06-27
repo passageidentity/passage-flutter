@@ -8,7 +8,7 @@ class PassageTokenStore {
   /// If the stored auth token is invalid, this method will use the refresh token to get and save a new auth token.
   ///
   /// Returns:
-  ///  A `Future<String?>` representing the user's auth token,
+  ///  A `Future<String>` representing the user's auth token,
   /// Throws:
   ///  `PassageError`
   Future<String> getValidAuthToken() {
@@ -27,7 +27,7 @@ class PassageTokenStore {
   /// Refreshes, retrieves, and saves a new authToken for the currently authenticated user using their refresh token.
   ///
   /// Returns:
-  ///  A `Future<String>` representing the new auth token.
+  ///  A `Future<AuthResult>` representing the new auth token.
   ///
   /// Throws:
   ///  `PassageError`
