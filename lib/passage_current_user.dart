@@ -12,7 +12,6 @@ class PassageCurrentUser {
   ///
   /// Returns:
   ///  A `Future<CurrentUser>` representing the current Passage user's info,
-  ///  or `null` if the current Passage user's authentication token could not be validated.
   Future<CurrentUser> userInfo() {
     return PassageFlutterPlatform.instance.getCurrentUser();
   }

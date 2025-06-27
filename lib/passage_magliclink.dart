@@ -63,8 +63,7 @@ class PassageMagiclink {
   ///
   /// Returns:
   ///  A `Future<AuthResult>` object that includes a redirect URL and saves the
-  ///  authorization token and (optional) refresh token securely to the device, or `null` if
-  ///  the magic link has not been verified.
+  ///  authorization token and (optional) refresh token securely to the device
   ///
   /// Throws:
   ///  `PassageError`
