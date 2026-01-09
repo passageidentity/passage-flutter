@@ -2,6 +2,9 @@
 
 [![Pub](https://img.shields.io/pub/v/passage_flutter.svg)](https://pub.dartlang.org/packages/passage_flutter) ![GitHub License](https://img.shields.io/github/license/passageidentity/passage-flutter) [![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=fff)](#) [![Dart](https://img.shields.io/badge/Dart-%230175C2.svg?logo=dart&logoColor=white)](#) ![Static Badge](https://img.shields.io/badge/Built_by_1Password-grey?logo=1password)
 
+# ⚠️ DEPRECATED
+**This repository is deprecated and no longer maintained as of January 16, 2026.**
+
 ## About
 
 [Passage by 1Password](https://1password.com/product/passage) unlocks the passwordless future with a simpler, more secure passkey authentication experience. Passage handles the complexities of the [WebAuthn API](https://blog.1password.com/what-is-webauthn/), and allows you to implement passkeys with ease.
